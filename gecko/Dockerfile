@@ -1,4 +1,4 @@
-FROM gitpod/workspace-full-vnc
+FROM quay.io/gitpodified-workspace-images/full
 
 # Install the latest rr.
 RUN __RR_VERSION__="5.5.0" \

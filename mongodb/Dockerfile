@@ -1,4 +1,4 @@
-FROM gitpod/workspace-full
+FROM quay.io/gitpodified-workspace-images/full
 
 # Install MongoDB
 # Source: https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu-tarball/#install-mongodb-community-edition

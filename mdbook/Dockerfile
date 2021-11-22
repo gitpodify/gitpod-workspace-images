@@ -1,4 +1,4 @@
-FROM gitpod/workspace-full
+FROM quay.io/gitpodified-workspace-images/full
 
 # add your tools here
 USER gitpod

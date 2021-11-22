@@ -1,4 +1,4 @@
-FROM gitpod/workspace-full:latest
+FROM quay.io/gitpodified-workspace-images/full
 
 USER root
 

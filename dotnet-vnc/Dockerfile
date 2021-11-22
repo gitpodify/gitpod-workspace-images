@@ -1,4 +1,4 @@
-FROM gitpod/workspace-full-vnc:latest
+FROM quay.io/gitpodified-workspace-images/vnc
 
 USER gitpod
 

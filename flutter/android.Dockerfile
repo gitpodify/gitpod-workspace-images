@@ -1,4 +1,4 @@
-FROM gitpod/workspace-full-vnc
+FROM quay.io/gitpodified-workspace-images/full
 
 ENV ANDROID_HOME=/home/gitpod/android-sdk-linux \
     ANDROID_VERSION=3.3.0.20 \
