@@ -17,8 +17,16 @@
       BASE_TAG_NAME: quay.io/gitpodified-workspace-images
 
 ws-full:build:
+    needs:
+      - ws-full:lint
     extends:
       - .docker-build-dazzle
     variables:
       TAG_NAME: $BASE_TAG_NAME/full
-    
+    rules:
+      - changes:
+          - full/dockerfile
+          - full/tests/*.yml
+          - full/nginx/nginx.conf
+          - full/apache2/apache2.conf
+          - full/apache2/envvars

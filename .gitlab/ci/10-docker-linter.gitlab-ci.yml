@@ -2,10 +2,102 @@
     before_script:
         - brew install shellcheck hadolint
     script:
-        - ./.gitlab/ci/scripts/lint "$CONTEXT_DIR/${CONTEXT_DOCKERFILE:-'Dockerfile'}" || true
+        - ./.gitlab/ci/scripts/lint "$CONTEXT_DIR/${CONTEXT_DOCKERFILE:-'Dockerfile'}"
 
 ws-base:lint:
     extends:
         - .docker-lint
     variables:
         CONTEXT_DIR: base
+    allow_failure: true
+
+ws-full:lint:
+    extends:
+        - .docker-lint
+    variables:
+        CONTEXT_DIR: full
+    allow_failure: true
+
+ws-vnc:lint:
+    extends:
+        - .docker-lint
+    variables:
+        CONTEXT_DIR: vnc
+    allow_failure: true
+
+ws-gecko:lint:
+    extends:
+        - .docker-lint
+    variables:
+        CONTEXT_DIR: gecko
+    allow_failure: true
+
+ws-mdbook:lint:
+    extends:
+        - .docker-lint
+    variables:
+        CONTEXT_DIR: mdbook
+    allow_failure: true
+
+ws-wasm:lint:
+    extends:
+        - .docker-lint
+    variables:
+        CONTEXT_DIR: wasm
+    allow_failure: true
+
+ws-mongodb:lint:
+    extends:
+        - .docker-lint
+    variables:
+        CONTEXT_DIR: mongodb
+    allow_failure: true
+
+ws-postgres:lint:
+   extends:
+       - .docker-lint
+   variables:
+      CONTEXT_DIR: postgres
+   allow_failure: true
+
+ws-dart:lint:
+    extends:
+        - .docker-lint
+    variables:
+        CONTEXT_DIR: dart
+    allow_failure: true
+
+ws-flutter:lint:
+    extends:
+        - .docker-lint
+    variables:
+        CONTEXT_DIR: flutter
+    allow_failure: true
+
+ws-dotnet:lint:
+    extends:
+        - .docker-lint
+    variables:
+        CONTEXT_DIR: dotnet
+    allow_failure: true
+
+ws-dotnet-vnc:lint:
+    extends:
+        - .docker-lint
+    variables:
+        CONTEXT_DIR: dotnet/vnc
+    allow_failure: true
+
+ws-dotnet-lts:lint:
+    extends:
+        - .docker-lint
+    variables:
+        CONTEXT_DIR: dotnet/lts
+    allow_failure: true
+
+ws-dotnet-lts-vnc:lint:
+    extends:
+        - .docker-lint
+    variables:
+        CONTEXT_DIR: dotnet/lts/vnc
+    allow_failure: true
