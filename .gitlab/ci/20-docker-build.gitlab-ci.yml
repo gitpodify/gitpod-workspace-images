@@ -1,0 +1,24 @@
+.docker-build-dazzle:
+    stage: build
+    before_script:
+        - ./.gitlab/ci/scripts/docker-cli-login
+    script:
+        - ./.gitlab/ci/scripts/dazzle-build "$CONTEXT_DIR/$CONTEXT_DOCKERFILE" "$TAG_NAME"
+    variables:
+      BASE_TAG_NAME: quay.io/gitpodified-workspace-images/
+
+.docker-build-plain:
+    extends:
+      - .docker-build-dazzle
+    stage: build
+    script:
+      - ./.gitlab/ci/scripts/docker-build "$CONTEXT_DIR/$CONTEXT_DOCKERFILE" "$TAG_NAME"
+    variables:
+      BASE_TAG_NAME: quay.io/gitpodified-workspace-images
+
+ws-full:build:
+    extends:
+      - .docker-build-dazzle
+    variables:
+      TAG_NAME: $BASE_TAG_NAME/full
+    

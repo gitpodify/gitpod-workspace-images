@@ -1,6 +1,0 @@
-.docker-build:
-    stage: build
-    before_script:
-        - ./.gitlab/ci/scripts/docker-cli-login
-    script:
-        - ./.gitlab/ci/scripts/dazzle-build $CONTEXT_DIR $CONTEXT_DOCKERFILE
