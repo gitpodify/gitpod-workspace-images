@@ -1,0 +1,7 @@
+include:
+  # Base GitLab CI config
+  - local: .gitlab/ci/00-base.yml
+  # Hadolint and Shellcheck stuff
+  - local: .gitlab/ci/10-docker-linter.yml
+  # Image builder scripts
+  - local: .gitlab/ci/20-docker-build.yml

@@ -1,0 +1,11 @@
+.docker-lint:
+    before_script:
+        - brew install shellcheck hadolint
+    script:
+        - ./.gitlab/ci/scripts/lint "$CONTEXT_DIR/${CONTEXT_DOCKERFILE:-'Dockerfile'}" || true
+
+ws-base:lint:
+    extends:
+        - .docker-lint
+    variables:
+        CONTEXT_DIR: base
