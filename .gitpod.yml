@@ -6,6 +6,11 @@ tasks:
 vscode:
   extensions:
     - ms-azuretools.vscode-docker
+    - timonwong.shellcheck
+    - redhat.vscode-yaml
+    - eamodio.gitlens
+    - gitlab.gitlab-workflow
+    - davidanson.vscode-markdownlint
 
 github:
   prebuilds:
