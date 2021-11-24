@@ -1,0 +1,49 @@
+#!/bin/bash
+# shellcheck disable=SC2001
+set -e
+
+if [ $# -le 2 ]; then
+  echo "Usage: $0 CONTEXT_DIR/CONTEXT_DOCKERFILE IMAGE_REPO"
+  echo
+  echo "For example:"
+  echo "  If your Dockerfile is on dart/Dockerfile and your context directory is dart",
+  echo "  then use dart/Dockerfile as the first argument and image tag name for pushing finished."
+  echo "  builds to an image registry, by default its Quay.io for both image builds and build artifacts."
+  echo "  It will parsed by this script through base"
+  echo
+  echo "Supported environment variables"
+  echo "  IMAGE_ARTIFACTS_REPO       Container image repo for artifacts that this script will be using for"
+  echo "                             storing image artifacts to an container registry instead of the regular"
+  echo "                             GitLab job artifacts."
+  echo "  IMAGE_ARTIFACTS_PUSH       Set it to false to disable pushing build artifacts to an container registry."
+  echo "  DAZZLE_CACHE_REPO          Dazzle cache Docker image for caching stuff"
+  echo "  SKIP_DOCKER_PUSH           Skip pushing images to container registry, which passed to the publish-image"
+  echo "                             utility script."
+  exit 2
+fi
+
+DIR=$(dirname "$1")
+DOCKERFILE=$(basename "$1")
+IMAGE_NAME=$2
+
+GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD | sed 's_/_-_g')"
+BUILD_ID="ci-build-$GIT_BRANCH"
+# Check your distro's package name for uuidgen at https://pkgs.org/search/?q=uuid
+ARTIFACT_ID="$(uuidgen)"
+# Dazzle cache repo stuff
+DAZZLE_CACHE_REPO=${DAZZLE_CACHE_REPO:-"quay.io/gitpodified-workspace-images/full-dazzle"}
+
+IMAGE_ARTIFACTS_REPO=
+REPO_SLUG=$CI_PROJECT_PATH_SLUG
+
+dazzle build --repository "$DAZZLE_CACHE_REPO" \
+  --tag "$IMAGE_NAME:$BUILD_ID" \
+  --file "$DIR/$DOCKERFILE" "$DIR"
+
+if [[ $CI_PIPELINE_SOURCE == "merge_request_event" ]]; then
+  docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID"
+  docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_ARTIFACTS_REPO:gl-$REPO_SLUG-mr-$CI_MERGE_REQUEST_IID"
+  ./.gitlab/ci/scripts/publish-image "$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID" "$IMAGE_ARTIFACTS_REPO:gl-$REPO_SLUG-mr-$CI_MERGE_REQUEST_IID"
+else
+  true
+fi
