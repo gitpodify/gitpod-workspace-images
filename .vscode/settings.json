@@ -1,0 +1,9 @@
+{
+    "git.alwaysSignOff": true,
+    "git.confirmForcePush": true,
+    "git.rebaseWhenSync": true,
+    "git.requireGitUserConfig": true,
+    "gitlens.statusBar.format": "${author}, ${agoOrDate}${' via 'pullRequest}",
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 5000
+}
