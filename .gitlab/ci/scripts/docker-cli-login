@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+if [[ "$RHQCR_USERBOT_USERNAME" == "" || "$RHQCR_USERBOT_PASSWORD" == "" ]]; then
+  echo "warning: Missing login info for quay.io registry!"
+else
+  docker login -u "$RHQCR_USERBOT_USERNAME" --password-stdin quay.io << EOF
+    $RHQCR_USERBOT_USERNAME
+  EOF
+fi
+
+if [[ "$DOCKERHUB_USERNAME" == "" || "$DOCKERHUB_PASSWORD" == "" ]]; then
+  echo "warning: Missing login info for Docker Hub registry"
+else
+  docker login -u "$RHQCR_USERBOT_USERNAME" --password-stdin quay.io << EOF
+    $RHQCR_USERBOT_USERNAME
+  EOF
+fi
