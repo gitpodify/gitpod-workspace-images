@@ -3,6 +3,7 @@
 if [[ $1 == "" ]]; then
   echo "Usage: $0 DIRECTORY"
   echo "Script to recurisively lint scripts with ShellCheck."
+  exit 2
 fi
 
-find "$1" -type f -print0 -exec grep -Eq '^#!(.*/|.*env +)(sh|bash|ksh)' {} \; | xargs shellcheck
+find "$1" -type f -print0 -exec grep -Eq '^#!(.*/|.*env +)(sh|bash|ksh)' {} \; | xargs --null shellcheck
