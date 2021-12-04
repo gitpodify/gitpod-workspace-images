@@ -9,10 +9,12 @@ This section contains different changes we made in the images under the `gitpodi
 
 ### 2021-12-04
 
-- Add `uuid` Ubuntu package to base image
-- Add an little trick in .envrc file to automagically simulate merge request events without GitLab Runner CLI.
-- Squash spelling bugs and list which packages we use is required or not.
-- Add if-then logic on `.envrc` for setting `CI_PIPELINE_SOURCE` to `merge_request_event`.ssss
+- **FEAT**: Add `uuid` Ubuntu package to base image
+- **CHORE**: Add an little trick in .envrc file to automagically simulate merge request events without GitLab Runner CLI.
+- **DOCS**: Squash spelling bugs and list which packages we use is required or not in contributing docs
+- **CHORE**: Add if-then logic on `.envrc` for setting `CI_PIPELINE_SOURCE` to `merge_request_event`.ssss
+- **CI**: Update root GitLab CI config to reflect filename changes since <https://gitlab.com/gitpodify/gitpodified-workspace-images/-/commit/0988751df8385ea407b27706b9b0bed5d0543261>.
+- **FEAT**: Add ShellCheck, Hadolint and direnv to the full image.
 
 ### 2021-11-22 to 2021-11-23
 

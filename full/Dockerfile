@@ -299,3 +299,7 @@ COPY tests /var/lib/dazzle/tests
 RUN echo "PATH="${PATH}"" | sudo tee /etc/environment
 
 USER gitpod
+
+### ShellCheck, Hadolint and direnv ###
+RUN brew install shellcheck hadolint direnv; \
+    direnv hook bash | tee /home/gitpod/.bashrc.d/10-direnv
