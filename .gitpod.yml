@@ -1,10 +1,13 @@
 image: quay.io/gitpodified-workspace-images/full:latest
 
 tasks:
-  - name: Trust envrc file
-    init: direnv allow
+  - name: Workspace Setup
+    init: |
+      direnv allow
+      git remote add upstream https://github.com/gitpod-io/workspace-images
     before: |
       direnv allow; direnv reload
+      git fetch --all
       gp sync-done docker-cli-login
   - name: Authenicate with the Docker CLI
     before: |
