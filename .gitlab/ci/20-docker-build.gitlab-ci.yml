@@ -18,18 +18,18 @@
       # Assume the defaults unless otherwise stated.
       CONTEXT_DOCKERFILE: Dockerfile
 
-ws-full:build:
-    needs:
-      - ws-full:lint
-    extends:
-      - .docker-build-dazzle
-    variables:
-      TAG_NAME: $BASE_TAG_NAME/full
-      CONTEXT_DIR: full
-    rules:
-      - changes:
-          - full/dockerfile
-          - full/tests/*.yml
-          - full/nginx/nginx.conf
-          - full/apache2/apache2.conf
-          - full/apache2/envvars
+#ws-full:build:
+#    needs:
+#      - ws-full:lint
+#    extends:
+#      - .docker-build-dazzle
+#    variables:
+#      TAG_NAME: $BASE_TAG_NAME/full
+#      CONTEXT_DIR: full
+#    rules:
+#      - changes:
+#          - full/dockerfile
+#          - full/tests/*.yml
+#          - full/nginx/nginx.conf
+#          - full/apache2/apache2.conf
+#          - full/apache2/envvars
