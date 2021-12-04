@@ -22,9 +22,8 @@ this repository please work on separate branches away from `recaptime-dev-mainli
 
 ### Packages used
 
-You need the following to proceed:
+You need the following tools and packages to proceed. Since we're building in plain `docker build`/`podman build` (not with Dazzle), we'll leave the Dazzle build scripts for an while until further notice.
 
-* Docker Engine/Desktop - Dazzle isn't tested yet on Podman.
-* Dazzle - <https://github.com/moby/buildkit>
+* Docker Engine/Desktop, but you're welcome to use Podman or other alternatives
 * bash and coreutils
 * Optional tools including direnv, ShellCheck and Hadolint.
