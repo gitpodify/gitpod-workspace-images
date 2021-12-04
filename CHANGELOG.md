@@ -15,6 +15,8 @@ This section contains different changes we made in the images under the `gitpodi
 - **CHORE**: Add if-then logic on `.envrc` for setting `CI_PIPELINE_SOURCE` to `merge_request_event`.ssss
 - **CI**: Update root GitLab CI config to reflect filename changes since <https://gitlab.com/gitpodify/gitpodified-workspace-images/-/commit/0988751df8385ea407b27706b9b0bed5d0543261>.
 - **FEAT**: Add ShellCheck, Hadolint and direnv to the full image.
+- **FEAT**: Actually rebased against upstream default branch to keep things in sync.
+- **CHORE**: Add some new variables automagically populated through `direnv` to simulate GitLab CI environment for scripts on localhost and Gitpod.
 
 ### 2021-11-22 to 2021-11-23
 
