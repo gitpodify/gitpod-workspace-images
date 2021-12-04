@@ -11,14 +11,19 @@ if [ $# -le 2 ]; then
   echo "  builds to an image registry, by default its Quay.io for both image builds and build artifacts."
   echo "  It will parsed by this script through base"
   echo
-  echo "Supported environment variables"
+  echo "We use environment variables to control different aspects of this script at runtime. If you want to push"
+  echo "your repository to"
+  echo "Supported environment variables:"
   echo "  IMAGE_ARTIFACTS_REPO       Container image repo for artifacts that this script will be using for"
   echo "                             storing image artifacts to an container registry instead of the regular"
   echo "                             GitLab job artifacts."
   echo "  IMAGE_ARTIFACTS_PUSH       Set it to false to disable pushing build artifacts to an container registry."
-  echo "  DAZZLE_CACHE_REPO          Dazzle cache Docker image for caching stuff"
+  echo "                             You can push them at a later date."
+  echo "  DAZZLE_CACHE_REPO          Dazzle cache Docker image repository for caching stuff"
   echo "  SKIP_DOCKER_PUSH           Skip pushing images to container registry, which passed to the publish-image"
   echo "                             utility script."
+  echo "  CI_PROJECT_PATH_SLUG       GitLab project path slug. Use the clone web URl of your project as an reference,"
+  echo "                             minus the GitLab hostname."
   exit 2
 fi
 
@@ -32,18 +37,32 @@ BUILD_ID="ci-build-$GIT_BRANCH"
 ARTIFACT_ID="$(uuidgen)"
 # Dazzle cache repo stuff
 DAZZLE_CACHE_REPO=${DAZZLE_CACHE_REPO:-"quay.io/gitpodified-workspace-images/full-dazzle"}
-
-IMAGE_ARTIFACTS_REPO=
+# Image artifact repository to store build artifacts
+IMAGE_ARTIFACTS_REPO=${IMAGE_ARTIFACTS_REPO:-"quay.io/recaptime-dev/gitpod-workspace-images-artifacts"}
 REPO_SLUG=$CI_PROJECT_PATH_SLUG
+
+pushArtifact() {
+  docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID"
+  docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_ARTIFACTS_REPO:gl-$REPO_SLUG-mr-$CI_MERGE_REQUEST_IID"
+  # added "|| truw" to ensure CI builds don't complain about it
+  ./.gitlab/ci/scripts/publish-image "$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID" "$IMAGE_ARTIFACTS_REPO:gl-$REPO_SLUG-mr-$CI_MERGE_REQUEST_IID" || true
+}
 
 dazzle build --repository "$DAZZLE_CACHE_REPO" \
   --tag "$IMAGE_NAME:$BUILD_ID" \
   --file "$DIR/$DOCKERFILE" "$DIR"
 
-if [[ $CI_PIPELINE_SOURCE == "merge_request_event" ]]; then
-  docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID"
-  docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_ARTIFACTS_REPO:gl-$REPO_SLUG-mr-$CI_MERGE_REQUEST_IID"
-  ./.gitlab/ci/scripts/publish-image "$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID" "$IMAGE_ARTIFACTS_REPO:gl-$REPO_SLUG-mr-$CI_MERGE_REQUEST_IID"
+# If $2 is blank, it will be only available as an build artifact in IMAGE_ARTIFACTS_REPO, like
+# in merge request builds.
+if [[ $CI_PIPELINE_SOURCE == "merge_request_event" || $IMAGE_NAME == ""  ]]; then
+  pushArtifact
 else
-  true
+  pushArtifact 
+  if [[ $GIT_BRANCH != "recaptime-dev-mainline" ]]; then
+     docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:branch-$GIT_BRANCH"
+     docker push "$IMAGE_NAME:branch-$GIT_BRANCH"
+  elif [[ $GIT_BRANCH == "recaptime-dev-mainline" && $IMAGE_NAME != "" ]]; then
+     docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:latest"
+     docker push "$IMAGE_NAME:latest"
+  fi
 fi
