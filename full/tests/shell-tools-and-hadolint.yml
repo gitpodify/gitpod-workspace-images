@@ -1,0 +1,15 @@
+- desc: ShellCheck should be installed
+  command: [which, shellcheck]
+  assert:
+  - status == 0
+  - stdout.indexOf("/home/linuxbrew/.linuxbrew/bin/shellcheck") != -1
+- desc: direnv should be installed
+  command: [which, direnv]
+  assert:
+  - status == 0
+  - stdout.indexOf("/home/linuxbrew/.linuxbrew/bin/direnv") != -1
+- desc: hadolint should be installed
+  command: [which, hadolint]
+  assert:
+  - status == 0
+  - stdout.indexOf("/home/linuxbrew/.linuxbrew/bin/hadolint") != -1

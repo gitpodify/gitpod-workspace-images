@@ -18,6 +18,8 @@ This section contains different changes we made in the images under the `gitpodi
 - **FEAT**: Actually rebased against upstream default branch to keep things in sync.
 - **CHORE**: Add some new variables automagically populated through `direnv` to simulate GitLab CI environment for scripts on localhost and Gitpod.
 - **DOCS**: Update docs again regarding not using Dazzle in both README and in contributing docs. Also add some more docs on usage and FAQ.
+- **CHORE**: Move the `shell-tools-and-hadolint` Dazzle layer before the prologue and also fix some stuff in `full` Dockerfile.
+- **CI**: Add Hadolint config for ignoring some warnings and errors, particularly `sudo` usage.
 
 ### 2021-11-22 to 2021-11-23
 
