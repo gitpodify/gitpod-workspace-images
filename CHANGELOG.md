@@ -7,6 +7,13 @@ We keep all the changes for both this fork and the upstream changes we merged. A
 
 This section contains different changes we made in the images under the `gitpodified-workspace-images` RHQCR namespace. Keep scrolling for the upstream's changelog entries.
 
+### 2021-12-04
+
+- Add `uuid` Ubuntu package to base image
+- Add an little trick in .envrc file to automagically simulate merge request events without GitLab Runner CLI.
+- Squash spelling bugs and list which packages we use is required or not.
+- Add if-then logic on `.envrc` for setting `CI_PIPELINE_SOURCE` to `merge_request_event`.ssss
+
 ### 2021-11-22 to 2021-11-23
 
 - **CI:** Ditch Circle CI config and switch to GitHub Actions for meanwhile. Image builds are now handled by Quay for the `base` directory for now.
