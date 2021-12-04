@@ -8,6 +8,7 @@ BASEDIR=$(git rev-parse --show-toplevel)
 DIR=$(dirname "$BASEDIR/$1")
 
 echo "Target directory: $DIR"; sleep 5
+echo
 echo "============================== SHELLCHECK RESULTS =============================="
 ./.gitlab/ci/scripts/lint-scripts "$DIR" || export CHECK_FAILED_SC=$?
 echo "============================== SHELLCHECK RESULTS =============================="
@@ -15,9 +16,22 @@ echo
 echo "============================== HADOLINT RESULTS =============================="
 ./.gitlab/ci/scripts/lint-dockerfile "$1" || export CHECK_FAILED_HL=$?
 echo "============================== HADOLINT RESULTS =============================="
+echo
+echo "============================== SUMMARY =============================="
+if [ $CHECK_FAILED_SC != "0" ]; then
+  echo "ShellCheck: Found some serious problems on scripts or ShellCheck isn't installed on system/not on PATH ❌"
+else
+  echo "ShellCheck: No issues found, nice 🎉"
+fi
+if [ $CHECK_FAILED_SC != "0" ]; then
+  echo "Hadolint: Found some serious problems on Dockerfiles or Hadolint isn't installed on system/not on PATH ❌"
+else
+  echo "Hadolint: No issues found, nice 🎉"
+fi
+echo "============================== SUMMARY =============================="
 
 if [[ $CHECK_FAILED_SC != "0" || $CHECK_FAILED_HL != "0" ]]; then
-  echo "error: Either linter checks had been failed. Please fix the issues above in order to go green."
-  echo "error: Failing lint step with warning..."
   exit 1
+else
+  exit 0
 fi
