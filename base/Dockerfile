@@ -29,6 +29,7 @@ RUN yes | unminimize \
         ssl-cert \
         fish \
         zsh \
+        uuid \
     && locale-gen en_US.UTF-8
 
 ENV LANG=en_US.UTF-8
