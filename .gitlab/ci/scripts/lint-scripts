@@ -6,4 +6,5 @@ if [[ $1 == "" ]]; then
   exit 2
 fi
 
-find "$1" -type f -print0 -exec grep -Eq '^#!(.*/|.*env +)(sh|bash|ksh)' {} \; | xargs --null shellcheck
+# added an ! -path directive to avoid scanning Dockerfiles also
+find "$1" ! -path '*/*.Dockerfile' ! -type f -print0 -exec grep -Eq '^#!(.*/|.*env +)(sh|bash|ksh)' {} \; | xargs --null shellcheck
