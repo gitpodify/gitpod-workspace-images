@@ -7,6 +7,10 @@ We keep all the changes for both this fork and the upstream changes we merged. A
 
 This section contains different changes we made in the images under the `gitpodified-workspace-images` RHQCR namespace. Keep scrolling for the upstream's changelog entries.
 
+### 2021-12-18
+
+* **CI**: Add needs option to each job to control job order
+
 ### 2021-12-11
 
 * **CI**: Fix an bug on recursive ShellCheck script on also linting Dockerfiles with an `! -path` directive.
