@@ -7,6 +7,11 @@ We keep all the changes for both this fork and the upstream changes we merged. A
 
 This section contains different changes we made in the images under the `gitpodified-workspace-images` RHQCR namespace. Keep scrolling for the upstream's changelog entries.
 
+### 2021-12-20
+
+* **CHORE**: Bump [Node.js LTS to `v16.13.1`](https://github.com/gitpod-io/workspace-images/pull/592) and [gopls to `v0.7.4`](https://github.com/gitpod-io/workspace-images/pull/590)
+* **REFRACTOR**: Manually merge <https://github.com/gitpod-io/workspace-images/pull/587> by hand.
+
 ### 2021-12-18
 
 * **CI**: Add needs option to each job to control job order

@@ -92,7 +92,7 @@ RUN curl -fsSL https://storage.googleapis.com/golang/go$GO_VERSION.linux-amd64.t
         github.com/go-delve/delve/cmd/dlv \
         github.com/golangci/golangci-lint/cmd/golangci-lint && \
     GO111MODULE=on go get -v \
-        golang.org/x/tools/gopls@v0.7.3 && \
+        golang.org/x/tools/gopls@v0.7.4 && \
     sudo rm -rf $GOPATH/src $GOPATH/pkg /home/gitpod/.cache/go /home/gitpod/.cache/go-build
 # user Go packages
 ENV GOPATH=/workspace/go
@@ -121,7 +121,7 @@ ENV GRADLE_USER_HOME=/workspace/.gradle/
 LABEL dazzle/layer=lang-node
 LABEL dazzle/test=tests/lang-node.yaml
 USER gitpod
-ENV NODE_VERSION=16.13.0
+ENV NODE_VERSION=16.13.1
 ENV TRIGGER_REBUILD=1
 RUN curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | PROFILE=/dev/null bash \
     && bash -c ". .nvm/nvm.sh \
@@ -183,18 +183,27 @@ ENV PATH=/workspace/.rvm/bin:$PATH
 LABEL dazzle/layer=lang-rust
 LABEL dazzle/test=tests/lang-rust.yaml
 USER gitpod
+ENV PATH=$PATH:$HOME/.cargo/bin
 RUN cp /home/gitpod/.profile /home/gitpod/.profile_orig && \
-    curl -fsSL https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain 1.56.1 \
-    && .cargo/bin/rustup component add \
+    curl -fsSL https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain 1.57.0 \
+    && rustup component add \
         rls \
         rust-analysis \
         rust-src \
         rustfmt \
-    && .cargo/bin/rustup completions bash | sudo tee /etc/bash_completion.d/rustup.bash-completion > /dev/null \
-    && .cargo/bin/rustup completions bash cargo | sudo tee /etc/bash_completion.d/rustup.cargo-bash-completion > /dev/null \
-    && grep -v -F -x -f /home/gitpod/.profile_orig /home/gitpod/.profile > /home/gitpod/.bashrc.d/80-rust
-ENV PATH=$PATH:$HOME/.cargo/bin
-# TODO: setting CARGO_HOME to /workspace/.cargo avoids manual updates. Remove after full workspace backups are GA.
+    && rustup completions bash | sudo tee /etc/bash_completion.d/rustup.bash-completion > /dev/null \
+    && rustup completions bash cargo | sudo tee /etc/bash_completion.d/rustup.cargo-bash-completion > /dev/null \
+    && grep -v -F -x -f /home/gitpod/.profile_orig /home/gitpod/.profile > /home/gitpod/.bashrc.d/80-rust \
+    && rustup completions bash | sudo tee /etc/bash_completion.d/rustup.bash-completion > /dev/null \
+    && rustup completions bash cargo | sudo tee /etc/bash_completion.d/rustup.cargo-bash-completion > /dev/null \
+    && printf '%s\n' "$(grep -v -F -x -f /home/gitpod/.profile_orig /home/gitpod/.profile)" \
+    'mkdir -m 0755 -p "${CARGO_HOME:-/workspace/.cargo}" 2>/dev/null' > $HOME/.bashrc.d/80-rust \
+    && mkdir -m 0755 -p $HOME/.config/fish \
+    && printf '%s\n' 'alias rustup="env -u CARGO_HOME (command -v rustup)"' >> $HOME/.config/fish/config.fish \
+    && printf '%s\n' 'alias rustup="env -u CARGO_HOME $(command -v rustup)"' >> $HOME/.bashrc.d/80-rust \
+    # TODO: add to .zshrc.d/ within this week.
+    && printf '%s\n' 'alias rustup="env -u CARGO_HOME $(command -v rustup)"' >> $HOME/.zshrc
+RUN cargo install cargo-watch cargo-edit cargo-tree cargo-workspaces
 ENV CARGO_HOME=/workspace/.cargo
 ENV PATH=$CARGO_HOME/bin:$PATH
 
