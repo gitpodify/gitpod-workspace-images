@@ -2,6 +2,7 @@
     before_script:
         - brew install shellcheck hadolint
     script:
+        # $CONTEXT_DOCKERFILE refers to path to Dockerfile within the $CONTEXT_DIR
         - ./.gitlab/ci/scripts/lint "$CONTEXT_DIR/${CONTEXT_DOCKERFILE:-"Dockerfile"}"
 
 ws-base:lint:
@@ -10,6 +11,10 @@ ws-base:lint:
     variables:
         CONTEXT_DIR: base
     allow_failure: true
+    rules:
+        - changes:
+            - base/Dockerfile
+            - "base/*-packages" # hint: base/install-packages and base/upgrade-packages
 
 ws-full:lint:
     needs:
@@ -19,6 +24,10 @@ ws-full:lint:
     variables:
         CONTEXT_DIR: full
     allow_failure: true
+    rules:
+        - changes:
+            - full/Dockerfile
+            - full/*.sh
 
 ws-vnc:lint:
     needs:
@@ -29,7 +38,10 @@ ws-vnc:lint:
     variables:
         CONTEXT_DIR: vnc
     allow_failure: true
-
+    rules:
+        - changes:
+            - vnc/Dockerfile
+            - vnc/*.sh
 ws-gecko:lint:
     needs:
         - ws-base:lint
@@ -40,6 +52,9 @@ ws-gecko:lint:
     variables:
         CONTEXT_DIR: gecko
     allow_failure: true
+    rules:
+        - changes:
+            - gecko/Dockerfile
 
 ws-mdbook:lint:
     needs:
@@ -50,6 +65,9 @@ ws-mdbook:lint:
     variables:
         CONTEXT_DIR: mdbook
     allow_failure: true
+    rules:
+        - changes:
+            - mdbook/Dockerfile
 
 ws-wasm:lint:
     needs:
@@ -60,6 +78,9 @@ ws-wasm:lint:
     variables:
         CONTEXT_DIR: wasm
     allow_failure: true
+    rules:
+       - changes:
+           - wasm/Dockerfile
 
 ws-mongodb:lint:
     needs:
@@ -70,6 +91,9 @@ ws-mongodb:lint:
     variables:
         CONTEXT_DIR: mongodb
     allow_failure: true
+    rules:
+        - changes:
+            - mongodb/Dockerfile
 
 ws-postgres:lint:
    needs:
@@ -80,6 +104,9 @@ ws-postgres:lint:
    variables:
       CONTEXT_DIR: postgres
    allow_failure: true
+   rules:
+        - changes:
+            - postgres/Dockerfile
 
 ws-dart:lint:
     needs:
@@ -90,16 +117,23 @@ ws-dart:lint:
     variables:
         CONTEXT_DIR: dart
     allow_failure: true
+    rules:
+        - changes:
+            - dart/Dockerfile
 
 ws-flutter:lint:
     needs:
         - ws-base:lint
         - ws-full:lint
+        - ws-dart:lint
     extends:
         - .docker-lint
     variables:
         CONTEXT_DIR: flutter
     allow_failure: true
+    rules:
+        - changes:
+            - flutter/Dockerfile
 
 ws-dotnet:lint:
     needs:
@@ -116,11 +150,16 @@ ws-dotnet-vnc:lint:
         - ws-base:lint
         - ws-full:lint
         - ws-vnc:lint
+        - ws-dotnet:lint
     extends:
         - .docker-lint
     variables:
-        CONTEXT_DIR: dotnet/vnc
+        CONTEXT_DIR: dotnet
+        CONTEXT_DOCKERFILE: vnc.Dockerfile
     allow_failure: true
+    rules:
+        - changes:
+            - dotnet/lts-vnc.Dockerfile
 
 ws-dotnet-lts:lint:
     needs:
@@ -131,7 +170,11 @@ ws-dotnet-lts:lint:
         - .docker-lint
     variables:
         CONTEXT_DIR: dotnet/lts
+        CONTEXT_DOCKERFILE: lts.Dockerfile
     allow_failure: true
+    rules:
+        - changes:
+            - dotnet/lts.Dockerfile
 
 ws-dotnet-lts-vnc:lint:
     needs:
@@ -142,5 +185,9 @@ ws-dotnet-lts-vnc:lint:
     extends:
         - .docker-lint
     variables:
-        CONTEXT_DIR: dotnet/lts/vnc
+        CONTEXT_DIR: dotnet
+        CONTEXT_DOCKERFILE: lts-vnc.Dockerfile
     allow_failure: true
+    rules:
+        - changes:
+            - dotnet/lts-vnc.Dockerfile

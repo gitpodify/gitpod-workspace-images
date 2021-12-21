@@ -1,10 +1,19 @@
 #!/usr/bin/env bash
 
 if [[ $1 == "" ]]; then
-  echo "Usage: $0 DIRECTORY"
-  echo "Script to recurisively lint scripts with ShellCheck."
+  echo "Usage: $0 DIRECTORY [SHELL]"
+  echo
+  echo "Script to recurisively lint scripts with ShellCheck, by default against GNU Bash, based on"
+  echo "instructions at https://go.rtapp.tk/w/shellcheck/Recursiveness"
   exit 2
 fi
 
+TARGET_SHELL=${TARGET_SHELL:-$2}
+if [[ $TARGET_SHELL == "zsh" ]]; then
+  echo "error: Linting Zsh scripts is unsupported in ShellCheck. Supported shells include POSIX sh (dash), GNU Bash"
+  echo "error: and ksh."
+  exit 1
+fi
+
 # added an ! -path directive to avoid scanning Dockerfiles also
-find "$1" ! -path '*/*.Dockerfile' ! -type f -print0 -exec grep -Eq '^#!(.*/|.*env +)(sh|bash|ksh)' {} \; | xargs --null shellcheck
+find "$1" ! -path '*Dockerfile' ! -path "**/test/*" ! -path "**/tests/*" ! -path "**/apache2/*" ! -path "**/nginx/*" ! -path "*.swp" -type f -print0 -exec grep -Eq '^#!(.*/|.*env +)(sh|bash|ksh)' {} \; | xargs --null shellcheck --shell=${TARGET_SHELL:-"bash"}
