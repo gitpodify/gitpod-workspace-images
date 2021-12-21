@@ -1,1 +1,9 @@
 /.emulate-gitlab-mergerequest-pipelines
+
+# Swap and save files
+*.swp
+*.save
+
+# Developer-specific secrets
+.env*
+!.env.example
