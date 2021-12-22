@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+#
+if [ -f .env ]; then
+  echo "info: Reloading shell environment with latest dotenv changes..."
+  export $(echo $(cat .env | sed 's/#.*//g'| xargs) | envsubst)
+else
+  echo "error: dotenv file didn't exist, aborting..."
+  exit 1
+fi
+
