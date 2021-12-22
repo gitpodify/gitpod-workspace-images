@@ -2,7 +2,6 @@ image: quay.io/gitpodified-workspace-images/full:latest
 
 stages:
     - lint
-    - test
     - build
 
 services:

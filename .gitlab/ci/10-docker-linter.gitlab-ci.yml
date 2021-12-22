@@ -1,4 +1,5 @@
 .docker-lint:
+    stage: lint
     before_script:
         - brew install shellcheck hadolint
     script:
@@ -11,10 +12,10 @@ ws-base:lint:
     variables:
         CONTEXT_DIR: base
     allow_failure: true
-    rules:
-        - changes:
-            - base/Dockerfile
-            - "base/*-packages" # hint: base/install-packages and base/upgrade-packages
+    #rules:
+    #    - changes:
+    #        - base/Dockerfile
+    #        - "base/*-packages" # hint: base/install-packages and base/upgrade-packages
 
 ws-full:lint:
     needs:
@@ -24,10 +25,10 @@ ws-full:lint:
     variables:
         CONTEXT_DIR: full
     allow_failure: true
-    rules:
-        - changes:
-            - full/Dockerfile
-            - full/*.sh
+    #rules:
+    #    - changes:
+    #        - full/Dockerfile
+    #        - full/*.sh
 
 ws-vnc:lint:
     needs:
