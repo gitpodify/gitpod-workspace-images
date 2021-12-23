@@ -5,16 +5,28 @@ We keep all the changes for both this fork and the upstream changes we merged. A
 
 ## In this fork
 
-This section contains different changes we made in the images under the `gitpodified-workspace-images` RHQCR namespace. Keep scrolling for the upstream's changelog entries.
+This section contains different changes we made in the images under the `gitpodified-workspace-images` RHQCR namespace. Keep scrolling for the upstream's changelog entries. For fully chronological changelogs, please see the Git commit log/history for `recaptime-dev-mainline` branch.
 
-### 2021-12-20
+### 2021-12-23
+
+* **REFRACTOR**: Refractored lint metascript for CI to fix some syntax issues and re-enabled `ws-full:build` step.
+  * The `docker-build` script doesn't exist yet, so will be WIP for now.
+
+### 2021-12-20 to 2021-12-22
 
 * **CHORE**: Bump [Node.js LTS to `v16.13.1`](https://github.com/gitpod-io/workspace-images/pull/592) and [gopls to `v0.7.4`](https://github.com/gitpod-io/workspace-images/pull/590)
 * **REFRACTOR**: Manually merge <https://github.com/gitpod-io/workspace-images/pull/587> by hand.
+* **CHORE**: Move back other .NET-related Dockerfiles in subdirectories to the main `dotnet`, with `Dockerfile` as the file extension for syntax detection.
+* **FIX**: Finally fix an bug on recursive SC script on why it only scans directories, along with improvements.
+* **CI**: Update `needs` and add `rules` for the Docker linting stage in GitLab CI, extending previous work in <https://gitlab.com/gitpodify/gitpodified-workspace-images/commit/1e7d07a400f10aac5e45a40adab245e4b8e4a069>.
+  * Additional fixes were commited to avoid missing job deps in the future.
+* **CHORE**: Add support for exporting vars from `.env` file. The `.env.exmple` file provided should help contributors and core devs to also add more vars as needed to simulate GitLab CI environment w/o `gitlab-runner` binary.
+* **CHORE**: Update gitignore to ignore swap and dotenv files.
+* **CHORE**: Add devkit scripts with symlinked `scripts` for ease + update Hadolint config
 
 ### 2021-12-18
 
-* **CI**: Add needs option to each job to control job order
+* **CI**: Add needs option to each job to control job order in GitLab CI.
 
 ### 2021-12-11
 
