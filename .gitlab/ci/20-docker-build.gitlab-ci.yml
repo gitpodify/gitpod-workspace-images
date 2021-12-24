@@ -12,6 +12,8 @@
       - .docker-build-dazzle
     stage: build
     script:
+      - env | grep TAG # for checking stuff only
+      - sleep 10
       - ./.gitlab/ci/scripts/docker-build "$CONTEXT_DIR/$CONTEXT_DOCKERFILE" "$TAG_NAME"
     variables:
       BASE_TAG_NAME: quay.io/gitpodified-workspace-images
@@ -35,3 +37,5 @@ ws-full:build:
           - full/apache2/envvars
           - devkit/bin/gp-devenv
           - full/homedir/.zshrc.d/*.zshrc
+        when: on_success
+      - when: manual
