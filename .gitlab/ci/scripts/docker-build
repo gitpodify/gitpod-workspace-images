@@ -19,7 +19,6 @@ if [ $# -le 2 ]; then
   echo "                             GitLab job artifacts."
   echo "  IMAGE_ARTIFACTS_PUSH       Set it to false to disable pushing build artifacts to an container registry."
   echo "                             You can push them at a later date."
-  echo "  DAZZLE_CACHE_REPO          Dazzle cache Docker image repository for caching stuff"
   echo "  SKIP_DOCKER_PUSH           Skip pushing images to container registry, which passed to the publish-image"
   echo "                             utility script."
   echo "  CI_PROJECT_PATH_SLUG       GitLab project path slug. Use the clone web URl of your project as an reference,"
@@ -35,8 +34,6 @@ GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD | sed 's_/_-_g')"
 BUILD_ID="ci-build-$GIT_BRANCH"
 # Check your distro's package name for uuidgen at https://pkgs.org/search/?q=uuid
 ARTIFACT_ID="$(uuidgen)"
-# Dazzle cache repo stuff
-DAZZLE_CACHE_REPO=${DAZZLE_CACHE_REPO:-"quay.io/gitpodified-workspace-images/full-dazzle"}
 # Image artifact repository to store build artifacts
 IMAGE_ARTIFACTS_REPO=${IMAGE_ARTIFACTS_REPO:-"quay.io/gitpodified-workspace-images/build-artifacts"}
 REPO_SLUG=$CI_PROJECT_PATH_SLUG
@@ -48,9 +45,7 @@ pushArtifact() {
   ./.gitlab/ci/scripts/publish-image "$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID" "$IMAGE_ARTIFACTS_REPO:gl-$REPO_SLUG-mr-$CI_MERGE_REQUEST_IID" || true
 }
 
-dazzle build --repository "$DAZZLE_CACHE_REPO" \
-  --tag "$IMAGE_NAME:$BUILD_ID" \
-  --file "$DIR/$DOCKERFILE" "$DIR"
+DOCKER_BUILDKIT=1 docker build --tag "$IMAGE_NAME:$BUILD_ID" --file "$DIR/$DOCKERFILE" "$DIR"
 
 # If $2 is blank, it will be only available as an build artifact in IMAGE_ARTIFACTS_REPO, like
 # in merge request builds.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ "$RHQCR_USERBOT_USERNAME" == "" || "$RHQCR_USERBOT_PASSWORD" == "" ]]; then
+if [[ "$RHQCR_SERVICE_ACCOUNT_USERNAME" == "" || "$RHQCR_SERVICE_ACCOUNT_PASSWORD" == "" ]]; then
   echo "warning: Missing login info for quay.io registry!"
 else
   docker login -u "$RHQCR_USERBOT_USERNAME" --password-stdin quay.io << EOF
