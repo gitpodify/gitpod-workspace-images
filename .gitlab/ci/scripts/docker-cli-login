@@ -3,7 +3,5 @@
 if [[ "$RHQCR_SERVICE_ACCOUNT_USERNAME" == "" || "$RHQCR_SERVICE_ACCOUNT_PASSWORD" == "" ]]; then
   echo "warning: Missing login info for quay.io registry!"
 else
-  docker login -u "$RHQCR_USERBOT_USERNAME" --password-stdin quay.io << EOF
-    $RHQCR_USERBOT_PASSWORD
-EOF
+  docker login -u "$RHQCR_USERBOT_USERNAME" -p "$RHQCR quay.io
 fi
