@@ -7,10 +7,17 @@ We keep all the changes for both this fork and the upstream changes we merged. A
 
 This section contains different changes we made in the images under the `gitpodified-workspace-images` RHQCR namespace. Keep scrolling for the upstream's changelog entries. For fully chronological changelogs, please see the Git commit log/history for `recaptime-dev-mainline` branch.
 
-### 2021-12-23
+### 2021-12-28 to 2021-12-31
+
+* **CI**: Add `DOCKER_HOST` variable to fix `Is Docker daemon running` error on CI.
+
+### 2021-12-23 to 2021-12-26
 
 * **REFRACTOR**: Refractored lint metascript for CI to fix some syntax issues and re-enabled `ws-full:build` step.
   * The `docker-build` script doesn't exist yet, so will be WIP for now.
+* **CI**: Change default ws-image build artifacts repo to `quay.io/gitpodified-workspace-images/build-artifacts` as we use the bot account. Also add `docker-build` while the ws-team upstream is working on upgrading the repo to per-chunk basis.
+  * See commit <https://github.com/gitpod-io/dazzle/commit/ceaa19ef6562e03108c8ea9474d2c627a452a7ca> for details. We may need to setup an Docker registry as an service on GitLab CI for this to work.
+* **CI**: Fix `docker-cli-login` script stuff.
 
 ### 2021-12-20 to 2021-12-22
 

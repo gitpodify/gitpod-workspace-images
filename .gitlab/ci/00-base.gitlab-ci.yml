@@ -1,5 +1,9 @@
 image: quay.io/gitpodified-workspace-images/full:latest
 
+variables:
+  FF_NETWORK_PER_BUILD: "true"
+  DOCKER_HOST: tcp://docker:2376
+
 stages:
     - lint
     - build
