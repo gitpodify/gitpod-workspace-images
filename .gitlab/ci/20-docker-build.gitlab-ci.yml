@@ -10,9 +10,12 @@
       - .docker-build-dazzle
     stage: build
     script:
-      - env | grep TAG # for checking stuff only
+      - |
+        echo "===== Debugging section ====="
+        env | grep TAG
+        env | grep CONTEXT
       - sleep 10
-      - ./.gitlab/ci/scripts/docker-build "$CONTEXT_DIR/$CONTEXT_DOCKERFILE" "$TAG_NAME"
+      - bash ./.gitlab/ci/scripts/docker-build $CONTEXT_DIR/$CONTEXT_DOCKERFILE $TAG_NAME
     variables:
       BASE_TAG_NAME: quay.io/gitpodified-workspace-images
       # Assume the defaults unless otherwise stated.
