@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -e
+
+# abuild-styled way in case user uses doas instead.
+SUDO=${SUDO:-"sudo"}
+
+if ! command -v doppler; then
+  echo "Doppler is not installed, please hold tight"
+  (curl -Ls https://cli.doppler.com/install.sh || wget -qO- https://cli.doppler.com/install.sh) | $SUDO sh
+fi
+
+doppler run --command='$@'

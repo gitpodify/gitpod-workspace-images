@@ -10,6 +10,7 @@ This section contains different changes we made in the images under the `gitpodi
 ### 2021-12-28 to 2021-12-31
 
 * **CI**: Add `DOCKER_HOST` variable to fix `Is Docker daemon running` error on CI.
+* **CI**: Add `run-in-doppler` script as we're slowly migrating our secret management to Doppler.
 
 ### 2021-12-23 to 2021-12-26
 

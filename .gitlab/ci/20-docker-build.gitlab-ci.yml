@@ -1,7 +1,8 @@
 .docker-build-dazzle:
     stage: build
     before_script:
-        - ./.gitlab/ci/scripts/docker-cli-login
+        - (curl -Ls https://cli.doppler.com/install.sh || wget -qO- https://cli.doppler.com/install.sh) | sh
+        - ./.gitlab/ci/scripts/run-in-doppler "$PWD/.gitlab/ci/scripts/docker-cli-login"
     script:
         - ./.gitlab/ci/scripts/dazzle-build "$CONTEXT_DIR/$CONTEXT_DOCKERFILE" "$TAG_NAME"
     variables:
