@@ -11,7 +11,8 @@ This section contains different changes we made in the images under the `gitpodi
 
 * **CI**: Add `DOCKER_HOST` variable to fix `Is Docker daemon running` error on CI.
 * **FEAT/CI**: Add `run-in-doppler` script as we're slowly migrating our secret management to Doppler.
-* **BREAKING/CI**: Switch the image we using for builds to Alpine edge. The problem here why CI takes 4 minutes pulling 2-3 GBs of hentai from Red Hat Quay Container Registry (just kidding, @ajhalili2006 didn't hid some sort of Linus S\*x Tips inside the i mage), among moving `before_script` commands to the base config.
+* **BREAKING/CI**: Switch the image we using for builds to Alpine edge. The problem here why CI takes 4 minutes pulling 2-3 GBs of hentai from Red Hat Quay Container Registry (just kidding, @ajhalili2006 didn't hid some sort of Linus S\*x Tips inside the image), among moving `before_script` commands to the base config.
+* **FIX**: Fix syntax errors on `docker-cli-login` script finally after bloody 2~ days of debugging.
 
 ### 2021-12-23 to 2021-12-26
 
