@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
+if [[ "$RHQCR_SERVICE_ACCOUNT_API_KEY" != "" ]]; then
+  echo "warning: Using leagcy RHQCR_SERVICE_ACCOUNT_API_KEY variable, reexporting it to RHQCR_SERVICE_ACCOUNT_PASSWORD"
+  echo "warning: for compartibility reasons."
+  RHQCR_SERVICE_ACCOUNT_PASSWORD="$RHQCR_SERVICE_ACCOUNT_API_KEY"
+fi
+
 if [[ "$RHQCR_SERVICE_ACCOUNT_USERNAME" == "" || "$RHQCR_SERVICE_ACCOUNT_PASSWORD" == "" ]]; then
   echo "warning: Missing login info for quay.io registry!"
 else
-  docker login -u "$RHQCR_USERBOT_USERNAME" -p "$RHQCR_SERVICE_ACCOUNT_PASSWORD" quay.io
+  docker login -u "$RHQCR_SERVICE_ACCOUNT_USERNAME" -p "$RHQCR_SERVICE_ACCOUNT_PASSWORD" quay.io
 fi
