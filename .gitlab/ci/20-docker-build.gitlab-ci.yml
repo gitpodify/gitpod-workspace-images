@@ -6,9 +6,11 @@
         env | grep TAG_NAME
         env | grep CONTEXT
       - sleep 10
-        - ./.gitlab/ci/scripts/dazzle-build "$CONTEXT_DIR/$CONTEXT_DOCKERFILE" "$TAG_NAME"
+      - ./.gitlab/ci/scripts/dazzle-build "$CONTEXT_DIR/$CONTEXT_DOCKERFILE" "$TAG_NAME"
     variables:
       BASE_TAG_NAME: quay.io/gitpodified-workspace-images/
+      # Assume the defaults unless otherwise stated.
+      CONTEXT_DOCKERFILE: Dockerfile
 
 .docker-build-plain:
     extends:
@@ -20,7 +22,7 @@
         env | grep TAG_NAME
         env | grep CONTEXT
       - sleep 10
-      - bash ./.gitlab/ci/scripts/docker-build $CONTEXT_DIR/$CONTEXT_DOCKERFILE $TAG_NAME
+      - set -x && bash ./.gitlab/ci/scripts/docker-build $CONTEXT_DIR/$CONTEXT_DOCKERFILE $TAG_NAME
     variables:
       BASE_TAG_NAME: quay.io/gitpodified-workspace-images
       # Assume the defaults unless otherwise stated.

@@ -22,3 +22,6 @@ before_script:
     curl -fsSL https://cli.doppler.com/install.sh | sh
     echo "===== Authenicating Docker CLI against RHQCR ====="
     ./.gitlab/ci/scripts/run-in-doppler $PWD/.gitlab/ci/scripts/docker-cli-login
+
+after_script:
+  - set +x # Ensure command debugging is disabled before running any additional scripts below
