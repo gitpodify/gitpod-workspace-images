@@ -28,6 +28,7 @@ Last-minute changelogs before the ball drops to 2022 were included in the last w
 * **CI**: Add `ws-base:build` job to the docker-build CI config, fix job rules for `ws-dotnet:lint` and add `findutils` Alpine package.
 * **FIX**: Add compartibility if-then statement for var name migration stuff, fixed quick typo on ws-base:buid's needs key.
 * **CHORE**: Enable command debugging via `set -x` to find why `ws-*:build` fails under the usage of `docker-build` script.
+* **FIX**: Improve arg checking on `docker-build` script, may update later if needed.
 
 ### 2021-12-23 to 2021-12-26
 
