@@ -143,6 +143,9 @@ ws-dotnet:lint:
     variables:
         CONTEXT_DIR: dotnet
     allow_failure: true
+    rules:
+      - changes:
+          - dotnet/Dockerfile
 
 ws-dotnet-vnc:lint:
     needs:

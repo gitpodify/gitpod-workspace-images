@@ -1,6 +1,11 @@
 .docker-build-dazzle:
     stage: build
     script:
+      - |
+        echo "===== Debugging section ====="
+        env | grep TAG_NAME
+        env | grep CONTEXT
+      - sleep 10
         - ./.gitlab/ci/scripts/dazzle-build "$CONTEXT_DIR/$CONTEXT_DOCKERFILE" "$TAG_NAME"
     variables:
       BASE_TAG_NAME: quay.io/gitpodified-workspace-images/
@@ -12,7 +17,7 @@
     script:
       - |
         echo "===== Debugging section ====="
-        env | grep TAG
+        env | grep TAG_NAME
         env | grep CONTEXT
       - sleep 10
       - bash ./.gitlab/ci/scripts/docker-build $CONTEXT_DIR/$CONTEXT_DOCKERFILE $TAG_NAME
@@ -21,9 +26,21 @@
       # Assume the defaults unless otherwise stated.
       CONTEXT_DOCKERFILE: Dockerfile
 
+ws-base:build:
+    needs:
+      - ws:base:lint
+    extends:
+      - .docker-build-plain
+    variables:
+      TAG_NAME: $BASE_TAG_NAME/full
+      CONTEXT_DIR: full
+    rules:
+      - when: on_success
+
 ws-full:build:
     needs:
       - ws-full:lint
+      - ws-base:build
     extends:
       - .docker-build-plain
     variables:
