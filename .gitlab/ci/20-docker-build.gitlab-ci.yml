@@ -28,7 +28,7 @@
 
 ws-base:build:
     needs:
-      - ws:base:lint
+      - ws-base:lint
     extends:
       - .docker-build-plain
     variables:
