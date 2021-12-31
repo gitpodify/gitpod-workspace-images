@@ -1,18 +1,31 @@
 <!-- markdowmlint-disable MD004 -->
 # Changelog
 
-We keep all the changes for both this fork and the upstream changes we merged. Anything in the `In this fork` section with breaking changes (`BREAKING`) should read the linked issue for migration guide, although if you go alone, proceed at your own risk.
+We keep all the changes for both this fork and the upstream changes we merged. Anything in the `In this fork`
+section with breaking changes (`BREAKING`) should read the linked issue for migration guide, although if you go alone,
+please proceed at your own risk.
 
 ## In this fork
 
-This section contains different changes we made in the images under the `gitpodified-workspace-images` RHQCR namespace. Keep scrolling for the upstream's changelog entries. For fully chronological changelogs, please see the Git commit log/history for `recaptime-dev-mainline` branch.
+This section contains different changes we made in the images under the `gitpodified-workspace-images` RHQCR namespace, incluuding the stuff
+happened in this repository. Keep scrolling for the upstream's changelog entries. For fully chronological changelogs, please see the Git commit
+log/history for `recaptime-dev-mainline` branch. Dates written here in this section is in Philippine Standard Time.
+
+### 2022-01-01
+
+Work still continues even on New Year's Day, but things will slow down a bit since the lead dev will do schoolwork by Sunday or Monday.
 
 ### 2021-12-28 to 2021-12-31
+
+Last-minute changelogs before the ball drops to 2022 were included in the last weekdays of 2021.
 
 * **CI**: Add `DOCKER_HOST` variable to fix `Is Docker daemon running` error on CI.
 * **FEAT/CI**: Add `run-in-doppler` script as we're slowly migrating our secret management to Doppler.
 * **BREAKING/CI**: Switch the image we using for builds to Alpine edge. The problem here why CI takes 4 minutes pulling 2-3 GBs of hentai from Red Hat Quay Container Registry (just kidding, @ajhalili2006 didn't hid some sort of Linus S\*x Tips inside the image), among moving `before_script` commands to the base config.
 * **FIX**: Fix syntax errors on `docker-cli-login` script finally after bloody 2~ days of debugging.
+* **CHORE**: Update global `before_script` again into an one-item stuff in multi-line style.
+* **DOCS**: Add authoring guidelines to contributing docs.
+* **CI**: Add `ws-base:build` job to the docker-build CI config, fix job rules for `ws-dotnet:lint` and add `findutils` Alpine package.
 
 ### 2021-12-23 to 2021-12-26
 
