@@ -15,6 +15,9 @@ log/history for `recaptime-dev-mainline` branch. Dates written here in this sect
 
 Work still continues even on New Year's Day, but things will slow down a bit since the lead dev will do schoolwork by Sunday or Monday.
 
+* **CHORE**: Add Docker-in-Docker related variables, as per <https://pythonspeed.com/articles/gitlab-build-docker-image/>.
+* **DOCS**: Add authoring guidelines to contributing docs.
+
 ### 2021-12-28 to 2021-12-31
 
 Last-minute changelogs before the ball drops to 2022 were included in the last weekdays of 2021.
@@ -24,7 +27,6 @@ Last-minute changelogs before the ball drops to 2022 were included in the last w
 * **BREAKING/CI**: Switch the image we using for builds to Alpine edge. The problem here why CI takes 4 minutes pulling 2-3 GBs of hentai from Red Hat Quay Container Registry (just kidding, @ajhalili2006 didn't hid some sort of Linus S\*x Tips inside the image), among moving `before_script` commands to the base config.
 * **FIX**: Fix syntax errors on `docker-cli-login` script finally after bloody 2~ days of debugging.
 * **CHORE**: Update global `before_script` again into an one-item stuff in multi-line style.
-* **DOCS**: Add authoring guidelines to contributing docs.
 * **CI**: Add `ws-base:build` job to the docker-build CI config, fix job rules for `ws-dotnet:lint` and add `findutils` Alpine package.
 * **FIX**: Add compartibility if-then statement for var name migration stuff, fixed quick typo on ws-base:buid's needs key.
 * **CHORE**: Enable command debugging via `set -x` to find why `ws-*:build` fails under the usage of `docker-build` script.
