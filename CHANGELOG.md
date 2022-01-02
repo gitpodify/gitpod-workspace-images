@@ -11,12 +11,12 @@ This section contains different changes we made in the images under the `gitpodi
 happened in this repository. Keep scrolling for the upstream's changelog entries. For fully chronological changelogs, please see the Git commit
 log/history for `recaptime-dev-mainline` branch. Dates written here in this section is in Philippine Standard Time.
 
-### 2022-01-01
+### 2022-01-01 to 2021-01-04
 
 Work still continues even on New Year's Day, but things will slow down a bit since the lead dev will do schoolwork by Sunday or Monday.
 
 * **CHORE**: Add Docker-in-Docker related variables, as per <https://pythonspeed.com/articles/gitlab-build-docker-image/>.
-* **DOCS**: Add authoring guidelines to contributing docs.
+* **DOCS**: Add authoring guidelines, among other things to contributing docs.
 
 ### 2021-12-28 to 2021-12-31
 
