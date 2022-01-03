@@ -8,6 +8,9 @@ variables:
   DOCKER_DRIVER: overlay2
   # Disable TLS since we're running inside local network.
   DOCKER_TLS_CERTDIR: ""
+  # variables for our dind script checker
+  DIND_HOSTNAME: bulldozer.docker.internal
+  #DIND_PORT: 2376
 
 stages:
   - lint
@@ -15,13 +18,13 @@ stages:
 
 services:
     # https://pythonspeed.com/articles/gitlab-build-docker-image/
-    - name: docker:dind
+    - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:20.10.12-dind-alpine3.15 # do an version lock on server side
       alias: bulldozer.docker.internal
 
 before_script:
   - |
     echo "===== Installing packages ====="
-    apk add bash coreutils uuidgen curl git git-lfs docker-cli gcompat wget shellcheck tar gpg findutils --no-cache
+    apk add bash coreutils uuidgen curl git git-lfs docker-cli gcompat wget shellcheck tar gpg findutils netcat-openbsd --no-cache
     echo "===== Installing Hadolint from GitHub releases ====="
     wget https://github.com/hadolint/hadolint/releases/download/v2.8.0/hadolint-Linux-x86_64 -O /usr/local/bin/hadolint && chmod +x /usr/local/bin/hadolint
     echo "===== Installing Doppler CLI ====="

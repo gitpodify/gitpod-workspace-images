@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+DIND_HOSTNAME="${DIND_HOSTNAME:-docker}"
+DIND_PORT="${DIND_PORT:-2357}"
+
+if [[ $DIND_RUN_HEALTHCHECK_BEFORE_BUILD == "" ]]; then
+  echo "error: set DIND_RUN_HEALTHCHECK_BEFORE_BUILD to any value to run me!"
+  exit 1
+fi
+
+
+if ! command -v nc >>/dev/null; then
+  echo "error: netcat isn't in PATH, perhaps its not installed on your system. Check https://pkgs.org/search/?q=netcat"
+  echo "error: for availability on your distro's package repositories."
+  exit 1
+fi
+
+echo "========== Wait Docker TCP info =========="
+echo "Host: $DIND_HOSTNAME"
+echo "Port: $DIND_PORT"
+echo "========== Wait Docker TCP info =========="
+
+# For the context: https://gitlab.com/gitlab-org/charts/gitlab-runner/-/issues/107#note_617118943
+while ! nc -z "$DIND_HOSTNAME" "$DIND_PORT"; do echo "warning: Docker deamon TCP isn't up yet on tcp://$DIND_HOSTNAME:$DIND_PORT, trying again in 3 seconds..." && sleep 3; done
+echo "info: Ready to run rickroll builds on Docker!"

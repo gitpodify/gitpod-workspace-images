@@ -17,6 +17,7 @@ Work still continues even on New Year's Day, but things will slow down a bit sin
 
 * **CHORE**: Add Docker-in-Docker related variables, as per <https://pythonspeed.com/articles/gitlab-build-docker-image/>.
 * **DOCS**: Add authoring guidelines, among other things to contributing docs.
+* **CI**: Add an while-loop script to time in when Docker daemon goes up, also lock daemon image to 20.10.12 in Alpine 3.15.
 
 ### 2021-12-28 to 2021-12-31
 
