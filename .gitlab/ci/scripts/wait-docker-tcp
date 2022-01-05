@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 DIND_HOSTNAME="${DIND_HOSTNAME:-docker}"
-DIND_PORT="${DIND_PORT:-2357}"
+DIND_PORT="${DIND_PORT:-2376}"
 
 if [[ $DIND_RUN_HEALTHCHECK_BEFORE_BUILD == "" ]]; then
   echo "error: set DIND_RUN_HEALTHCHECK_BEFORE_BUILD to any value to run me!"

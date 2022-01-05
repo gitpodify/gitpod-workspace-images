@@ -10,7 +10,7 @@ variables:
   DOCKER_TLS_CERTDIR: ""
   # variables for our dind script checker
   DIND_HOSTNAME: bulldozer.docker.internal
-  #DIND_PORT: 2376
+  DIND_PORT: 2376
 
 stages:
   - lint
