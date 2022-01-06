@@ -21,6 +21,8 @@ Work still continues even on New Year's Day, but things will slow down a bit sin
 * **FIX**: Update default DIND port to probe to `2375`.[^1]
 * **FEAT**: Sleep for another 15s after TCP socket is up in `wait-docker-tcp` CI script
 * **FIX** Ensure `ws-base:build` actually builds image from `base/Dockerfile`, not from `full/Dockerfile`.
+* **CHORE**: Add more usage text on `docker-build`, fix an bug in `publish-image` and disabled SC2086 in `lint-scripts`
+* **CI**: Enable linting our CI scripts thrugh the `lint-scripts` script.
 
 [^1]: Another one bites the dust, since [we used the wrong port again](https://gitlab.com/gitpodify/gitpodified-workspace-images/commit/d482a677b22f958cc2ead351df150c6dce8118ae) with `2376`. [Thanks GitLab Docs for the troubleshooting!](https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running)
 

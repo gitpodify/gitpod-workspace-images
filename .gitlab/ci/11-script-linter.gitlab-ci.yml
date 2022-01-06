@@ -1,0 +1,5 @@
+scripts:lint:
+  stage: lint
+  script:
+    - ./.gitlab/ci/scripts/lint-scripts .gitlab/ci/scripts
+  allow_failure: true
