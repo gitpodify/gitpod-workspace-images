@@ -11,7 +11,7 @@ fi
 
 if ! command -v nc >>/dev/null; then
   echo "error: netcat isn't in PATH, perhaps its not installed on your system. Check https://pkgs.org/search/?q=netcat"
-  echo "error: for availability on your distro's package repositories."
+  echo "error: for availability on your Linux distro's package repositories."
   exit 1
 fi
 
@@ -22,4 +22,9 @@ echo "========== Wait Docker TCP info =========="
 
 # For the context: https://gitlab.com/gitlab-org/charts/gitlab-runner/-/issues/107#note_617118943
 while ! nc -z "$DIND_HOSTNAME" "$DIND_PORT"; do echo "warning: Docker deamon TCP isn't up yet on tcp://$DIND_HOSTNAME:$DIND_PORT, trying again in 3 seconds..." && sleep 3; done
-echo "info: Ready to run rickroll builds on Docker!"
+
+echo "info: Daemon seems to be up, will start building in 15 seconds..."
+sleep 15
+
+echo "info: Now, get rickrolled!"
+exit 0
