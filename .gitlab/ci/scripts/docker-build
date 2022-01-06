@@ -9,10 +9,11 @@ if [[ $1 == "" ]] || [[ $2 == "" ]]; then
   echo "  If your Dockerfile is on dart/Dockerfile and your context directory is dart",
   echo "  then use dart/Dockerfile as the first argument and image tag name for pushing finished."
   echo "  builds to an image registry, by default its Quay.io for both image builds and build artifacts."
-  echo "  It will parsed by this script through base"
   echo
-  echo "We use environment variables to control different aspects of this script at runtime. If you want to push"
-  echo "your repository to"
+  echo "Needed dependencies: uuidgen (uuid-runtime), sed, grep, basename and dirname and any tool that can build images"
+  echo "from an Dockerfile Since this script will set DOCKER_BUILDKIT=1 only during docker build invocation, this requires"
+  echo "Docker daemon to be running and the official Docker CLI installed beforehand."
+  echo
   echo "Supported environment variables:"
   echo "  IMAGE_ARTIFACTS_REPO       Container image repo for artifacts that this script will be using for"
   echo "                             storing image artifacts to an container registry instead of the regular"
@@ -26,12 +27,19 @@ if [[ $1 == "" ]] || [[ $2 == "" ]]; then
   exit 2
 fi
 
+# script params
 DIR=$(dirname "$1")
 DOCKERFILE=$(basename "$1")
 IMAGE_NAME=$2
 CUSTOM_TAG=$3 # Will be implemented soon
 
-GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD | sed 's_/_-_g')"
+# if we're inside GitLab CI with these variables, use CI_COMMIT_REF_SLUG var instead
+if [[ $GITLAB_CI == "true" && $DOCKER_ENV_CI_SERVER_HOST != "" ]]; then
+  GIT_BRANCH=$CI_COMMIT_REF_SLUG
+else
+  GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD | sed 's_/_-_g')"
+fi
+
 BUILD_ID="ci-build-$GIT_BRANCH"
 # Check your distro's package name for uuidgen/uuid-runtime at https://pkgs.org/search/?q=uuid
 ARTIFACT_ID="$(uuidgen)"

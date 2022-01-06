@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ $# -ne 1 ]]; then
+if [[ $# -eq 0 ]]; then
   echo "Usage: $0 IMAGE_TAG [...]"
   echo "Atleast one arg is required to recursively push Docker images."
   exit 2
@@ -8,7 +8,7 @@ fi
 
 for imageTag in "$@"; do
   if ! docker push "$imageTag"; then
-    echo "error: $imageTag failed to push, aborting..."
+    echo "error: $imageTag failed to push, aborting with non-zero exit code..."
     exit 1
   else
     echo "info: $imageTag successfully pushed, sleeping for 5 seconds..."
