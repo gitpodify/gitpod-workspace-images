@@ -11,7 +11,7 @@ This section contains different changes we made in the images under the `gitpodi
 happened in this repository. Keep scrolling for the upstream's changelog entries. For fully chronological changelogs, please see the Git commit
 log/history for `recaptime-dev-mainline` branch. Dates written here in this section is in Philippine Standard Time.
 
-### 2022-01-01 to 2021-01-04
+### 2022-01-01 to 2021-01-06
 
 Work still continues even on New Year's Day, but things will slow down a bit since the lead dev will do schoolwork by Sunday or Monday.
 
@@ -19,6 +19,8 @@ Work still continues even on New Year's Day, but things will slow down a bit sin
 * **DOCS**: Add authoring guidelines, among other things to contributing docs.
 * **CI**: Add an while-loop script to time in when Docker daemon goes up, also lock daemon image to 20.10.12 in Alpine 3.15.
 * **FIX**: Update default DIND port to probe to `2375`.[^1]
+* **FEAT**: Sleep for another 15s after TCP socket is up in `wait-docker-tcp` CI script
+* **FIX** Ensure `ws-base:build` actually builds image from `base/Dockerfile`, not from `full/Dockerfile`.
 
 [^1]: Another one bites the dust, since [we used the wrong port again](https://gitlab.com/gitpodify/gitpodified-workspace-images/commit/d482a677b22f958cc2ead351df150c6dce8118ae) with `2376`. [Thanks GitLab Docs for the troubleshooting!](https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running)
 

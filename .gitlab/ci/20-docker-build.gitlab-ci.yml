@@ -37,8 +37,8 @@ ws-base:build:
     extends:
       - .docker-build-plain
     variables:
-      TAG_NAME: $BASE_TAG_NAME/full
-      CONTEXT_DIR: full
+      TAG_NAME: $BASE_TAG_NAME/base
+      CONTEXT_DIR: base
     rules:
       - when: on_success
 
