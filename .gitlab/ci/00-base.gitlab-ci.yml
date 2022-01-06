@@ -3,14 +3,14 @@ image: alpine:edge
 variables:
   FF_NETWORK_PER_BUILD: "true"
   # https://pythonspeed.com/articles/gitlab-build-docker-image/
-  DOCKER_HOST: tcp://bulldozer.docker.internal:2376
+  DOCKER_HOST: tcp://bulldozer.docker.internal:2375
   # Use the overlayfs driver for improved performance.
   DOCKER_DRIVER: overlay2
   # Disable TLS since we're running inside local network.
   DOCKER_TLS_CERTDIR: ""
   # variables for our dind script checker
   DIND_HOSTNAME: bulldozer.docker.internal
-  DIND_PORT: 2376
+  DIND_PORT: "2375"
 
 stages:
   - lint

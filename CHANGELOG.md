@@ -18,7 +18,9 @@ Work still continues even on New Year's Day, but things will slow down a bit sin
 * **CHORE**: Add Docker-in-Docker related variables, as per <https://pythonspeed.com/articles/gitlab-build-docker-image/>.
 * **DOCS**: Add authoring guidelines, among other things to contributing docs.
 * **CI**: Add an while-loop script to time in when Docker daemon goes up, also lock daemon image to 20.10.12 in Alpine 3.15.
-* **FIX**: Update default DIND port to probe to `2376`.
+* **FIX**: Update default DIND port to probe to `2375`.[^1]
+
+[^1]: Another one bites the dust, since [we used the wrong port again](https://gitlab.com/gitpodify/gitpodified-workspace-images/commit/d482a677b22f958cc2ead351df150c6dce8118ae) with `2376`. [Thanks GitLab Docs for the troubleshooting!](https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running)
 
 ### 2021-12-28 to 2021-12-31
 
