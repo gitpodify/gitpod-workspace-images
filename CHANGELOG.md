@@ -11,6 +11,12 @@ This section contains different changes we made in the images under the `gitpodi
 happened in this repository. Keep scrolling for the upstream's changelog entries. For fully chronological changelogs, please see the Git commit
 log/history for `recaptime-dev-mainline` branch. Dates written here in this section is in Philippine Standard Time.
 
+## 2021-01-07 to TODO
+
+After the bloddy debugging hell last week, the build works, but the tagging gone brr.
+
+* **CHORE**: Enable debugging mode in `docker-build` CI script.
+
 ### 2022-01-01 to 2021-01-06
 
 Work still continues even on New Year's Day, but things will slow down a bit since the lead dev will do schoolwork by Sunday or Monday.

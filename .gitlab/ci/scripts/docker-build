@@ -2,6 +2,12 @@
 # shellcheck disable=SC2001
 set -e
 
+# set DEBUG var to any vairable to enable debugging
+if [[ $DEBUG != "" ]]; then
+  echo "warning: Debugging for docker-build is enabled."
+  set -x
+fi
+
 if [[ $1 == "" ]] || [[ $2 == "" ]]; then
   echo "Usage: $0 CONTEXT_DIR/CONTEXT_DOCKERFILE IMAGE_REPO"
   echo
@@ -34,7 +40,7 @@ IMAGE_NAME=$2
 CUSTOM_TAG=$3 # Will be implemented soon
 
 # if we're inside GitLab CI with these variables, use CI_COMMIT_REF_SLUG var instead
-if [[ $GITLAB_CI == "true" && $DOCKER_ENV_CI_SERVER_HOST != "" ]]; then
+if [[ $GITLAB_CI == "true" ]]; then
   GIT_BRANCH=$CI_COMMIT_REF_SLUG
 else
   GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD | sed 's_/_-_g')"

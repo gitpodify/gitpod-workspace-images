@@ -30,6 +30,7 @@
       # Assume the defaults unless otherwise stated.
       CONTEXT_DOCKERFILE: Dockerfile
       DIND_RUN_HEALTHCHECK_BEFORE_BUILD: "true"
+      DEBUG: "true"
 
 ws-base:build:
     needs:
