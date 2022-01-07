@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -e
+
+if [[ $# -eq 0 ]]; then
+  echo "Usage: $0 CONTEXT_DIR [GIT-REMOTE]"
+  echo
+  echo "This script will trigger an push with CONTEXT_DIR will be used as an value for CI_TARGET_CONTEXT_DIR on push"
+  echo "on the current branch you're working on. If you don't have any unpublished commits, you may need to create an dummy/empty"
+  echo "commit or use ./scripts/commit-trigger-build-file script to trigger CI. If you use an separate remote for pushing commits,"
+  echo "pass an optional GIT-REMOTE parameter to the script."
+  exit 1
+fi
+
+# While we the defaults here for doc purposes, we block the usage if no args were passed.
+CONTEXT_DIR=${1:-"full"}
+REMOTE=${2:-"origin"}
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# Requires Git v2.18 or higher for the shorthand flag for push-options.
+# Chromium-based users: https://docs.gitlab.com/ee/user/project/push_options.html#:~:text=An%20example%20of%20passing%20some%20CI/CD%20variables%20for%20a%20pipeline%3A
+# Other browsers: https://docs.gitlab.com/ee/user/project/push_options.html#push-options-for-gitlab-cicd
+git push "$REMOTE" "$BRANCH" -o ci.variable="CI_TARGET_CONTEXT_DIR=$CONTEXT_DIR" -o ci.variable="CI_SELECTIVE_BUILD=true"

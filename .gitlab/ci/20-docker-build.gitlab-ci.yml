@@ -41,7 +41,12 @@ ws-base:build:
       TAG_NAME: $BASE_TAG_NAME/base
       CONTEXT_DIR: base
     rules:
-      - when: on_success
+      - if: '$CI_TARGET_CONTEXT_DIR != "base" && $CI_SELECTIVE_BUILD == "true"'
+        when: never
+      - if: '$CI_TARGET_CONTEXT_DIR == "base" && $CI_SELECTIVE_BUILD == "true"'
+        when: always
+      - if: '$CI_SELECTIVE_BUILD == ""'
+        when: on_success
 
 ws-full:build:
     needs:
@@ -53,13 +58,19 @@ ws-full:build:
       TAG_NAME: $BASE_TAG_NAME/full
       CONTEXT_DIR: full
     rules:
-      - changes:
+      - if: '$CI_TARGET_CONTEXT_DIR != "full" && $CI_SELECTIVE_BUILD == "true"'
+        when: never
+      - if: '$CI_TARGET_CONTEXT_DIR == "full" && $CI_SELECTIVE_BUILD == "true"'
+        when: always
+      - if: '$CI_SELECTIVE_BUILD == ""'
+        changes:
+          - .trigger-build
           - full/dockerfile
           - full/tests/*.yml
           - full/nginx/nginx.conf
           - full/apache2/apache2.conf
           - full/apache2/envvars
           - devkit/bin/gp-devenv
-          - full/homedir/.zshrc.d/*.zshrc
+          - full/zshrc.d/*.zshrc
         when: on_success
       - when: manual
