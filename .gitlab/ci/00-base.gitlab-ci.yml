@@ -1,36 +1,43 @@
-image: alpine:edge
-
-variables:
-  FF_NETWORK_PER_BUILD: "true"
-  # https://pythonspeed.com/articles/gitlab-build-docker-image/
-  DOCKER_HOST: tcp://bulldozer.docker.internal:2375
-  # Use the overlayfs driver for improved performance.
-  DOCKER_DRIVER: overlay2
-  # Disable TLS since we're running inside local network.
-  DOCKER_TLS_CERTDIR: ""
-  # variables for our dind script checker
-  DIND_HOSTNAME: bulldozer.docker.internal
-  DIND_PORT: "2375"
-
 stages:
-  - lint
-  - build
+  - quality-assurance # for merge requests
+  - lint # lint tools
+  - build # build part
+  - weekly-syncs
 
-services:
-    # https://pythonspeed.com/articles/gitlab-build-docker-image/
-    - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:20.10.12-dind-alpine3.15 # do an version lock on server side
-      alias: bulldozer.docker.internal
-
-before_script:
-  - |
-    echo "===== Installing packages ====="
-    apk add bash coreutils uuidgen curl git git-lfs docker-cli gcompat wget shellcheck tar gpg findutils netcat-openbsd --no-cache
-    echo "===== Installing Hadolint from GitHub releases ====="
-    wget https://github.com/hadolint/hadolint/releases/download/v2.8.0/hadolint-Linux-x86_64 -O /usr/local/bin/hadolint && chmod +x /usr/local/bin/hadolint
-    echo "===== Installing Doppler CLI ====="
-    curl -fsSL https://cli.doppler.com/install.sh | sh
-    echo "===== Authenicating Docker CLI against RHQCR ====="
-    ./.gitlab/ci/scripts/run-in-doppler $PWD/.gitlab/ci/scripts/docker-cli-login
-
-after_script:
-  - set +x # Ensure command debugging is disabled before running any additional scripts below
+# global variables, services, before and after scripts ar being deprecated and soon to be removed in future.
+default:
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/alpine:edge
+  variabes:
+    # CI/CD feature flags go here
+    FF_NETWORK_PER_BUILD: "true"
+    # see services section regarding this
+    DOCKER_HOST: tcp://bulldozer.docker.internal:2375
+    # Use the overlayfs driver for improved performance.
+    DOCKER_DRIVER: overlay2
+    # Disable TLS since we're running inside local network.
+    DOCKER_TLS_CERTDIR: ""
+    # variables for our dind script checker
+    DIND_HOSTNAME: bulldozer.docker.internal
+    DIND_PORT: "2375"
+    # CI Notifications service running on Darklang
+    CICD_TELEMETRY_CLIENT_ID: gitlab-cicd-docker-builds
+    CICD_TELEMETRY_OPTIN_FLAG: "1"
+  services:
+      # https://pythonspeed.com/articles/gitlab-build-docker-image/, through we need to track daemon version changes through some hacking
+      # around the NewReleases webhooks stuff.
+      - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:20.10.12-dind-alpine3.15
+        alias: bulldozer.docker.internal
+      #- name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/registry
+      #  alias: dazzle.registry.recaptime-dev.internal
+  before_script:
+    - |
+      echo "===== Installing packages ====="
+      apk add bash coreutils uuidgen curl git git-lfs docker-cli gcompat wget shellcheck tar gpg findutils netcat-openbsd --no-cache
+      echo "===== Installing Hadolint from GitHub releases ====="
+      wget https://github.com/hadolint/hadolint/releases/download/v2.8.0/hadolint-Linux-x86_64 -O /usr/local/bin/hadolint && chmod +x /usr/local/bin/hadolint
+      echo "===== Installing Doppler CLI ====="
+      curl -fsSL https://cli.doppler.com/install.sh | sh
+      echo "===== Authenicating Docker CLI against RHQCR ====="
+      ./.gitlab/ci/scripts/run-in-doppler $PWD/.gitlab/ci/scripts/docker-cli-login
+  after_script:
+    - set +x # Ensure command debugging is disabled before running any additional scripts below
