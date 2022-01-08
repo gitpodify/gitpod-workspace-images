@@ -1,7 +1,9 @@
 # Dazzle do not supports ARG TRIGGER_REBUILD=2
 FROM quay.io/gitpodified-workspace-images/base:latest
 
-RUN echo "ws full starts"
+RUN echo "ws full starts" \
+    && mkdir /home/gitpod/.local/bin -p \
+    && mkdir /home/gitpod/.local/share
 
 ### Install C/C++ compiler and associated tools ###
 LABEL dazzle/layer=lang-c
@@ -67,7 +69,7 @@ ENV PATH=$PATH:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin/
 ENV MANPATH="$MANPATH:/home/linuxbrew/.linuxbrew/share/man"
 ENV INFOPATH="$INFOPATH:/home/linuxbrew/.linuxbrew/share/info"
 ENV HOMEBREW_NO_AUTO_UPDATE=1
-
+# Install cmake from Homebrew
 RUN sudo apt remove -y cmake \
     && brew install cmake
 
@@ -138,7 +140,6 @@ LABEL dazzle/layer=lang-python
 LABEL dazzle/test=tests/lang-python.yaml
 USER gitpod
 RUN sudo install-packages python3-pip
-
 ENV PATH=$HOME/.pyenv/bin:$HOME/.pyenv/shims:$PATH
 RUN curl -fsSL https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash \
     && { echo; \
@@ -151,7 +152,7 @@ RUN curl -fsSL https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-ins
     && python3 -m pip install --no-cache-dir --upgrade \
         setuptools wheel virtualenv pipenv pylint rope flake8 \
         mypy autopep8 pep8 pylama pydocstyle bandit notebook \
-        twine \
+        twine thefuck \
     && sudo rm -rf /tmp/*
 ENV PIP_USER=no
 ENV PIPENV_VENV_IN_PROJECT=true
@@ -315,3 +316,16 @@ COPY tests /var/lib/dazzle/tests
 RUN echo "PATH="${PATH}"" | sudo tee /etc/environment
 
 USER gitpod
+
+# Setup ZSH stuff 
+LABEL dazzle/layer=ws-full-warmup
+LABEL dazzle/layer=ohmyzsh
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
+    && rm -v ~/.zshrc ~/.zshrc.pre-oh-my-zsh \
+    # Change default shell to Zsh
+    && sudo chsh -s /bin/zsh gitpod \
+    # Warm up directory for customizing zshrc shell :)
+    && mkdir /home/gitpod/.gitpodify/custom-zshrc.d -p
+    # Expect this may fix the permission errors :)
+COPY --chown=gitpod:gitpod base.zshrc /home/gitpod/.zshrc
+COPY --chown=gitpod:gitpod zshrc.d /home/gitpod/.zshrc.d
