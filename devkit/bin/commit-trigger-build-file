@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+date | base64 >> "$(git rev-parse --show-toplevel)/.trigger-build"
+
+git stage "$(git rev-parse --show-toplevel)/.trigger-build"
+git commit -m "chore(global): dummy commit trigger CI build as usual" --signoff
+
+echo "info: Run ./scripts/only-run-specific-build script or do an regular push to continue."

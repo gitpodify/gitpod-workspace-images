@@ -16,6 +16,15 @@ log/history for `recaptime-dev-mainline` branch. Dates written here in this sect
 After the bloddy debugging hell last week, the build works, but the tagging gone brr.
 
 * **CHORE**: Enable debugging mode in `docker-build` CI script.
+* **CI**: Add support for selectively build an specific image when `CI_SELECTIVE_BUILD` is set to true.
+    * Currently supports just one context dir for now and we also setup an symlink at `selective-build-push` by the way.
+* **FIX**: Fix an CI config bug in reason why `ws-full:build` failed to run
+if `ws-base:build` doesn't exist.
+* **CHORE**: Improve help text and skip failed-to-push tags in `publish-image` CI script.
+* **FEAT**: Use Zsh as default shell, currently on `ws-full`.
+* **REFRACTOR**: Revamp some global configs into default key.s
+    * Because global `variables` isn't deprecated yet, we did an quick fix on that b
+* **CHORE**: Add `commit-trigger-build-file` script with symlink `create-dummy-commit` for generating `.trigger-build` file.
 
 ### 2022-01-01 to 2021-01-06
 
@@ -28,6 +37,8 @@ Work still continues even on New Year's Day, but things will slow down a bit sin
 * **FEAT**: Sleep for another 15s after TCP socket is up in `wait-docker-tcp` CI script
 * **FIX** Ensure `ws-base:build` actually builds image from `base/Dockerfile`, not from `full/Dockerfile`.
 * **CHORE**: Add more usage text on `docker-build`, fix an bug in `publish-image` and disabled SC2086 in `lint-scripts`
+    * We do not lnger rely on the sluggified value of `git rev-parse --abbrev-ref HEAD` and instead rely on
+    `CI_COMMIT_REF_SLUG` variable instead if we're inside an GitLab CI runner.
 * **CI**: Enable linting our CI scripts thrugh the `lint-scripts` script.
 
 [^1]: Another one bites the dust, since [we used the wrong port again](https://gitlab.com/gitpodify/gitpodified-workspace-images/commit/d482a677b22f958cc2ead351df150c6dce8118ae) with `2376`. [Thanks GitLab Docs for the troubleshooting!](https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running)
@@ -38,7 +49,8 @@ Last-minute changelogs before the ball drops to 2022 were included in the last w
 
 * **CI**: Add `DOCKER_HOST` variable to fix `Is Docker daemon running` error on CI.
 * **FEAT/CI**: Add `run-in-doppler` script as we're slowly migrating our secret management to Doppler.
-* **BREAKING/CI**: Switch the image we using for builds to Alpine edge. The problem here why CI takes 4 minutes pulling 2-3 GBs of hentai from Red Hat Quay Container Registry (just kidding, @ajhalili2006 didn't hid some sort of Linus S\*x Tips inside the image), among moving `before_script` commands to the base config.
+* **BREAKING/CI**: Switch the image we using for builds to Alpine edge. The problem here why CI takes 4 minutes pulling 2-3 GBs of hentai from Red Hat Quay Container Registry
+(just kidding, @ajhalili2006 didn't hid some sort of Linus S\*x Tips inside the image), among moving `before_script` commands to the base config.
 * **FIX**: Fix syntax errors on `docker-cli-login` script finally after bloody 2~ days of debugging.
 * **CHORE**: Update global `before_script` again into an one-item stuff in multi-line style.
 * **CI**: Add `ws-base:build` job to the docker-build CI config, fix job rules for `ws-dotnet:lint` and add `findutils` Alpine package.
@@ -49,9 +61,10 @@ Last-minute changelogs before the ball drops to 2022 were included in the last w
 ### 2021-12-23 to 2021-12-26
 
 * **REFRACTOR**: Refractored lint metascript for CI to fix some syntax issues and re-enabled `ws-full:build` step.
-  * The `docker-build` script doesn't exist yet, so will be WIP for now.
-* **CI**: Change default ws-image build artifacts repo to `quay.io/gitpodified-workspace-images/build-artifacts` as we use the bot account. Also add `docker-build` while the ws-team upstream is working on upgrading the repo to per-chunk basis.
-  * See commit <https://github.com/gitpod-io/dazzle/commit/ceaa19ef6562e03108c8ea9474d2c627a452a7ca> for details. We may need to setup an Docker registry as an service on GitLab CI for this to work.
+    * The `docker-build` script doesn't exist yet, so will be WIP for now.
+* **CI**: Change default ws-image build artifacts repo to `quay.io/gitpodified-workspace-images/build-artifacts` as we use the bot account. Also add `docker-build` while the
+ws-team upstream is working on upgrading the repo to per-chunk basis.
+    * See commit <https://github.com/gitpod-io/dazzle/commit/ceaa19ef6562e03108c8ea9474d2c627a452a7ca> for details. We may need to setup an Docker registry as an service on GitLab CI for this to work.
 * **CI**: Fix `docker-cli-login` script stuff.
 
 ### 2021-12-20 to 2021-12-22
@@ -61,8 +74,9 @@ Last-minute changelogs before the ball drops to 2022 were included in the last w
 * **CHORE**: Move back other .NET-related Dockerfiles in subdirectories to the main `dotnet`, with `Dockerfile` as the file extension for syntax detection.
 * **FIX**: Finally fix an bug on recursive SC script on why it only scans directories, along with improvements.
 * **CI**: Update `needs` and add `rules` for the Docker linting stage in GitLab CI, extending previous work in <https://gitlab.com/gitpodify/gitpodified-workspace-images/commit/1e7d07a400f10aac5e45a40adab245e4b8e4a069>.
-  * Additional fixes were commited to avoid missing job deps in the future.
-* **CHORE**: Add support for exporting vars from `.env` file. The `.env.exmple` file provided should help contributors and core devs to also add more vars as needed to simulate GitLab CI environment w/o `gitlab-runner` binary.
+    * Additional fixes were commited to avoid missing job deps in the future.
+* **CHORE**: Add support for exporting vars from `.env` file. The `.env.exmple` file provided should help contributors and core devs
+to also add more vars as needed to simulate GitLab CI environment without `gitlab-runner` binary.
 * **CHORE**: Update gitignore to ignore swap and dotenv files.
 * **CHORE**: Add devkit scripts with symlinked `scripts` for ease + update Hadolint config
 
@@ -77,23 +91,23 @@ Last-minute changelogs before the ball drops to 2022 were included in the last w
 ### 2021-12-04
 
 - **FEAT**: Add `uuid` Ubuntu package to base image
-- **CHORE**: Add an little trick in .envrc file to automagically simulate merge request events without GitLab Runner CLI.
-- **DOCS**: Squash spelling bugs and list which packages we use is required or not in contributing docs
-- **CHORE**: Add if-then logic on `.envrc` for setting `CI_PIPELINE_SOURCE` to `merge_request_event`.
-- **CI**: Update root GitLab CI config to reflect filename changes since <https://gitlab.com/gitpodify/gitpodified-workspace-images/-/commit/0988751df8385ea407b27706b9b0bed5d0543261>.
-- **FEAT**: Add ShellCheck, Hadolint and direnv to the full image.
-- **FEAT**: Actually rebased against upstream default branch to keep things in sync.
-- **CHORE**: Add some new variables automagically populated through `direnv` to simulate GitLab CI environment for scripts on localhost and Gitpod.
-- **DOCS**: Update docs again regarding not using Dazzle in both README and in contributing docs. Also add some more docs on usage and FAQ.
-- **CHORE**: Move the `shell-tools-and-hadolint` Dazzle layer before the prologue and also fix some stuff in `full` Dockerfile.
-- **CI**: Add Hadolint config for ignoring some warnings and errors, particularly `sudo` usage.
+* **CHORE**: Add an little trick in .envrc file to automagically simulate merge request events without GitLab Runner CLI.
+* **DOCS**: Squash spelling bugs and list which packages we use is required or not in contributing docs
+* **CHORE**: Add if-then logic on `.envrc` for setting `CI_PIPELINE_SOURCE` to `merge_request_event`.
+* **CI**: Update root GitLab CI config to reflect filename changes since <https://gitlab.com/gitpodify/gitpodified-workspace-images/-/commit/0988751df8385ea407b27706b9b0bed5d0543261>.
+* **FEAT**: Add ShellCheck, Hadolint and direnv to the full image.
+* **FEAT**: Actually rebased against upstream default branch to keep things in sync.
+* **CHORE**: Add some new variables automagically populated through `direnv` to simulate GitLab CI environment for scripts on localhost and Gitpod.
+* **DOCS**: Update docs again regarding not using Dazzle in both README and in contributing docs. Also add some more docs on usage and FAQ.
+* **CHORE**: Move the `shell-tools-and-hadolint` Dazzle layer before the prologue and also fix some stuff in `full` Dockerfile.
+* **CI**: Add Hadolint config for ignoring some warnings and errors, particularly `sudo` usage.
 
 ### 2021-11-22 to 2021-11-23
 
-- **CI:** Ditch Circle CI config and switch to GitHub Actions for meanwhile. Image builds are now handled by Quay for the `base` directory for now.
-- **CHORE:** Migrated all Dockerfiles' base image to their RHQCR counterparts on `gitpodified-workspace-images`
-- **CHORE:** Update security policy, contributing guidelines and README
-- **CHORE**: Seperate changelog entries for this fork from upstream changes
+* **CI:** Ditch Circle CI config and switch to GitHub Actions for meanwhile. Image builds are now handled by Quay for the `base` directory for now.
+* **CHORE:** Migrated all Dockerfiles' base image to their RHQCR counterparts on `gitpodified-workspace-images`
+* **CHORE:** Update security policy, contributing guidelines and README
+* **CHORE**: Seperate changelog entries for this fork from upstream changes
 
 ## From upstream
 
