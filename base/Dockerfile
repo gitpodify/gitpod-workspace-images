@@ -1,6 +1,6 @@
 FROM buildpack-deps:focal
 
-COPY install-packages upgrade-packages /usr/bin/
+COPY install-packages upgrade-packages /usr/local/bin/
 
 ### base ###
 ARG DEBIAN_FRONTEND=noninteractive
@@ -30,6 +30,7 @@ RUN yes | unminimize \
         fish \
         zsh \
         uuid \
+        uuid-runtime \
     && locale-gen en_US.UTF-8
 
 ENV LANG=en_US.UTF-8
@@ -61,3 +62,35 @@ RUN sudo echo "Running 'sudo' for Gitpod: success" && \
 
 # configure git-lfs
 RUN sudo git lfs install --system
+
+# setup omz stuff
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
+    && rm -v ~/.zshrc \
+    # Change default shell to Zsh
+    && sudo chsh -s /bin/zsh gitpod \
+    # Warm up directory for customizing zshrc shell :)
+    && mkdir /home/gitpod/.gitpodify/custom-zshrc.d -p
+COPY --chown=gitpod:gitpod base.zshrc /home/gitpod/.zshrc
+
+ARG buildId=123e4567-e89b-12d3-a456-426652340000
+ARG maintainer="Recap Time Squad <docker+gp-ws-images@recaptime.tk>"
+ARG gitRepo=https://gitlab.com/gitpodify/gitpodified-workspace-images
+ARG commitId=0000000000000000000000000000
+LABEL dev.gitpodify.baseImage.buildId=${buildId} \
+      dev.gitpodify.baseImage.buildMaintainer=${maintainer} \
+      org.opencontainers.image.licenses=MIT \
+      org.opencontainers.image.source=${gitRepo} \
+      dev.gitpodify.baseImage.buildSource=${gitRepo} \
+      dev.gitpodify.baseImage.gitCommitSha=${commitId}
+# Load build ID, maintainer and source metadata as env vars
+ENV GITPODIFY_BASE_BUILD_ID=${buildId} \
+    GITPODIFY_BASE_BUILD_MAINTAINER=${maintainer} \
+    GITPODIFY_BASE_BUILD_SOURCE=${gitRepo} \
+    GITPODIFY_BASE_BUILD_COMMIT_SHA=${commitId} \
+    # GITPODIFY_IMAGE_BUILD_ID can be changed when built on other images base don it, so we're also provide
+    # the GITPODIFY_BASE_BUILD_ID just in case.
+    GITPODIFY_IMAGE_BUILD_ID=${buildId} \
+    # For dotfiles support handling on install scripts and stuff
+    GITPODIFIED_WORKSPACE_IMAGE=true
+
+CMD [ "/usr/bin/zsh", "-l" ]

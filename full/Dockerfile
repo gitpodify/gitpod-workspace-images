@@ -201,9 +201,7 @@ RUN cp /home/gitpod/.profile /home/gitpod/.profile_orig && \
     'mkdir -m 0755 -p "${CARGO_HOME:-/workspace/.cargo}" 2>/dev/null' > $HOME/.bashrc.d/80-rust \
     && mkdir -m 0755 -p $HOME/.config/fish \
     && printf '%s\n' 'alias rustup="env -u CARGO_HOME (command -v rustup)"' >> $HOME/.config/fish/config.fish \
-    && printf '%s\n' 'alias rustup="env -u CARGO_HOME $(command -v rustup)"' >> $HOME/.bashrc.d/80-rust \
-    # TODO: add to .zshrc.d/ within this week.
-    && printf '%s\n' 'alias rustup="env -u CARGO_HOME $(command -v rustup)"' >> $HOME/.zshrc
+    && printf '%s\n' 'alias rustup="env -u CARGO_HOME $(command -v rustup)"' >> $HOME/.bashrc.d/80-rust
 RUN cargo install cargo-watch cargo-edit cargo-tree cargo-workspaces
 ENV CARGO_HOME=/workspace/.cargo
 ENV PATH=$CARGO_HOME/bin:$PATH
@@ -235,7 +233,7 @@ RUN curl -o /var/lib/apt/dazzle-marks/docker.gpg -fsSL https://download.docker.c
     && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
     && install-packages docker-ce docker-ce-cli containerd.io
 
-RUN curl -o /usr/bin/slirp4netns -fsSL https://github.com/rootless-containers/slirp4netns/releases/download/v1.1.12/slirp4netns-$(uname -m) \
+RUN curl -o /usr/bin/slirp4netns -fsSL "https://github.com/rootless-containers/slirp4netns/releases/download/v1.1.12/slirp4netns-$(uname -m)" \
     && chmod +x /usr/bin/slirp4netns
 
 RUN curl -o /usr/local/bin/docker-compose -fsSL https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64 \
@@ -266,7 +264,7 @@ ENV TRIGGER_REBUILD=1
 USER root
 RUN addgroup --system nixbld \
   && adduser gitpod nixbld \
-  && for i in $(seq 1 30); do useradd -ms /bin/bash nixbld$i && adduser nixbld$i nixbld; done \
+  && for i in "$(seq 1 30)"; do useradd -ms /bin/bash nixbld$i && adduser nixbld$i nixbld; done \
   && mkdir -m 0755 /nix && chown gitpod /nix \
   && mkdir -p /etc/nix && echo "sandbox = false" > /etc/nix/nix.conf
 
@@ -281,7 +279,8 @@ RUN echo '. /home/gitpod/.nix-profile/etc/profile.d/nix.sh' >> /home/gitpod/.bas
 RUN mkdir -p /home/gitpod/.config/nixpkgs && echo '{ allowUnfree = true; }' >> /home/gitpod/.config/nixpkgs/config.nix
 
 # Install cachix
-RUN . /home/gitpod/.nix-profile/etc/profile.d/nix.sh \
+# hadolint ignore=SC1091
+RUN source /home/gitpod/.nix-profile/etc/profile.d/nix.sh \
   && nix-env -iA cachix -f https://cachix.org/api/v1/install \
   && cachix use cachix
 
@@ -301,6 +300,7 @@ USER root
 RUN curl -o /usr/bin/dazzle-util -fsSL https://github.com/csweichel/dazzle/releases/download/v0.0.3/dazzle-util_0.0.3_Linux_x86_64 \
     && chmod +x /usr/bin/dazzle-util
 # merge dpkg status files
+# hadolint ignore=SC2027
 RUN cp /var/lib/dpkg/status /tmp/dpkg-status \
     && for i in $(ls /var/lib/apt/dazzle-marks/*.status); do /usr/bin/dazzle-util debian dpkg-status-merge /tmp/dpkg-status $i > /tmp/dpkg-status; done \
     && cp -f /var/lib/dpkg/status /var/lib/dpkg/status-old \
@@ -313,19 +313,27 @@ RUN for i in $(ls /var/lib/apt/dazzle-marks/*.gpg); do apt-key add "$i"; done
 COPY tests /var/lib/dazzle/tests
 
 # share env see https://github.com/gitpod-io/workspace-images/issues/472
-RUN echo "PATH="${PATH}"" | sudo tee /etc/environment
+RUN echo "export PATH=\"${PATH}\"" | sudo tee /etc/environment
 
 USER gitpod
 
-# Setup ZSH stuff 
-LABEL dazzle/layer=ws-full-warmup
-LABEL dazzle/layer=ohmyzsh
-RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
-    && rm -v ~/.zshrc ~/.zshrc.pre-oh-my-zsh \
-    # Change default shell to Zsh
-    && sudo chsh -s /bin/zsh gitpod \
-    # Warm up directory for customizing zshrc shell :)
-    && mkdir /home/gitpod/.gitpodify/custom-zshrc.d -p
-    # Expect this may fix the permission errors :)
-COPY --chown=gitpod:gitpod base.zshrc /home/gitpod/.zshrc
+# Copy our zshrc.d directory to $HOME/.zshrc.d in container
+# Expect this may fix the permission errors :)
 COPY --chown=gitpod:gitpod zshrc.d /home/gitpod/.zshrc.d
+
+ARG buildId=123e4567-e89b-12d3-a456-426652340000
+ARG maintainer="Recap Time Squad <docker+gp-ws-images@recaptime.tk>"
+ARG gitRepo=https://gitlab.com/gitpodify/gitpodified-workspace-images
+ARG commitId=0000000000000000000000000000
+LABEL dev.gitpodify.wsFull.buildId=${buildId} \
+      dev.gitpodify.wsFull.buildMaintainer=${maintainer} \
+      org.opencontainers.image.licenses=MIT \
+      org.opencontainers.image.source=${gitRepo} \
+      dev.gitpodify.baseImage.buildSource=${gitRepo} \
+      dev.gitpodify.baseImage.gitCommitSha=${commitId}
+ENV GITPODIFY_WSFULL_BUILD_ID=${buildId} \
+    GITPODIFY_WSFULL_BUILD_SOURCE=${gitRepo} \
+    GITPODIFY_WSFULL_BUILD_MAINTAINER=${maintainer} \
+    GITPODIFY_WSFULL_BUILD_COMMIT_SHA=${commitId} \
+    GITPODIFY_IMAGE_BUILD_ID=${buildId} \
+    GITPODIFIED_WORKSPACE_IMAGE=true

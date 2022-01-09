@@ -21,11 +21,22 @@ export EDITOR="command gp open -w" VISUAL="command gp open -w"
 # Path to your oh-my-zsh installation, to be referenced later.
 export ZSH="$HOME/.oh-my-zsh"
 
+# Homebrew should be loaded first before omz
+test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
 # Do magic on recurisive sourcing on other our zshrc.d.
 # First, source our zsh ports first.
-for i in $(ls -A $HOME/.zshrc.d/); do source $HOME/.zshrc.d/$i; done
-# then source out custom zshrc files.
-for i in $(ls -A $HOME/.gitpodify/custom-zshrc.d/); do source $HOME/.gitpodify/custom-zshrc.d/$i; done
+if [ -d "$HOME/.zshrc.d" ]; then
+  for i in $(ls -A $HOME/.zshrc.d/); do
+    source $HOME/.zshrc.d/$i;
+  done
+fi
+# The source out user customizations there.
+if [ -d "$HOME/.gitpodify/custom-zshrc.d" ]; then
+  for i in $(ls -A $HOME/.gitpodify/custom-zshrc.d/); do 
+    source $HOME/.gitpodify/custom-zshrc.d/$i;
+  done
+fi
 
 # Check if SOURCED_VIA_CUSTOM_ZSHRC isn't empty and skip the default config.
 if [[ $SOURCED_VIA_CUSTOM_ZSHRC != "" ]]; then
@@ -98,17 +109,17 @@ else
         gitignore
         git-lfs
         pyenv
+        brew
     )
 
     source $ZSH/oh-my-zsh.sh
 fi
 
 # direnv
-eval $(direnv hook zsh)
+[[ "$(command -v direnv)" != "" ]] && eval "$(direnv hook zsh)"
 
 # did you misspell it?
-eval "$(thefuck --alias ohfuck)"
-eval "$(thefuck --alias holy-shit)"
-
-# Homebrew
-test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+if [[ "$(command -v thefuck)" != "" ]]; then
+  eval "$(thefuck --alias ohfuck)"
+  eval "$(thefuck --alias holy-shit)"
+fi

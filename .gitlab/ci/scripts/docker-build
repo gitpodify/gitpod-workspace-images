@@ -52,17 +52,20 @@ ARTIFACT_ID="$(uuidgen)"
 # Image artifact repository to store build artifacts
 IMAGE_ARTIFACTS_REPO=${IMAGE_ARTIFACTS_REPO:-"quay.io/gitpodified-workspace-images/build-artifacts"}
 REPO_SLUG=$CI_PROJECT_PATH_SLUG
+GIT_REPO="$(git remote get-url origin)"
+MAINTAINER=${BUILD_MAINTAINER:-"Recap Time Squad <docker+gp-ws-images@recaptime.tk>"}
+SHORT_COMMIT_SHA=$(git rev-parse --short HEAD)
+COMMIT_SHA=$(git rev-parse HEAD)
 
 pushArtifact() {
   echo "========== Pushing build artifact to $IMAGE_ARTIFACTS_REPO =========="
   docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID"
-  docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_ARTIFACTS_REPO:gl-$REPO_SLUG-mr-$CI_MERGE_REQUEST_IID"
-  # added "|| true" to ensure CI builds don't complain about it
-  ./.gitlab/ci/scripts/publish-image "$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID" "$IMAGE_ARTIFACTS_REPO:gl-$REPO_SLUG-mr-$CI_MERGE_REQUEST_IID" || true
+  [[ "$CI_MERGE_REQUEST_IID" != "" ]] && docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_ARTIFACTS_REPO:gl-$REPO_SLUG-mr-$CI_MERGE_REQUEST_IID"
+  ./.gitlab/ci/scripts/publish-image "$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID" "$IMAGE_ARTIFACTS_REPO:gl-$REPO_SLUG-mr-$CI_MERGE_REQUEST_IID"
 }
 
 echo "========== Docker BuildKit starts in 10 seconds =========="
-DOCKER_BUILDKIT=1 docker build --tag "$IMAGE_NAME:$BUILD_ID" --file "$DIR/$DOCKERFILE" "$DIR"
+DOCKER_BUILDKIT=1 docker build --tag "$IMAGE_NAME:$BUILD_ID" --build-arg "buildId=$ARTIFACT_ID" --build-arg "gitRepo=$GIT_REPO" --build-arg "maintainer=$MAINTAINER" --build-arg "commitId=$COMMIT_SHA" --file "$DIR/$DOCKERFILE" "$DIR"
 
 # If $2 is blank, it will be only available as an build artifact in IMAGE_ARTIFACTS_REPO, like
 # in merge request builds.
@@ -70,12 +73,13 @@ if [[ $CI_PIPELINE_SOURCE == "merge_request_event" || $IMAGE_NAME == ""  ]]; the
   pushArtifact
 else
   pushArtifact
+  docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"
   echo "========== Deploying image to RHQCR =========="
   if [[ $GIT_BRANCH != "recaptime-dev-mainline" ]]; then
      docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:branch-$GIT_BRANCH"
-     docker push "$IMAGE_NAME:branch-$GIT_BRANCH"
-  elif [[ $GIT_BRANCH == "recaptime-dev-mainline" && $IMAGE_NAME != "" && $CUSTOM_TAG == "" ]]; then
+     ./.gitlab/ci/scripts/publish-image "$IMAGE_NAME:branch-$GIT_BRANCH" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"
+  elif [[ $GIT_BRANCH == "recaptime-dev-mainline" ]] && [[ $IMAGE_NAME != "" ]] && [[ $CUSTOM_TAG == "" ]]; then
      docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:latest"
-     docker push "$IMAGE_NAME:latest"
+     ./.gitlab/ci/scripts/publish-image "$IMAGE_NAME:latest" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"
   fi
 fi
