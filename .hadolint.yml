@@ -1,5 +1,10 @@
+# Ignored warnings and errors, better use inline ignores instead if that's only for specific Dockerfile
 ignored:
   - DL3007
   - SC2045
   - DL3004
   - DL3013
+  - DL4006
+
+# Only trigger failure if we have atleast one warnings.
+failure-threshold: warning

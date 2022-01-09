@@ -25,6 +25,9 @@ if `ws-base:build` doesn't exist.
 * **REFRACTOR**: Revamp some global configs into default key.s
     * Because global `variables` isn't deprecated yet, we did an quick fix on that b
 * **CHORE**: Add `commit-trigger-build-file` script with symlink `create-dummy-commit` for generating `.trigger-build` file.
+* **CHORE**: Move base Zsh config and OhMyZsh install step to base image and add image metadata for debugging purposes and to allow auditing in the future.
+* **FEAT**: Support build args logic stuff for `docker-build` CI script.
+* **CHORE**: Update README with some additions and raise failure threshold for Hadolint to `warning`.
 
 ### 2022-01-01 to 2021-01-06
 

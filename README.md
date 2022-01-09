@@ -15,15 +15,26 @@ Builds are always happens automagically on Red Hat Quay Container Registry from 
 
 | Image Name | Description | RHQCR/CI Badge |
 | --- | --- | --- |
-| [`quay.io/gitpodified-workspace-images/base`](https://quay.io/repository/gitpodified-workspace-images/base?tab=tags) | The base image for everything. | [![Docker Repository on Quay](https://quay.io/repository/gitpodified-workspace-images/base/status "Docker Repository on Quay")](https://quay.io/repository/gitpodified-workspace-images/base) |
+| [`quay.io/gitpodified-workspace-images/base`](https://quay.io/repository/gitpodified-workspace-images/base?tab=tags) | The base image for everything, with Zsh and OhMyZsh preloaded. | [![Docker Repository on Quay](https://quay.io/repository/gitpodified-workspace-images/base/status "Docker Repository on Quay")](https://quay.io/repository/gitpodified-workspace-images/base) |
 | [`quay.io/gitpodified-workspace-images/full`](https://quay.io/repository/gitpodified-workspace-images/full?tab=tags) | The default Gitpod workspace image, plus additional tools such as Hadolint and ShellCheck. | [![Docker Repository on Quay](https://quay.io/repository/gitpodified-workspace-images/full/status "Docker Repository on Quay")](https://quay.io/repository/gitpodified-workspace-images/full) |
 | [`quay.io/gitpodified-workspace-images/vnc`](https://quay.io/repository/gitpodified-workspace-images/vnc?tab=tags) | An flavor of `quay.io/gitpodified-workspace-images/full`, but with noVNC installed for graphical apps. | TBD |
 
 More images will be become available in the future, but you can build the images yourself if needed.
 
+### Differences between ours from official workspace images
+
+* Comes Zsh as default shell with OhMyZsh preloaded.
+* UUID-related packages are included, plus ShellCheck, Hadolint and even Doppler CLI.
+    * We don't forget GitHub CLI and GLab CLI if you prefer not to use the VSC extensions.
+* Provided `GITPODIFY_*` variables to help in community support and debugging purposes. (`docker inspect` our built images for `dev.gitpodify.*` labels)
+* Drop in user customizations to `~/.gitpodify/custom-zshrc.d` (don't forget to export `SOURCED_VIA_CUSTOM_ZSHRC` to any value to ensure
+your OMZ customizations were not overrided by the defaults after doing the init yourself).
+* **Coming soon:** Weekly rebuilds through GitLab CI cronjobs to keep things fresh as possible.
+
 ## The Motivation and The Why
 
-While Dazzle can help us in handling image caching, we want to ensure everything is fresh as possible and to keep the vulnerability count as low as possible in Quay image scans, so we choose plain `docker build` built-in at Red Hat Quay Container Registry.
+While Dazzle can help us in handling image caching, we want to ensure everything is fresh as possible and to keep the vulnerability count as low as possible in Quay image scans atleast for system packages,
+so we choose plain `docker build` built-in at Red Hat Quay Container Registry.
 
 We initially use these images we built as drop-in replacement for the upstream images built through Dazzle, but sometimes outdated cache can cause different pain points for us.
 
@@ -49,6 +60,7 @@ FROM quay.io/gitpodified-workspace-images/base:latest
 * **With Gitpodify CLI Alpha**: Run `gitpodify switch-ws-image quay.io/gitpodified-workspace-images/<type>` if you set it via the `.gitpod.yml` way. Otherwise, see previous method.[^1]
 
 [^1]: The Gitpodify CLI is under prototype status and may be go into beta state within months. If you are curious, see <https://gitlab.com/gitpodify/gitpodify>
+
 ## Troubleshooting / FAQs
 
 ### Having issues with Let's Encrypt or other TLS certs?
