@@ -4,24 +4,25 @@ stages:
   - build # build part
   - weekly-syncs
 
+variables:
+  # CI/CD feature flags go here
+  FF_NETWORK_PER_BUILD: "true"
+  # see services section regarding this
+  DOCKER_HOST: tcp://bulldozer.docker.internal:2375
+  # Use the overlayfs driver for improved performance.
+  DOCKER_DRIVER: overlay2
+  # Disable TLS since we're running inside local network.
+  DOCKER_TLS_CERTDIR: ""
+  # variables for our dind script checker
+  DIND_HOSTNAME: bulldozer.docker.internal
+  DIND_PORT: "2375"
+  # CI Notifications service running on Darklang
+  CICD_TELEMETRY_CLIENT_ID: gitlab-cicd-docker-builds
+  CICD_TELEMETRY_OPTIN_FLAG: "1"
+
 # global variables, services, before and after scripts ar being deprecated and soon to be removed in future.
 default:
   image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/alpine:edge
-  variabes:
-    # CI/CD feature flags go here
-    FF_NETWORK_PER_BUILD: "true"
-    # see services section regarding this
-    DOCKER_HOST: tcp://bulldozer.docker.internal:2375
-    # Use the overlayfs driver for improved performance.
-    DOCKER_DRIVER: overlay2
-    # Disable TLS since we're running inside local network.
-    DOCKER_TLS_CERTDIR: ""
-    # variables for our dind script checker
-    DIND_HOSTNAME: bulldozer.docker.internal
-    DIND_PORT: "2375"
-    # CI Notifications service running on Darklang
-    CICD_TELEMETRY_CLIENT_ID: gitlab-cicd-docker-builds
-    CICD_TELEMETRY_OPTIN_FLAG: "1"
   services:
       # https://pythonspeed.com/articles/gitlab-build-docker-image/, through we need to track daemon version changes through some hacking
       # around the NewReleases webhooks stuff.
