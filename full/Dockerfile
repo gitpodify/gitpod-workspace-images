@@ -184,16 +184,19 @@ ENV PATH=/workspace/.rvm/bin:$PATH
 LABEL dazzle/layer=lang-rust
 LABEL dazzle/test=tests/lang-rust.yaml
 USER gitpod
-ENV PATH=$PATH:$HOME/.cargo/bin
 RUN cp /home/gitpod/.profile /home/gitpod/.profile_orig && \
-    curl -fsSL https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain 1.57.0 \
-    && rustup component add \
+    curl -fsSL https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain 1.56.1 \
+    && .cargo/bin/rustup component add \
         rls \
         rust-analysis \
         rust-src \
         rustfmt \
-    && rustup completions bash | sudo tee /etc/bash_completion.d/rustup.bash-completion > /dev/null \
-    && rustup completions bash cargo | sudo tee /etc/bash_completion.d/rustup.cargo-bash-completion > /dev/null \
+    && .cargo/bin/cargo install cargo-watch \
+        cargo-edit \
+        cargo-tree \
+        cargo-workspaces \
+    && .cargo/bin/rustup completions bash | sudo tee /etc/bash_completion.d/rustup.bash-completion > /dev/null \
+    && .cargo/bin/rustup completions bash cargo | sudo tee /etc/bash_completion.d/rustup.cargo-bash-completion > /dev/null \
     && grep -v -F -x -f /home/gitpod/.profile_orig /home/gitpod/.profile > /home/gitpod/.bashrc.d/80-rust \
     && rustup completions bash | sudo tee /etc/bash_completion.d/rustup.bash-completion > /dev/null \
     && rustup completions bash cargo | sudo tee /etc/bash_completion.d/rustup.cargo-bash-completion > /dev/null \
@@ -202,7 +205,8 @@ RUN cp /home/gitpod/.profile /home/gitpod/.profile_orig && \
     && mkdir -m 0755 -p $HOME/.config/fish \
     && printf '%s\n' 'alias rustup="env -u CARGO_HOME (command -v rustup)"' >> $HOME/.config/fish/config.fish \
     && printf '%s\n' 'alias rustup="env -u CARGO_HOME $(command -v rustup)"' >> $HOME/.bashrc.d/80-rust
-RUN cargo install cargo-watch cargo-edit cargo-tree cargo-workspaces
+ENV PATH=$PATH:$HOME/.cargo/bin
+# TODO: setting CARGO_HOME to /workspace/.cargo avoids manual updates. Remove after full workspace backups are GA.
 ENV CARGO_HOME=/workspace/.cargo
 ENV PATH=$CARGO_HOME/bin:$PATH
 
@@ -265,7 +269,7 @@ ENV TRIGGER_REBUILD=1
 USER root
 RUN addgroup --system nixbld \
   && adduser gitpod nixbld \
-  && for i in "$(seq 1 30)"; do useradd -ms /bin/bash nixbld$i && adduser nixbld$i nixbld; done \
+  && for i in $(seq 1 30); do useradd -ms /bin/bash "nixbld$i" && adduser "nixbld$i" nixbld; done \
   && mkdir -m 0755 /nix && chown gitpod /nix \
   && mkdir -p /etc/nix && echo "sandbox = false" > /etc/nix/nix.conf
 
@@ -281,7 +285,7 @@ RUN mkdir -p /home/gitpod/.config/nixpkgs && echo '{ allowUnfree = true; }' >> /
 
 # Install cachix
 # hadolint ignore=SC1091
-RUN source /home/gitpod/.nix-profile/etc/profile.d/nix.sh \
+RUN . /home/gitpod/.nix-profile/etc/profile.d/nix.sh \
   && nix-env -iA cachix -f https://cachix.org/api/v1/install \
   && cachix use cachix
 
