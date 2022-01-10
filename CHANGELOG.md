@@ -11,7 +11,7 @@ This section contains different changes we made in the images under the `gitpodi
 happened in this repository. Keep scrolling for the upstream's changelog entries. For fully chronological changelogs, please see the Git commit
 log/history for `recaptime-dev-mainline` branch. Dates written here in this section is in Philippine Standard Time.
 
-## 2021-01-07 to TODO
+## 2021-01-07 to 2021-01-10
 
 After the bloddy debugging hell last week, the build works, but the tagging gone brr.
 
@@ -28,6 +28,11 @@ if `ws-base:build` doesn't exist.
 * **CHORE**: Move base Zsh config and OhMyZsh install step to base image and add image metadata for debugging purposes and to allow auditing in the future.
 * **FEAT**: Support build args logic stuff for `docker-build` CI script.
 * **CHORE**: Update README with some additions and raise failure threshold for Hadolint to `warning`.
+* **CHORE/MERGE**: Branch sync with upstream main branch from commit <https://github.com/gitpod-io/workspace-images/commit/f2d623ca9d270c2ce8560d2ca0f9ce71b105aff2>.
+* **CHORE**: Optmize Rust layer to install additional tooling in one layer.
+* **FIX**: Fix an bug on sourcing Nixery stuff in dash during build.
+* **CI**: Handle image caching and trigger rebuilds in scheduled jobs
+* **FIX**: Fix missing pyenv and Python shims on both Dockerfile and adding an Python-specific zshrc on `ws-full`.
 
 ### 2022-01-01 to 2021-01-06
 
