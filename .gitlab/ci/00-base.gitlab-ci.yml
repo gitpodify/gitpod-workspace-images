@@ -40,5 +40,8 @@ default:
       curl -fsSL https://cli.doppler.com/install.sh | sh
       echo "===== Authenicating Docker CLI against RHQCR ====="
       ./.gitlab/ci/scripts/run-in-doppler $PWD/.gitlab/ci/scripts/docker-cli-login
+    - |
+      echo "===== Downloading images for caching" ===
+      ./.gitlab/ci/scripts/pull-image quay.io/gitpodified-workspace-images/base quay.io/gitpodified-workspace-images/full $TAG_NAME:$CUSTOM_TAG
   after_script:
     - set +x # Ensure command debugging is disabled before running any additional scripts below

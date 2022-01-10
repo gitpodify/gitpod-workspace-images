@@ -37,7 +37,7 @@ fi
 DIR=$(dirname "$1")
 DOCKERFILE=$(basename "$1")
 IMAGE_NAME=$2
-CUSTOM_TAG=$3 # Will be implemented soon
+CUSTOM_TAG=${3:-"latest"} # Will be implemented soon
 
 # if we're inside GitLab CI with these variables, use CI_COMMIT_REF_SLUG var instead
 if [[ $GITLAB_CI == "true" ]]; then
@@ -56,6 +56,7 @@ GIT_REPO="$(git remote get-url origin)"
 MAINTAINER=${BUILD_MAINTAINER:-"Recap Time Squad <docker+gp-ws-images@recaptime.tk>"}
 SHORT_COMMIT_SHA=$(git rev-parse --short HEAD)
 COMMIT_SHA=$(git rev-parse HEAD)
+TRIGGER_REBUILD=${TRIGGER_REBUILD:-"false"}
 
 pushArtifact() {
   echo "========== Pushing build artifact to $IMAGE_ARTIFACTS_REPO =========="
@@ -65,7 +66,7 @@ pushArtifact() {
 }
 
 echo "========== Docker BuildKit starts in 10 seconds =========="
-DOCKER_BUILDKIT=1 docker build --tag "$IMAGE_NAME:$BUILD_ID" --build-arg "buildId=$ARTIFACT_ID" --build-arg "gitRepo=$GIT_REPO" --build-arg "maintainer=$MAINTAINER" --build-arg "commitId=$COMMIT_SHA" --file "$DIR/$DOCKERFILE" "$DIR"
+DOCKER_BUILDKIT=1 docker build --cache-from quay.io/gitpodified-workspace-images/base -cache-from quay.io/gitpodified-workspace-images/full --cache-from $IMAGE_NAME:$CUSTOM_TAG --tag "$IMAGE_NAME:$BUILD_ID" --build-arg "buildId=$ARTIFACT_ID" --build-arg "gitRepo=$GIT_REPO" --build-arg "maintainer=$MAINTAINER" --build-arg "commitId=$COMMIT_SHA" --build-arg rebuildImage=$TRIGGER_REBUILD --file "$DIR/$DOCKERFILE" "$DIR"
 
 # If $2 is blank, it will be only available as an build artifact in IMAGE_ARTIFACTS_REPO, like
 # in merge request builds.
@@ -78,7 +79,7 @@ else
   if [[ $GIT_BRANCH != "recaptime-dev-mainline" ]]; then
      docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:branch-$GIT_BRANCH"
      ./.gitlab/ci/scripts/publish-image "$IMAGE_NAME:branch-$GIT_BRANCH" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"
-  elif [[ $GIT_BRANCH == "recaptime-dev-mainline" ]] && [[ $IMAGE_NAME != "" ]] && [[ $CUSTOM_TAG == "" ]]; then
+  elif [[ $GIT_BRANCH == "recaptime-dev-mainline" ]] && [[ $IMAGE_NAME != "" ]] && [[ $CUSTOM_TAG == "latest" ]]; then
      docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:latest"
      ./.gitlab/ci/scripts/publish-image "$IMAGE_NAME:latest" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"
   fi
