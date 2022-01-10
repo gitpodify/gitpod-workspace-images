@@ -5,6 +5,9 @@ RUN echo "ws full starts" \
     && mkdir /home/gitpod/.local/bin -p \
     && mkdir /home/gitpod/.local/share
 
+ARG triggerRebuild=false
+ENV TRIGGER_IMAGE_REBUILD=${triggerRebuild}
+
 ### Install C/C++ compiler and associated tools ###
 LABEL dazzle/layer=lang-c
 LABEL dazzle/test=tests/lang-c.yaml
@@ -212,8 +215,6 @@ ENV PATH=$CARGO_HOME/bin:$PATH
 
 RUN sudo mkdir -p $CARGO_HOME \
     && sudo chown -R gitpod:gitpod $CARGO_HOME
-
-RUN bash -lc "cargo install cargo-watch cargo-edit cargo-tree cargo-workspaces"
 
 ### Clojure ###
 LABEL dazzle/layer=lang-clojure
