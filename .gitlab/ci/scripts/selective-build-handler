@@ -1,0 +1,26 @@
+#!/bin/bash
+# shellcheck disable=SC2001
+
+MODE="${BUILD_MODE:-docker}"
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+if [[ $1 == "" ]] || [[ $2 == "" ]]; then
+  echo "Usage: BUILD_MODE=<docker|dazzle> $0 CONTEXT_DIR/CONTEXT_DOCKERFILE IMAGE_REPO [CUSTOM_TAG]"
+  echo
+  echo "This script is an wrapper for docker-build and dazzle-build CI scripts when doing selective builds to prevent the issue of missing"
+  echo "job dependencies in GitLab CI, this mean that we may need to proactively rebuild images on weekly to monthly basis through CI schedules."
+  echo
+  echo "Remember to check the main docker-build and dazzle-build help texts for full options and available vars."
+  echo
+  echo "WARNING: Selective builds are currently experimental and may cause builds to break."
+  exit 2
+fi
+
+if [[ "$CONTEXT_DIR" == "base" || "$CONTEXT_DIR" == "full" ]]; then
+  true # proceed to rebuild both base and full
+elif [[ "$CONTEXT_DIR" != "$CI_TARGET_CONTEXT_DIR" ]] && [[ $CI_TARGET_CONTEXT_DIR == "true" ]]; then
+  echo "warning: CI_TARGET_CONTEXT_DIR doesn't match CONTEXT_DIR, skipping job safely..."
+  exit 0
+fi
+
+exec "$REPO_ROOT/.gitlab/ci/scripts/$MODE-build" "$1" "$2" "$3"
