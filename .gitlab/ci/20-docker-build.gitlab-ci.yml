@@ -6,13 +6,14 @@
         env | grep TAG_NAME
         env | grep CONTEXT
       - ./.gitlab/ci/scripts/wait-docker-tcp
-      - ./.gitlab/ci/scripts/dazzle-build "$CONTEXT_DIR/$CONTEXT_DOCKERFILE" "$TAG_NAME"
+      - ./.gitlab/ci/scripts/selective-build-handler "$CONTEXT_DIR/$CONTEXT_DOCKERFILE" "$TAG_NAME"
     variables:
       BASE_TAG_NAME: quay.io/gitpodified-workspace-images/
       # Assume the defaults unless otherwise stated.
       CONTEXT_DOCKERFILE: Dockerfile
       # Needed for readiness checks via our script.
       DIND_RUN_HEALTHCHECK_BEFORE_BUILD: "true"
+      BUILD_MODE: dazzle
 
 .docker-build-plain:
     extends:
@@ -24,13 +25,14 @@
         env | grep TAG_NAME
         env | grep CONTEXT
       - ./.gitlab/ci/scripts/wait-docker-tcp
-      - set -x && bash ./.gitlab/ci/scripts/docker-build $CONTEXT_DIR/$CONTEXT_DOCKERFILE $TAG_NAME
+      - set -x && ./.gitlab/ci/scripts/selective-build-handler $CONTEXT_DIR/$CONTEXT_DOCKERFILE $TAG_NAME
     variables:
       BASE_TAG_NAME: quay.io/gitpodified-workspace-images
       # Assume the defaults unless otherwise stated.
       CONTEXT_DOCKERFILE: Dockerfile
       DIND_RUN_HEALTHCHECK_BEFORE_BUILD: "true"
       DEBUG: "true"
+      BUILD_MODE: docker
 
 ws-base:build:
     needs:

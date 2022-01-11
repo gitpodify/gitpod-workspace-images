@@ -28,8 +28,13 @@ default:
       # around the NewReleases webhooks stuff.
       - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:20.10.12-dind-alpine3.15
         alias: bulldozer.docker.internal
-      #- name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/registry
-      #  alias: dazzle.registry.recaptime-dev.internal
+      # Local Docker registry for Dazzle build caches in the future. We also configure Storj DCS as our storage backend through
+      # its S3 gateway in CI/CD variables so we don't lose the build artifacts
+      - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/registry:2
+        alias: dazzle-cache.recaptime-dev.internal
+      # Buildkit daemon for Dazzle to use with. Proceed at your own risk.
+      #- name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/moby/buildkit:v0.9.3
+      #  alias: buildkitd.recaptime-dev.internal
   before_script:
     - |
       echo "===== Installing packages ====="
@@ -42,6 +47,6 @@ default:
       ./.gitlab/ci/scripts/run-in-doppler $PWD/.gitlab/ci/scripts/docker-cli-login
     - |
       echo "===== Downloading images for caching" ===
-      ./.gitlab/ci/scripts/pull-image quay.io/gitpodified-workspace-images/base quay.io/gitpodified-workspace-images/full $TAG_NAME:$CUSTOM_TAG
+      bash -lc "./.gitlab/ci/scripts/pull-image quay.io/gitpodified-workspace-images/base quay.io/gitpodified-workspace-images/full $TAG_NAME:${CUSTOM_TAG:-\"latest\"}"
   after_script:
     - set +x # Ensure command debugging is disabled before running any additional scripts below
