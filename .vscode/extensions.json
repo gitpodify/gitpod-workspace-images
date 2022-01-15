@@ -4,6 +4,7 @@
         "redhat.vscode-yaml",
         "eamodio.gitlens",
         "gitlab.gitlab-workflow",
-        "davidanson.vscode-markdownlint"
+        "davidanson.vscode-markdownlint",
+        "vivaxy.vscode-conventional-commits"
     ]
 }

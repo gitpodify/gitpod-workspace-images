@@ -25,6 +25,8 @@ vscode:
     - gitlab.gitlab-workflow
     - davidanson.vscode-markdownlint
 
+    - vivaxy.vscode-conventional-commits
+
 github:
   prebuilds:
     master: true

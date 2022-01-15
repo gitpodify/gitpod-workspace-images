@@ -5,5 +5,18 @@
     "git.requireGitUserConfig": true,
     "gitlens.statusBar.format": "${author}, ${agoOrDate}${' via 'pullRequest}",
     "files.autoSave": "afterDelay",
-    "files.autoSaveDelay": 5000
+    "files.autoSaveDelay": 5000,
+    "conventionalCommits.scopes": [
+        "global",
+        "dazzle",
+        "ws-base",
+        "ws-full",
+        "gitlab-cicd",
+        "readme",
+        "changelog",
+        "gitpod",
+        "vscode"
+    ],
+    "conventionalCommits.emojiFormat": "emoji",
+    "conventionalCommits.gitmoji": true
 }
