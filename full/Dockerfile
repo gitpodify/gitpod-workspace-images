@@ -295,9 +295,12 @@ LABEL dazzle/layer=shell-tools-and-hadolint
 LABEL dazzle/test=tests/shell-tools-and-hadolint.yaml
 # Dazzle does not rebuild a layer until one of its lines are changed. Increase this counter to rebuild this layer.
 ENV TRIGGER_REBUILD=0
-### ShellCheck, Hadolint and direnv ###
-RUN brew install shellcheck hadolint direnv; \
-    direnv hook bash | tee /home/gitpod/.bashrc.d/10-direnv
+### ShellCheck, Hadolint, bashbox and direnv ###
+RUN brew install shellcheck hadolint direnv \
+    && echo 'eval $(direnv hook bash)' >> ~/.bashrc \
+    # We'll preinstall Bashbox too!
+    && curl --proto '=https' --tlsv1.2 -sSfL "https://git.io/Jc9bH" | bash -s selfinstall \
+    && echo 'source "/home/gitpod/.bashbox/env"' >> ~/.bashrc
 
 ### Prologue (built across all layers) ###
 LABEL dazzle/layer=dazzle-prologue
