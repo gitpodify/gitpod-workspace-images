@@ -5,6 +5,11 @@ if [[ $# -eq 0 ]]; then
   echo "Recursively pull Docker images for caching in CI"
 fi
 
+if [[ $SKIP_IMAGE_CACHING != "" ]]; then
+  echo "warning: Image caching is being skipped in this step"
+  exit 0
+fi
+
 for imageTag in "$@"; do
   echo "====> Pulling image to $imageTag"
   if ! docker pull "$imageTag"; then

@@ -3,6 +3,8 @@
     script:
         # $CONTEXT_DOCKERFILE refers to path to Dockerfile within the $CONTEXT_DIR
         - ./.gitlab/ci/scripts/lint "$CONTEXT_DIR/${CONTEXT_DOCKERFILE:-"Dockerfile"}"
+    variables:
+      SKIP_IMAGE_CACHING: "true"
 
 ws-base:lint:
     extends:
