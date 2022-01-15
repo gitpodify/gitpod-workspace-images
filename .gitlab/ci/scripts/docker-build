@@ -78,7 +78,7 @@ if [[ $CI_PIPELINE_SOURCE == "merge_request_event" ]] || [[ $IMAGE_NAME == ""  ]
 else
   pushArtifact
   echo "========== Deploying image to RHQCR =========="
-  if [[ $GIT_BRANCH != "recaptime-dev-mainline" ]] && [[ $IMAGE_NAME != "" ]] && [[ $CUSTOM_TAG == "latest" ]];; then
+  if [[ $GIT_BRANCH != "recaptime-dev-mainline" ]] && [[ $IMAGE_NAME != "" ]] && [[ $CUSTOM_TAG == "latest" ]]; then
      docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:branch-$GIT_BRANCH"
      docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"
      ./.gitlab/ci/scripts/publish-image "$IMAGE_NAME:branch-$GIT_BRANCH" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"

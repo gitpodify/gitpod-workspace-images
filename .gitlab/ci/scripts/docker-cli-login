@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ "$RHQCR_SERVICE_ACCOUNT_API_KEY" != "" ]]; then
+if [[ "$RHQCR_SERVICE_ACCOUNT_API_KEY" != "" ]] && [[ "$RHQCR_SERVICE_ACCOUNT_PASSWORD" == "" ]]; then
   echo "warning: Using leagcy RHQCR_SERVICE_ACCOUNT_API_KEY variable, reexporting it to RHQCR_SERVICE_ACCOUNT_PASSWORD"
   echo "warning: for compartibility reasons."
   RHQCR_SERVICE_ACCOUNT_PASSWORD="$RHQCR_SERVICE_ACCOUNT_API_KEY"
