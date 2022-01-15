@@ -330,6 +330,7 @@ USER gitpod
 # Expect this may fix the permission errors :)
 COPY --chown=gitpod:gitpod zshrc.d /home/gitpod/.zshrc.d
 
+ARG imageArtifactTagName=quay.io/gitpodified-workspace-images/build-artifacts:123e4567-e89b-12d3-a456-426652340000
 ARG buildId=123e4567-e89b-12d3-a456-426652340000
 ARG maintainer="Recap Time Squad <docker+gp-ws-images@recaptime.tk>"
 ARG gitRepo=https://gitlab.com/gitpodify/gitpodified-workspace-images
@@ -338,9 +339,11 @@ LABEL dev.gitpodify.wsFull.buildId=${buildId} \
       dev.gitpodify.wsFull.buildMaintainer=${maintainer} \
       org.opencontainers.image.licenses=MIT \
       org.opencontainers.image.source=${gitRepo} \
-      dev.gitpodify.baseImage.buildSource=${gitRepo} \
-      dev.gitpodify.baseImage.gitCommitSha=${commitId}
+      dev.gitpodify.wsFull.buildSource=${gitRepo} \
+      dev.gitpodify.wsFull.gitCommitSha=${commitId} \
+      dev.gitpodify.image.artifactTag=${imageArtifactTagName}
 ENV GITPODIFY_WSFULL_BUILD_ID=${buildId} \
+    GITPODIFY_IMAGE_ARTIFACT_TAG=${imageArtifactTagName} \
     GITPODIFY_WSFULL_BUILD_SOURCE=${gitRepo} \
     GITPODIFY_WSFULL_BUILD_MAINTAINER=${maintainer} \
     GITPODIFY_WSFULL_BUILD_COMMIT_SHA=${commitId} \

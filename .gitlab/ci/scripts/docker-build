@@ -9,14 +9,14 @@ if [[ $DEBUG != "" ]]; then
 fi
 
 if [[ $1 == "" ]]; then
-  echo "Usage: $0 CONTEXT_DIR/CONTEXT_DOCKERFILE IMAGE_REPO [CUSTOM_TAG_SUFFIX]"
+  echo "Usage: $0 CONTEXT_DIR/CONTEXT_DOCKERFILE IMAGE_REPO [CUSTOM_TAG]"
   echo
   echo "Required parameters:"
   echo "  CONTEXT_DIR/CONTEXT_FILE   Relative or abolsute path the the Dockerfile to use for building an image"
   echo "  IMAGE_REPO                 If left blank, it will push directly to your configured build artifats repo through"
   echo "                             IMAGE_ARTIFACTS_REPO variable."
   echo "Optional parameters:"
-  echo "  CUSTOM_TAG_SUFFIX          An custom image tag"
+  echo "  CUSTOM_TAG                 An custom image tag to use instead of branch-<branch-name> or latest if it's the main branch."
   echo
   echo "Needed dependencies: uuidgen (uuid-runtime), sed, grep, basename and dirname and any tool that can build images"
   echo "from an Dockerfile. Since this script will set DOCKER_BUILDKIT=1 only during docker build invocation, this requires"
@@ -53,8 +53,10 @@ BUILD_ID="ci-build-$GIT_BRANCH"
 ARTIFACT_ID="$(uuidgen)"
 # Image artifact repository to store build artifacts
 IMAGE_ARTIFACTS_REPO=${IMAGE_ARTIFACTS_REPO:-"quay.io/gitpodified-workspace-images/build-artifacts"}
+# Build metadata, args and tags
 REPO_SLUG=$CI_PROJECT_PATH_SLUG
-GIT_REPO="$(git remote get-url origin)"
+GIT_REPO_TMP="$(git remote get-url origin)"
+GIT_REPO=${CI_PROJECT_URL:-$GIT_REPO_TMP}
 MAINTAINER=${BUILD_MAINTAINER:-"Recap Time Squad <docker+gp-ws-images@recaptime.tk>"}
 SHORT_COMMIT_SHA=$(git rev-parse --short HEAD)
 COMMIT_SHA=$(git rev-parse HEAD)
@@ -69,7 +71,15 @@ pushArtifact() {
 
 echo "========== Docker BuildKit starts in 10 seconds =========="
 sleep 10
-DOCKER_BUILDKIT=1 docker build --tag "$IMAGE_NAME:$BUILD_ID" --build-arg "buildId=$ARTIFACT_ID" --build-arg "gitRepo=$GIT_REPO" --build-arg "maintainer=$MAINTAINER" --build-arg "commitId=$COMMIT_SHA" --build-arg "rebuildImage=$TRIGGER_REBUILD" --file "$DIR/$DOCKERFILE" "$DIR"
+DOCKER_BUILDKIT=1 docker build --tag "$IMAGE_NAME:$BUILD_ID" \
+  --build-arg "buildId=$ARTIFACT_ID" --build-arg "gitRepo=$GIT_REPO" --build-arg "maintainer=$MAINTAINER" \
+  --build-arg "commitId=$COMMIT_SHA" --build-arg "rebuildImage=$TRIGGER_REBUILD" \
+  --build-arg "imageArtifactTagName=$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID"
+  # Cache builds from previous built images, as much as possible.
+  --cache-from "quay.io/gitpodified-workspace-images/base:latest" \
+  --cache-from "quay.io/gitpodified-workspace-images/full:latest" \
+  --cache-from "$IMAGE_NAME:$CUSTOM_TAG"
+  --file "$DIR/$DOCKERFILE" "$DIR"
 
 # If $2 is blank, it will be only available as an build artifact in IMAGE_ARTIFACTS_REPO, like
 # in merge request builds.
@@ -78,7 +88,11 @@ if [[ $CI_PIPELINE_SOURCE == "merge_request_event" ]] || [[ $IMAGE_NAME == ""  ]
 else
   pushArtifact
   echo "========== Deploying image to RHQCR =========="
-  if [[ $GIT_BRANCH != "recaptime-dev-mainline" ]] && [[ $IMAGE_NAME != "" ]] && [[ $CUSTOM_TAG == "latest" ]]; then
+  if [[ $CUSTOM_TAG != "latest" ]]; then
+     docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:$CUSTOM_TAG"
+     docker tag "$IMAGE$BUILD_ID" "$IMAGE_NAME:$CUSTOM_TAG-commit-$SHORT_COMMIT_SHA"
+     ./.gitlab/ci/scripts/publish-image "$IMAGE_NAME:$CUSTOM_TAG-commit-$SHORT_COMMIT_SHA" "$IMAGE_NAME:$CUSTOM_TAG"
+  elif [[ $GIT_BRANCH != "recaptime-dev-mainline" ]] && [[ $IMAGE_NAME != "" ]] && [[ $CUSTOM_TAG == "latest" ]]; then
      docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:branch-$GIT_BRANCH"
      docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"
      ./.gitlab/ci/scripts/publish-image "$IMAGE_NAME:branch-$GIT_BRANCH" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"
@@ -86,9 +100,5 @@ else
      docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:latest"
      docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"
      ./.gitlab/ci/scripts/publish-image "$IMAGE_NAME:latest" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"
-  elif [[ $CUSTOM_TAG != "latest" ]]; then
-     docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:$CUSTOM_TAG"
-     docker tag "$IMAGE$BUILD_ID" "$IMAGE_NAME:$CUSTOM_TAG-commit-$SHORT_COMMIT_SHA"
-     ./.gitlab/ci/scripts/publish-image "$IMAGE_NAME:$CUSTOM_TAG-commit-$SHORT_COMMIT_SHA" "$IMAGE_NAME:$CUSTOM_TAG"
   fi
 fi
