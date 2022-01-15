@@ -18,5 +18,6 @@
         "vscode"
     ],
     "conventionalCommits.emojiFormat": "emoji",
-    "conventionalCommits.gitmoji": true
+    "conventionalCommits.gitmoji": true,
+    "conventionalCommits.autoCommit": false
 }
