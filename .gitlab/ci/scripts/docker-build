@@ -71,15 +71,15 @@ pushArtifact() {
 
 echo "========== Docker BuildKit starts in 10 seconds =========="
 sleep 10
+# Cache builds from previous built images, as much as possible through the cache-from flags.
 DOCKER_BUILDKIT=1 docker build --tag "$IMAGE_NAME:$BUILD_ID" \
-  --build-arg "buildId=$ARTIFACT_ID" --build-arg "gitRepo=$GIT_REPO" --build-arg "maintainer=$MAINTAINER" \
-  --build-arg "commitId=$COMMIT_SHA" --build-arg "rebuildImage=$TRIGGER_REBUILD" \
-  --build-arg "imageArtifactTagName=$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID" \
-  # Cache builds from previous built images, as much as possible.
-  --cache-from "quay.io/gitpodified-workspace-images/base:latest" \
-  --cache-from "quay.io/gitpodified-workspace-images/full:latest" \
-  --cache-from "$IMAGE_NAME:$CUSTOM_TAG" \
-  --file "$DIR/$DOCKERFILE" "$DIR"
+    --build-arg "buildId=$ARTIFACT_ID" --build-arg "gitRepo=$GIT_REPO" --build-arg "maintainer=$MAINTAINER" \
+    --build-arg "commitId=$COMMIT_SHA" --build-arg "rebuildImage=$TRIGGER_REBUILD" \
+    --build-arg "imageArtifactTagName=$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID" \
+    --cache-from "quay.io/gitpodified-workspace-images/base:latest" \
+    --cache-from "quay.io/gitpodified-workspace-images/full:latest" \
+    --cache-from "$IMAGE_NAME:$CUSTOM_TAG" \
+    --file "$DIR/$DOCKERFILE" "$DIR"
 
 # If $2 is blank, it will be only available as an build artifact in IMAGE_ARTIFACTS_REPO, like
 # in merge request builds.
