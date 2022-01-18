@@ -11,6 +11,19 @@ This section contains different changes we made in the images under the `gitpodi
 happened in this repository. Keep scrolling for the upstream's changelog entries. For fully chronological changelogs, please see the Git commit
 log/history for `recaptime-dev-mainline` branch. Dates written here in this section is in Philippine Standard Time.
 
+### 2021-01-11 to 2021-01-20
+
+* **CHORE**: Add support for custom tags and handle selective builds via wrapper
+* **CI**: Update base config for local registry setup.
+* **FEAT**: Add [bashbox](https://github.com/bashbox/bashbox) to `ws-full` image.
+* **CHORE**: Configure Conventional Commits VSC extension and even add it to Gitpod config's `vscode.extensions` key.
+* **CI**: Make `pull-image` CI script executable.
+* **CHORE**: Update `pull-image` script to support skipping pulling images from remote repositories.
+* **CHORE**: Disable autocommit in Conventional Commits extension
+* **CHORE**: Fix syntax issue on `docker-build` CI script and implemented an quick refinement on` docker-cli-login` script.
+* **FEAT**: Bale build-artifacts tag name and other metadata to `ws-base` and `ws-full` images
+* **FIX**: More chaotic fixes to syntax errors on `docker-build` script.
+
 ## 2021-01-07 to 2021-01-10
 
 After the bloddy debugging hell last week, the build works, but the tagging gone brr.
@@ -23,7 +36,7 @@ if `ws-base:build` doesn't exist.
 * **CHORE**: Improve help text and skip failed-to-push tags in `publish-image` CI script.
 * **FEAT**: Use Zsh as default shell, currently on `ws-full`.
 * **REFRACTOR**: Revamp some global configs into default key.s
-    * Because global `variables` isn't deprecated yet, we did an quick fix on that b
+    * Because global `variables` isn't deprecated yet, we did an quick fix on that.
 * **CHORE**: Add `commit-trigger-build-file` script with symlink `create-dummy-commit` for generating `.trigger-build` file.
 * **CHORE**: Move base Zsh config and OhMyZsh install step to base image and add image metadata for debugging purposes and to allow auditing in the future.
 * **FEAT**: Support build args logic stuff for `docker-build` CI script.
