@@ -87,7 +87,7 @@ LABEL dev.gitpodify.baseImage.buildId=${buildId} \
       dev.gitpodify.image.artifactTag=${imageArtifactTagName}
 # Then, load build ID, maintainer and source metadata as env vars
 ENV GITPODIFY_BASE_BUILD_ID=${buildId} \
-    GITPODIFY_IMAGE_ARTIFACT_TAG=${imageArtifactTagName}
+    GITPODIFY_IMAGE_ARTIFACT_TAG=${imageArtifactTagName} \
     GITPODIFY_BASE_BUILD_MAINTAINER=${maintainer} \
     GITPODIFY_BASE_BUILD_SOURCE=${gitRepo} \
     GITPODIFY_BASE_BUILD_COMMIT_SHA=${commitId} \
