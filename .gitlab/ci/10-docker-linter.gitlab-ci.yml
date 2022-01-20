@@ -40,7 +40,9 @@ ws-vnc:lint:
         CONTEXT_DIR: vnc
     allow_failure: true
     rules:
+        - if: '$CI_PIPELINE_SOURCE == "schedule"'
         - changes:
+            - .trigger-build
             - vnc/Dockerfile
             - vnc/*.sh
 ws-gecko:lint:
@@ -54,7 +56,9 @@ ws-gecko:lint:
         CONTEXT_DIR: gecko
     allow_failure: true
     rules:
+        - if: '$CI_PIPELINE_SOURCE == "schedule"'
         - changes:
+            - .trigger-build
             - gecko/Dockerfile
 
 ws-mdbook:lint:
@@ -67,7 +71,9 @@ ws-mdbook:lint:
         CONTEXT_DIR: mdbook
     allow_failure: true
     rules:
+        - if: '$CI_PIPELINE_SOURCE == "schedule"'
         - changes:
+            - .trigger-build
             - mdbook/Dockerfile
 
 ws-wasm:lint:
@@ -80,7 +86,9 @@ ws-wasm:lint:
         CONTEXT_DIR: wasm
     allow_failure: true
     rules:
+       - if: '$CI_PIPELINE_SOURCE == "schedule"'
        - changes:
+           - .trigger-build
            - wasm/Dockerfile
 
 ws-mongodb:lint:
@@ -93,7 +101,9 @@ ws-mongodb:lint:
         CONTEXT_DIR: mongodb
     allow_failure: true
     rules:
+        - if: '$CI_PIPELINE_SOURCE == "schedule"'
         - changes:
+            - .trigger-build
             - mongodb/Dockerfile
 
 ws-postgres:lint:
@@ -106,7 +116,9 @@ ws-postgres:lint:
       CONTEXT_DIR: postgres
    allow_failure: true
    rules:
+        - if: '$CI_PIPELINE_SOURCE == "schedule"'
         - changes:
+            - .trigger-build
             - postgres/Dockerfile
 
 ws-dart:lint:
@@ -119,7 +131,9 @@ ws-dart:lint:
         CONTEXT_DIR: dart
     allow_failure: true
     rules:
+        - if: '$CI_PIPELINE_SOURCE == "schedule"'
         - changes:
+            - .trigger-build
             - dart/Dockerfile
 
 ws-flutter:lint:
@@ -133,7 +147,9 @@ ws-flutter:lint:
         CONTEXT_DIR: flutter
     allow_failure: true
     rules:
+        - if: '$CI_PIPELINE_SOURCE == "schedule"'
         - changes:
+            - .trigger-build
             - flutter/Dockerfile
 
 ws-dotnet:lint:
@@ -146,7 +162,9 @@ ws-dotnet:lint:
         CONTEXT_DIR: dotnet
     allow_failure: true
     rules:
+      - if: '$CI_PIPELINE_SOURCE == "schedule"'
       - changes:
+          - .trigger-build
           - dotnet/Dockerfile
 
 ws-dotnet-vnc:lint:
@@ -162,8 +180,10 @@ ws-dotnet-vnc:lint:
         CONTEXT_DOCKERFILE: vnc.Dockerfile
     allow_failure: true
     rules:
+        - if: '$CI_PIPELINE_SOURCE == "schedule"'
         - changes:
-            - dotnet/lts-vnc.Dockerfile
+            - .trigger-build
+            - dotnet/vnc.Dockerfile
 
 ws-dotnet-lts:lint:
     needs:
@@ -177,7 +197,9 @@ ws-dotnet-lts:lint:
         CONTEXT_DOCKERFILE: lts.Dockerfile
     allow_failure: true
     rules:
+        - if: '$CI_PIPELINE_SOURCE == "schedule"'
         - changes:
+            - .trigger-build
             - dotnet/lts.Dockerfile
 
 ws-dotnet-lts-vnc:lint:
@@ -193,5 +215,7 @@ ws-dotnet-lts-vnc:lint:
         CONTEXT_DOCKERFILE: lts-vnc.Dockerfile
     allow_failure: true
     rules:
+        - if: '$CI_PIPELINE_SOURCE == "schedule"'
         - changes:
+            - .trigger-build
             - dotnet/lts-vnc.Dockerfile
