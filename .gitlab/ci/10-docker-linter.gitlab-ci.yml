@@ -121,6 +121,21 @@ ws-postgres:lint:
             - .trigger-build
             - postgres/Dockerfile
 
+ws-mysql:lint:
+   needs:
+        - ws-base:lint
+        - ws-full:lint
+   extends:
+       - .docker-lint
+   variables:
+      CONTEXT_DIR: mysql
+   allow_failure: true
+   rules:
+        - if: '$CI_PIPELINE_SOURCE == "schedule"'
+        - changes:
+            - .trigger-build
+            - mysql/Dockerfile
+
 ws-dart:lint:
     needs:
         - ws-base:lint
