@@ -24,12 +24,8 @@ LABEL dev.gitpodify.customImage.buildId=${buildId} \
       dev.gitpodify.image.artifactTag=${imageArtifactTagName}
 # Then, load build ID, maintainer and source metadata as env vars
 ENV GITPODIFY_CUSTOM_IMAGE_BUILD_ID=${buildId} \
-    GITPODIFY_IMAGE_ARTIFACT_TAG=${imageArtifactTagName} \
-    GITPODIFY_CUSTOM_IMAGHE_BUILD_MAINTAINER=${maintainer} \
-    GITPODIFY_BASE_BUILD_SOURCE=${gitRepo} \
-    GITPODIFY_BASE_BUILD_COMMIT_SHA=${commitId} \
-    # GITPODIFY_IMAGE_BUILD_ID can be changed when built on other images based on it, so we're also provide
-    # the GITPODIFY_BASE_BUILD_ID just in case.
-    GITPODIFY_IMAGE_BUILD_ID=${buildId} \
-    # For dotfiles support handling on install scripts and stuff
-    GITPODIFIED_WORKSPACE_IMAGE=true
+    GITPODIFY_CUSTOM_IMAGE_ARTIFACT_TAG=${imageArtifactTagName} \
+    GITPODIFY_CUSTOM_IMAGE_BUILD_MAINTAINER=${maintainer} \
+    GITPODIFY_CUSTOM_IMAGE_BUILD_SOURCE=${gitRepo} \
+    GITPODIFY_CUSTOM_IMAGE_BUILD_COMMIT_SHA=${commitId} \
+    GITPODIFY_IMAGE_BUILD_ID=${buildId}
