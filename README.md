@@ -5,6 +5,8 @@
 The home of `quay.io/gitpod-workspace-images/*` Docker images, maintained by @ajhalili2006 from @RecapTime. Merge requests are very welcome, through please take them all to upstream 
 `gitpod-io/workspace-images` repository on GitHub so we can rebase-then-merge them into here.
 
+**NOTE TO USERS/CONTRIBUTORS**: CI will be temporarily broken until the Dazzle v2 migration is finshed, so the ETA is maybe between Feb. 16 and March 2, Philippine Standard Time.
+
 ## Canonical Repo
 
 The official canonical repo is on GitLab SaaS at <https://gitlab.com/gitpodify/gitpodified-workspace-images> while keeping the GitHub copy associated with the parent repo and in sync.

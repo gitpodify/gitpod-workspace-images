@@ -92,11 +92,11 @@ we document them below for your reference.
 
 ### Packages used
 
-You need the following tools and packages to proceed. Since we're building in plain `docker build`/`podman build` (not with Dazzle),
-we'll leave the Dazzle build scripts for an while until further notice.
+You need the following tools and packages to proceed. Since we're building with Dazzle v2 in second-half of Feburary 2022, the good old `docker-build` is being deprecated, so proceed at your own risk.
 
 * Docker Engine/Desktop, but you're welcome to use Podman or other alternatives (hint: It should supports BuildKit via an env var similar
 to `DOCKER_BUILDKIT=1` when using the `build` command)
+  * You
 * bash and coreutils
 * Optional tools including direnv, ShellCheck and Hadolint.
 * In case you are using Busybox-based distro or script break due to missing dependencies, make sure to install `bash`, GNU `coreutils` and `findutils`, and

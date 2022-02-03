@@ -1,0 +1,5 @@
+- desc: "it should have vnc installed"
+  command: [which, x11vnc]
+  assert:
+  - status == 0
+  - stdout.indexOf("/bin/x11vnc") != -1

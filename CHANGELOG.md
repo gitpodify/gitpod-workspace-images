@@ -134,7 +134,12 @@ to also add more vars as needed to simulate GitLab CI environment without `gitla
 
 A curated, chronologically ordered list of notable changes in [the upstream's default workspace images](https://hub.docker.com/r/gitpod/workspace-full), as we'll keep stuff in sync.
 
-### 2021-08-01
+## 2022-02-01
+
+- Release workspace-full latest tag built using dazzle v2
+- Upgrade to dazzle v2 & use Github Actions for build
+
+## 2021-08-01
 
 - Bump Go version to 1.16.6
 - Bump rust to 1.54.0
