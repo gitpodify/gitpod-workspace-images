@@ -71,6 +71,7 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master
     # Warm up directory for customizing zshrc shell :)
     && mkdir /home/gitpod/.gitpodify/custom-zshrc.d -p
 COPY --chown=gitpod:gitpod base.zshrc /home/gitpod/.zshrc
+COPY --chown=gitpod:gitpod zshrc.d /home/gitpod/.zshrc.d
 
 ARG imageArtifactTagName=quay.io/gitpodified-workspace-images/build-artifacts:123e4567-e89b-12d3-a456-426652340000
 ARG buildId=123e4567-e89b-12d3-a456-426652340000

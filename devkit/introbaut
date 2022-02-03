@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+echo "Build and test chunks: time sudo $(which dazzle) build $REPO -v"
+echo "Build and test combinations: time sudo $(which dazzle) combine $REPO --all -v"
+echo "List chunk images, which can be tested individually with docker: sudo $(which dazzle) project image-name $REPO"
+echo "List hashes for chunked images: sudo $(which dazzle) project hash $REPO"
+echo "Print the combined image maniest: sudo $(which dazzle) project manifest $REPO"
+echo "Image content cached in this workspace: du -shc sudo du -shc $(docker inspect local-container-registry | jq -r 'to_entries[] | .value.Mountpoint')/*"
