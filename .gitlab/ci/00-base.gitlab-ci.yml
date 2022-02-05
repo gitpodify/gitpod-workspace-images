@@ -33,8 +33,8 @@ default:
       - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/registry:2
         alias: dazzle-cache.recaptime-dev.internal
       # Buildkit daemon for Dazzle to use with. Proceed at your own risk.
-      #- name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/moby/buildkit:v0.9.3
-      #  alias: buildkitd.recaptime-dev.internal
+      - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/moby/buildkit:v0.9.3
+        alias: buildkitd.recaptime-dev.internal
   before_script:
     - |
       echo "===== Installing packages ====="
@@ -43,10 +43,8 @@ default:
       wget https://github.com/hadolint/hadolint/releases/download/v2.8.0/hadolint-Linux-x86_64 -O /usr/local/bin/hadolint && chmod +x /usr/local/bin/hadolint
       echo "===== Installing Doppler CLI ====="
       curl -fsSL https://cli.doppler.com/install.sh | sh
-      echo "===== Authenicating Docker CLI against RHQCR ====="
+      echo "===== Authenicating Docker CLI against container registries ====="
       ./.gitlab/ci/scripts/run-in-doppler $PWD/.gitlab/ci/scripts/docker-cli-login
-    - |
-      echo "===== Downloading images for caching" ===
-      bash -lc "./.gitlab/ci/scripts/pull-image quay.io/gitpodified-workspace-images/base quay.io/gitpodified-workspace-images/full $TAG_NAME:${CUSTOM_TAG:-\"latest\"}"
+      
   after_script:
     - set +x # Ensure command debugging is disabled before running any additional scripts below
