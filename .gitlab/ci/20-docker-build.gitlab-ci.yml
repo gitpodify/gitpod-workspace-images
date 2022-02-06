@@ -8,7 +8,10 @@ dazzle:build:
   rules:
     - changes:
         - base/Dockerfile
+        - base/base.zshrc
+        - base/zshrc.d/*.zshrc
         - chunks/**/Dockerfile
+        - chunks/**/**
         - tests/*.yml
         - .trigger-build
   #variables:

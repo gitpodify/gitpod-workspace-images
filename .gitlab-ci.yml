@@ -5,4 +5,4 @@ include:
   - local: .gitlab/ci/10-precommit.gitlab-ci.yml
   - local: .gitlab/ci/11-script-linter.gitlab-ci.yml
   # Image builder scripts
-  #- local: .gitlab/ci/20-docker-build.gitlab-ci.yml
+  - local: .gitlab/ci/20-docker-build.gitlab-ci.yml
