@@ -3,7 +3,8 @@ image:
   context: .
 
 tasks:
-  - name: Workspace Setup
+    # TODO: Implement GitHub Container Registry-as-artifact store soon.
+  - name: WOrkspace Setup + Monitoring
     init: |
       direnv allow
       git remote add upstream https://github.com/gitpod-io/workspace-images
@@ -11,17 +12,15 @@ tasks:
       direnv allow; direnv reload
       git fetch --all
       gp sync-done docker-cli-login
-    command:
-      docker run -p 5000:5000 --name registry --rm -v /workspace/registry:/var/lib/registry registry:2
-      REPO=localhost:5000 ./devkit/introbaut
-      
-  # TODO: Implement GitHub Container Registry-as-artifact store soon.
   - name: Docker CLI Auth + Buildkitd
     before: |
       gp sync-await docker-cli-login
       direnv reload
       RHQCR_USERBOT_USERNAME=$RHQCR_USERNAME RHQCR_USERBOT_PASSWORD=$RHQCR_PASSWORD ./.gitlab/ci/scripts/docker-cli-login
     command: ./devkit/gp-buildkit
+  - name: Main Hub
+    command: |
+      ./debkit/local-registry
 
 ports:
   - port: 5000
