@@ -22,10 +22,7 @@ variables:
 
 # global variables, services, before and after scripts ar being deprecated and soon to be removed in future.
 default:
-  image: 
-    name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/buildpack-deps:bullseye
-    entrypoint:
-      - /usr/bin/bash
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/buildpack-deps:bullseye
   services:
       # https://pythonspeed.com/articles/gitlab-build-docker-image/, through we need to track daemon version changes through some hacking
       # around the NewReleases webhooks stuff.
@@ -39,7 +36,7 @@ default:
       - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/moby/buildkit:v0.9.3
         alias: buildkitd.recaptime-dev.internal
   before_script:
-    - ./.gitlab/ci/scripts/ci-setup
+    - bash -c "$PWD/.gitlab/ci/scripts/ci-setup"
 
   after_script:
     - set +x # Ensure command debugging is disabled before running any additional scripts below
