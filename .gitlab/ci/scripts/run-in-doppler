@@ -4,7 +4,7 @@ set -ex
 COMMAND=$(echo "$*" | cut -d "," -f1-2 | tr ',' '.')
 
 if [[ $COMMAND == "" ]]; then
-   doppler run --command "env | grep DOPPLER"
+	doppler run --command "env | grep DOPPLER"
 else
-   doppler run --command "$@"
+	doppler run --command "$@"
 fi

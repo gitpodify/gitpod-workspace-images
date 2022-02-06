@@ -1,1 +1,15 @@
-# TODO!
+dazzle:build:
+  needs:
+    - global:lint
+  stage: build
+  timeout: 3h # just in case things go brr
+  script:
+    - ./.gitlab/ci/scripts/dazzle-build
+  rules:
+    - changes:
+        - base/Dockerfile
+        - chunks/**/Dockerfile
+        - tests/*.yml
+        - .trigger-build
+  #variables:
+  #  IMAGE_ARTIFACTS_REPO: ghcr.io/gitpodify/gitpodified-workspace-images/dazzle-cache

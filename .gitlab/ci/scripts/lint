@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 
 if [[ $1 == "" ]]; then
-  echo "Requires 1 arg to run the linter!"
+	echo "Requires 1 arg to run the linter!"
 fi
 
 BASEDIR=$(git rev-parse --show-toplevel)
 DIR=$(dirname "$BASEDIR/$1")
 
-echo "Target directory: $DIR"; sleep 5
+echo "Target directory: $DIR"
+sleep 5
 echo
 echo "============================== SHELLCHECK RESULTS =============================="
 "$BASEDIR/.gitlab/ci/scripts/lint-scripts" "$DIR" || export CHECK_FAILED_SC=1
@@ -19,20 +20,20 @@ echo "============================== HADOLINT RESULTS ==========================
 echo
 echo "============================== SUMMARY =============================="
 if [[ $CHECK_FAILED_SC == "1" ]]; then
-  echo "ShellCheck: Found some serious problems on scripts or ShellCheck isn't installed on system/not on PATH ❌"
+	echo "ShellCheck: Found some serious problems on scripts or ShellCheck isn't installed on system/not on PATH ❌"
 else
-  echo "ShellCheck: No issues found, nice 🎉"
+	echo "ShellCheck: No issues found, nice 🎉"
 fi
 if [[ $CHECK_FAILED_HL == "1" ]]; then
-  echo "Hadolint: Found some serious problems on Dockerfiles or Hadolint isn't installed on system/not on PATH ❌"
+	echo "Hadolint: Found some serious problems on Dockerfiles or Hadolint isn't installed on system/not on PATH ❌"
 else
-  echo "Hadolint: No issues found, nice 🎉"
+	echo "Hadolint: No issues found, nice 🎉"
 fi
 
 echo "============================== SUMMARY =============================="
 
 if [[ $CHECK_FAILED_SC == "1" || $CHECK_FAILED_HL == "1" ]]; then
-  exit 1
+	exit 1
 else
-  exit 0
+	exit 0
 fi

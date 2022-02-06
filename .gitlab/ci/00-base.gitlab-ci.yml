@@ -38,13 +38,13 @@ default:
   before_script:
     - |
       echo "===== Installing packages ====="
-      apk add bash coreutils uuidgen curl git git-lfs docker-cli gcompat wget shellcheck tar gpg findutils netcat-openbsd --no-cache
+      apk add bash coreutils uuidgen curl git git-lfs docker-cli gcompat wget shellcheck tar gpg findutils netcat-openbsd skopeo sudo --no-cache
       echo "===== Installing Hadolint from GitHub releases ====="
       wget https://github.com/hadolint/hadolint/releases/download/v2.8.0/hadolint-Linux-x86_64 -O /usr/local/bin/hadolint && chmod +x /usr/local/bin/hadolint
       echo "===== Installing Doppler CLI ====="
       curl -fsSL https://cli.doppler.com/install.sh | sh
       echo "===== Authenicating Docker CLI against container registries ====="
       ./.gitlab/ci/scripts/run-in-doppler $PWD/.gitlab/ci/scripts/docker-cli-login
-      
+
   after_script:
     - set +x # Ensure command debugging is disabled before running any additional scripts below

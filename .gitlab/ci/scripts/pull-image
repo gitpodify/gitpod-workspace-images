@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 
 if [[ $# -eq 0 ]]; then
-  echo "Usage: $0 IMAGE ..."
-  echo "Recursively pull Docker images for caching in CI"
+	echo "Usage: $0 IMAGE ..."
+	echo "Recursively pull Docker images for caching in CI"
 fi
 
 if [[ $SKIP_IMAGE_CACHING != "" ]]; then
-  echo "warning: Image caching is being skipped in this step"
-  exit 0
+	echo "warning: Image caching is being skipped in this step"
+	exit 0
 fi
 
 for imageTag in "$@"; do
-  echo "====> Pulling image to $imageTag"
-  if ! docker pull "$imageTag"; then
-    echo "warning: $imageTag doesn't exist on remote"
-  else
-    echo "info: $imageTag successfully pulled"
-  fi
+	echo "====> Pulling image to $imageTag"
+	if ! docker pull "$imageTag"; then
+		echo "warning: $imageTag doesn't exist on remote"
+	else
+		echo "info: $imageTag successfully pulled"
+	fi
 done

@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
-echo "Build and test chunks: time sudo $(which dazzle) build $REPO -v"
-echo "Build and test combinations: time sudo $(which dazzle) combine $REPO --all -v"
-echo "List chunk images, which can be tested individually with docker: sudo $(which dazzle) project image-name $REPO"
-echo "List hashes for chunked images: sudo $(which dazzle) project hash $REPO"
-echo "Print the combined image maniest: sudo $(which dazzle) project manifest $REPO"
-echo "Image content cached in this workspace: du -shc sudo du -shc $(docker inspect local-container-registry | jq -r 'to_entries[] | .value.Mountpoint')/*"
+REPO=${REPO:-"localhost:5000/recaptime-dev/gp-ws-images-build-artifacts"}
+
+echo "Build and test chunks: time $(which dazzle) build $REPO -v"
+echo "Build and test combinations: time $(which dazzle) combine $REPO --all -v"
+echo "List chunk images, which can be tested individually with docker: $(which dazzle) project image-name $REPO"
+echo "List hashes for chunked images: $(which dazzle) project hash $REPO"
+echo "Print the combined image maniest: $(which dazzle) project manifest $REPO"
+echo "Image content cached in this workspace: sudo du -shc $(docker inspect local-container-registry | jq -r 'to_entries[] | .value.Mountpoint')/*"
+echo "Build and go with IMAGE_ARTIFACTS_REPO variable: IMAGE_ARTIFACTS_REPO=europe-docker.pkg.dev/gitpod-artifacts/docker-dev/images ./dazzle-up.sh"

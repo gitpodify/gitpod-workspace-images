@@ -4,15 +4,14 @@ DIND_HOSTNAME="${DIND_HOSTNAME:-docker}"
 DIND_PORT="${DIND_PORT:-2375}"
 
 if [[ $DIND_RUN_HEALTHCHECK_BEFORE_BUILD == "" ]]; then
-  echo "error: set DIND_RUN_HEALTHCHECK_BEFORE_BUILD to any value to run me!"
-  exit 1
+	echo "error: set DIND_RUN_HEALTHCHECK_BEFORE_BUILD to any value to run me!"
+	exit 1
 fi
 
-
 if ! command -v nc >>/dev/null; then
-  echo "error: netcat isn't in PATH, perhaps its not installed on your system. Check https://pkgs.org/search/?q=netcat"
-  echo "error: for availability on your Linux distro's package repositories."
-  exit 1
+	echo "error: netcat isn't in PATH, perhaps its not installed on your system. Check https://pkgs.org/search/?q=netcat"
+	echo "error: for availability on your Linux distro's package repositories."
+	exit 1
 fi
 
 echo "========== Wait Docker TCP info =========="

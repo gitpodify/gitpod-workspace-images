@@ -2,18 +2,18 @@
 # shellcheck disable=SC2086
 
 if [[ $1 == "" ]]; then
-  echo "Usage: $0 DIRECTORY [SHELL]"
-  echo
-  echo "Script to recurisively lint scripts with ShellCheck, by default against GNU Bash, based on"
-  echo "instructions at https://go.rtapp.tk/w/shellcheck/Recursiveness"
-  exit 2
+	echo "Usage: $0 DIRECTORY [SHELL]"
+	echo
+	echo "Script to recurisively lint scripts with ShellCheck, by default against GNU Bash, based on"
+	echo "instructions at https://go.rtapp.tk/w/shellcheck/Recursiveness"
+	exit 2
 fi
 
 TARGET_SHELL=${TARGET_SHELL:-$2}
 if [[ $TARGET_SHELL == "zsh" ]]; then
-  echo "error: Linting Zsh scripts is unsupported in ShellCheck. Supported shells include POSIX sh (dash), GNU Bash"
-  echo "error: and ksh."
-  exit 1
+	echo "error: Linting Zsh scripts is unsupported in ShellCheck. Supported shells include POSIX sh (dash), GNU Bash"
+	echo "error: and ksh."
+	exit 1
 fi
 
 # added an ! -path directive to avoid scanning Dockerfiles also

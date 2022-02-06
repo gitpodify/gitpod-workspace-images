@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+docker run -d -p 5000:5000 --name registry --rm -v local-container-registry:/var/lib/registry registry:2 || true
+
+"$REPO_ROOT/devkit/introbaut"

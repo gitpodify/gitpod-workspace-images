@@ -1,26 +1,26 @@
 #!/usr/bin/env bash
 
 if [[ $# -eq 0 ]]; then
-  echo "Usage: $0 IMAGE_TAG [...]"
-  echo "Atleast one arg is required to recursively push Docker images to their remote image registries. Make sure to hydrate the Docker CLI"
-  echo "with registry authenication information beforehand to avoid being spammed by the following warnings on your CI logs."
-  echo
-  echo "  \$ $0 non-existent-library-image:tag example.org/docker/hi-mom:1234"
-  echo "  ..."
-  echo "  warning: non-existent-library-image:tag failed to push so it was skipped sliently, sleeping for 5 seconds to ensure we don't get ratelimited..."
-  echo "  ..."
-  echo
-  echo "Tip: If push failed due to Docker CLI not found in PATH and using Podman or the main BuildKit CLI itself, you may need to edit this script as needed"
-  echo "     or even create an /usr/bin/docker symlink pointing to Docker CLI-compartible tool like Podman."
-  exit 2
+	echo "Usage: $0 IMAGE_TAG [...]"
+	echo "Atleast one arg is required to recursively push Docker images to their remote image registries. Make sure to hydrate the Docker CLI"
+	echo "with registry authenication information beforehand to avoid being spammed by the following warnings on your CI logs."
+	echo
+	echo "  \$ $0 non-existent-library-image:tag example.org/docker/hi-mom:1234"
+	echo "  ..."
+	echo "  warning: non-existent-library-image:tag failed to push so it was skipped sliently, sleeping for 5 seconds to ensure we don't get ratelimited..."
+	echo "  ..."
+	echo
+	echo "Tip: If push failed due to Docker CLI not found in PATH and using Podman or the main BuildKit CLI itself, you may need to edit this script as needed"
+	echo "     or even create an /usr/bin/docker symlink pointing to Docker CLI-compartible tool like Podman."
+	exit 2
 fi
 
 for imageTag in "$@"; do
-  echo "====> Pushing image to $imageTag"
-  if ! docker push "$imageTag"; then
-    echo "warning: $imageTag failed to push so it was skipped sliently, sleeping for 5 seconds to ensure we don't get ratelimited..."
-  else
-    echo "info: $imageTag successfully pushed, sleeping for 5 seconds to ensure we don't get ratelimited..."
-  fi
-  sleep 5
+	echo "====> Pushing image to $imageTag"
+	if ! docker push "$imageTag"; then
+		echo "warning: $imageTag failed to push so it was skipped sliently, sleeping for 5 seconds to ensure we don't get ratelimited..."
+	else
+		echo "info: $imageTag successfully pushed, sleeping for 5 seconds to ensure we don't get ratelimited..."
+	fi
+	sleep 5
 done

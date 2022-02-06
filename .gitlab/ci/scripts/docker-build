@@ -4,35 +4,35 @@ set -e
 
 # set DEBUG var to any vairable to enable debugging
 if [[ $DEBUG != "" ]]; then
-  echo "warning: Debugging for docker-build is enabled."
-  set -x
+	echo "warning: Debugging for docker-build is enabled."
+	set -x
 fi
 
 if [[ $1 == "" ]]; then
-  echo "Usage: $0 CONTEXT_DIR/CONTEXT_DOCKERFILE IMAGE_REPO [CUSTOM_TAG]"
-  echo
-  echo "Required parameters:"
-  echo "  CONTEXT_DIR/CONTEXT_FILE   Relative or abolsute path the the Dockerfile to use for building an image"
-  echo "  IMAGE_REPO                 If left blank, it will push directly to your configured build artifats repo through"
-  echo "                             IMAGE_ARTIFACTS_REPO variable."
-  echo "Optional parameters:"
-  echo "  CUSTOM_TAG                 An custom image tag to use instead of branch-<branch-name> or latest if it's the main branch."
-  echo
-  echo "Needed dependencies: uuidgen (uuid-runtime), sed, grep, basename and dirname and any tool that can build images"
-  echo "from an Dockerfile. Since this script will set DOCKER_BUILDKIT=1 only during docker build invocation, this requires"
-  echo "Docker daemon to be running and the official Docker CLI installed beforehand."
-  echo
-  echo "Supported environment variables:"
-  echo "  IMAGE_ARTIFACTS_REPO       Container image repo for artifacts that this script will be using for"
-  echo "                             storing image artifacts to an container registry instead of the regular"
-  echo "                             GitLab job artifacts."
-  echo "  IMAGE_ARTIFACTS_PUSH       Set it to false to disable pushing build artifacts to an container registry."
-  echo "                             You can push them at a later date."
-  echo "  SKIP_DOCKER_PUSH           Skip pushing images to container registry, which passed to the publish-image"
-  echo "                             utility script. Set this to any value to trigger this."
-  echo "  CI_PROJECT_PATH_SLUG       GitLab project path slug. Use the clone web URl of your project as an reference,"
-  echo "                             minus the GitLab hostname."
-  exit 2
+	echo "Usage: $0 CONTEXT_DIR/CONTEXT_DOCKERFILE IMAGE_REPO [CUSTOM_TAG]"
+	echo
+	echo "Required parameters:"
+	echo "  CONTEXT_DIR/CONTEXT_FILE   Relative or abolsute path the the Dockerfile to use for building an image"
+	echo "  IMAGE_REPO                 If left blank, it will push directly to your configured build artifats repo through"
+	echo "                             IMAGE_ARTIFACTS_REPO variable."
+	echo "Optional parameters:"
+	echo "  CUSTOM_TAG                 An custom image tag to use instead of branch-<branch-name> or latest if it's the main branch."
+	echo
+	echo "Needed dependencies: uuidgen (uuid-runtime), sed, grep, basename and dirname and any tool that can build images"
+	echo "from an Dockerfile. Since this script will set DOCKER_BUILDKIT=1 only during docker build invocation, this requires"
+	echo "Docker daemon to be running and the official Docker CLI installed beforehand."
+	echo
+	echo "Supported environment variables:"
+	echo "  IMAGE_ARTIFACTS_REPO       Container image repo for artifacts that this script will be using for"
+	echo "                             storing image artifacts to an container registry instead of the regular"
+	echo "                             GitLab job artifacts."
+	echo "  IMAGE_ARTIFACTS_PUSH       Set it to false to disable pushing build artifacts to an container registry."
+	echo "                             You can push them at a later date."
+	echo "  SKIP_DOCKER_PUSH           Skip pushing images to container registry, which passed to the publish-image"
+	echo "                             utility script. Set this to any value to trigger this."
+	echo "  CI_PROJECT_PATH_SLUG       GitLab project path slug. Use the clone web URl of your project as an reference,"
+	echo "                             minus the GitLab hostname."
+	exit 2
 fi
 
 # script params
@@ -43,9 +43,9 @@ CUSTOM_TAG=${3:-"latest"}
 
 # if we're inside GitLab CI with these variables, use CI_COMMIT_REF_SLUG var instead
 if [[ $GITLAB_CI == "true" ]]; then
-  GIT_BRANCH=$CI_COMMIT_REF_SLUG
+	GIT_BRANCH=$CI_COMMIT_REF_SLUG
 else
-  GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD | sed 's_/_-_g')"
+	GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD | sed 's_/_-_g')"
 fi
 
 BUILD_ID="ci-build-$GIT_BRANCH"
@@ -63,42 +63,42 @@ COMMIT_SHA=$(git rev-parse HEAD)
 TRIGGER_REBUILD=${TRIGGER_REBUILD:-"false"}
 
 pushArtifact() {
-  echo "========== Pushing build artifact to $IMAGE_ARTIFACTS_REPO =========="
-  docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID"
-  [[ "$CI_MERGE_REQUEST_IID" != "" ]] && docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_ARTIFACTS_REPO:gl-$REPO_SLUG-mr-$CI_MERGE_REQUEST_IID"
-  ./.gitlab/ci/scripts/publish-image "$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID" "$IMAGE_ARTIFACTS_REPO:gl-$REPO_SLUG-mr-$CI_MERGE_REQUEST_IID"
+	echo "========== Pushing build artifact to $IMAGE_ARTIFACTS_REPO =========="
+	docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID"
+	[[ "$CI_MERGE_REQUEST_IID" != "" ]] && docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_ARTIFACTS_REPO:gl-$REPO_SLUG-mr-$CI_MERGE_REQUEST_IID"
+	./.gitlab/ci/scripts/publish-image "$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID" "$IMAGE_ARTIFACTS_REPO:gl-$REPO_SLUG-mr-$CI_MERGE_REQUEST_IID"
 }
 
 echo "========== Docker BuildKit starts in 10 seconds =========="
 sleep 10
 # Cache builds from previous built images, as much as possible through the cache-from flags.
 DOCKER_BUILDKIT=1 docker build --tag "$IMAGE_NAME:$BUILD_ID" \
-    --build-arg "buildId=$ARTIFACT_ID" --build-arg "gitRepo=$GIT_REPO" --build-arg "maintainer=$MAINTAINER" \
-    --build-arg "commitId=$COMMIT_SHA" --build-arg "rebuildImage=$TRIGGER_REBUILD" \
-    --build-arg "imageArtifactTagName=$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID" \
-    --cache-from "quay.io/gitpodified-workspace-images/base:latest" \
-    --cache-from "quay.io/gitpodified-workspace-images/full:latest" \
-    --cache-from "$IMAGE_NAME:$CUSTOM_TAG" \
-    --file "$DIR/$DOCKERFILE" "$DIR"
+	--build-arg "buildId=$ARTIFACT_ID" --build-arg "gitRepo=$GIT_REPO" --build-arg "maintainer=$MAINTAINER" \
+	--build-arg "commitId=$COMMIT_SHA" --build-arg "rebuildImage=$TRIGGER_REBUILD" \
+	--build-arg "imageArtifactTagName=$IMAGE_ARTIFACTS_REPO:$ARTIFACT_ID" \
+	--cache-from "quay.io/gitpodified-workspace-images/base:latest" \
+	--cache-from "quay.io/gitpodified-workspace-images/full:latest" \
+	--cache-from "$IMAGE_NAME:$CUSTOM_TAG" \
+	--file "$DIR/$DOCKERFILE" "$DIR"
 
 # If $2 is blank, it will be only available as an build artifact in IMAGE_ARTIFACTS_REPO, like
 # in merge request builds.
-if [[ $CI_PIPELINE_SOURCE == "merge_request_event" ]] || [[ $IMAGE_NAME == ""  ]]; then
-  pushArtifact
+if [[ $CI_PIPELINE_SOURCE == "merge_request_event" ]] || [[ $IMAGE_NAME == "" ]]; then
+	pushArtifact
 else
-  pushArtifact
-  echo "========== Deploying image to RHQCR =========="
-  if [[ $CUSTOM_TAG != "latest" ]]; then
-     docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:$CUSTOM_TAG"
-     docker tag "$IMAGE$BUILD_ID" "$IMAGE_NAME:$CUSTOM_TAG-commit-$SHORT_COMMIT_SHA"
-     ./.gitlab/ci/scripts/publish-image "$IMAGE_NAME:$CUSTOM_TAG-commit-$SHORT_COMMIT_SHA" "$IMAGE_NAME:$CUSTOM_TAG"
-  elif [[ $GIT_BRANCH != "recaptime-dev-mainline" ]] && [[ $IMAGE_NAME != "" ]] && [[ $CUSTOM_TAG == "latest" ]]; then
-     docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:branch-$GIT_BRANCH"
-     docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"
-     ./.gitlab/ci/scripts/publish-image "$IMAGE_NAME:branch-$GIT_BRANCH" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"
-  elif [[ $GIT_BRANCH == "recaptime-dev-mainline" ]] && [[ $IMAGE_NAME != "" ]] && [[ $CUSTOM_TAG == "latest" ]]; then
-     docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:latest"
-     docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"
-     ./.gitlab/ci/scripts/publish-image "$IMAGE_NAME:latest" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"
-  fi
+	pushArtifact
+	echo "========== Deploying image to RHQCR =========="
+	if [[ $CUSTOM_TAG != "latest" ]]; then
+		docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:$CUSTOM_TAG"
+		docker tag "$IMAGE$BUILD_ID" "$IMAGE_NAME:$CUSTOM_TAG-commit-$SHORT_COMMIT_SHA"
+		./.gitlab/ci/scripts/publish-image "$IMAGE_NAME:$CUSTOM_TAG-commit-$SHORT_COMMIT_SHA" "$IMAGE_NAME:$CUSTOM_TAG"
+	elif [[ $GIT_BRANCH != "recaptime-dev-mainline" ]] && [[ $IMAGE_NAME != "" ]] && [[ $CUSTOM_TAG == "latest" ]]; then
+		docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:branch-$GIT_BRANCH"
+		docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"
+		./.gitlab/ci/scripts/publish-image "$IMAGE_NAME:branch-$GIT_BRANCH" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"
+	elif [[ $GIT_BRANCH == "recaptime-dev-mainline" ]] && [[ $IMAGE_NAME != "" ]] && [[ $CUSTOM_TAG == "latest" ]]; then
+		docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:latest"
+		docker tag "$IMAGE_NAME:$BUILD_ID" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"
+		./.gitlab/ci/scripts/publish-image "$IMAGE_NAME:latest" "$IMAGE_NAME:commit-$SHORT_COMMIT_SHA"
+	fi
 fi
