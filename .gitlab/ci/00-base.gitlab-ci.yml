@@ -22,7 +22,10 @@ variables:
 
 # global variables, services, before and after scripts ar being deprecated and soon to be removed in future.
 default:
-  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/alpine:edge
+  image: 
+    name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/buildpack-deps:bullseye
+    entrypoint:
+      - /bin/sh
   services:
       # https://pythonspeed.com/articles/gitlab-build-docker-image/, through we need to track daemon version changes through some hacking
       # around the NewReleases webhooks stuff.
@@ -36,15 +39,7 @@ default:
       - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/moby/buildkit:v0.9.3
         alias: buildkitd.recaptime-dev.internal
   before_script:
-    - |
-      echo "===== Installing packages ====="
-      apk add bash coreutils uuidgen curl git git-lfs docker-cli gcompat wget shellcheck tar gpg findutils netcat-openbsd skopeo sudo --no-cache
-      echo "===== Installing Hadolint from GitHub releases ====="
-      wget https://github.com/hadolint/hadolint/releases/download/v2.8.0/hadolint-Linux-x86_64 -O /usr/local/bin/hadolint && chmod +x /usr/local/bin/hadolint
-      echo "===== Installing Doppler CLI ====="
-      curl -fsSL https://cli.doppler.com/install.sh | sh
-      echo "===== Authenicating Docker CLI against container registries ====="
-      ./.gitlab/ci/scripts/run-in-doppler $PWD/.gitlab/ci/scripts/docker-cli-login
+    - ./.gitlab/ci/scripts/ci-setup
 
   after_script:
     - set +x # Ensure command debugging is disabled before running any additional scripts below

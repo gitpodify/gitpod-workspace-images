@@ -1,10 +1,6 @@
 global:lint:
   stage: lint
   script:
-    - |
-      apk add py3-pip python3 shellcheck nodejs py3-wheel py3-setuptools
-      curl -sSL https://github.com/mvdan/sh/releases/download/v3.4.2/shfmt_v3.4.2_linux_amd64 -o shfmt
-      mv shfmt /usr/local/bin/shfmt && sudo chmod +x /usr/local/bin/shfmt
-      pip3 install pre-commit
+    - pip3 install pre-commit wheel setuptools
     - pre-commit run --all-files
   allow_failure: true
