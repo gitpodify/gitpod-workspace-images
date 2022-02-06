@@ -25,7 +25,7 @@ default:
   image: 
     name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/buildpack-deps:bullseye
     entrypoint:
-      - /bin/sh
+      - /usr/bin/bash
   services:
       # https://pythonspeed.com/articles/gitlab-build-docker-image/, through we need to track daemon version changes through some hacking
       # around the NewReleases webhooks stuff.
