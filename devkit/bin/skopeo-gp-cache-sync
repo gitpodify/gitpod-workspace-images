@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 sudo skopeo sync \
-    --src-tls-verify=false \
-    --registries-conf=.github/registries.conf \
-    --src yaml \
-    --dest docker \
-    .gitlab/ci/container-repo-sync.yml ghcr.io/gitpodify/gitpodified-workspace-images/dazzle-cache
+	--src-tls-verify=false \
+	--registries-conf=.github/registries.conf \
+	--src yaml \
+	--dest docker \
+	.gitlab/ci/container-repo-sync.yml ghcr.io/gitpodify/gitpodified-workspace-images/dazzle-cache

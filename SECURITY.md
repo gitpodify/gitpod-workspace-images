@@ -10,8 +10,8 @@ Otherwise if this happens in our images within the `gitpodified-workspace-images
 
 ## Security Contacts
 
-Last updated as of: 2021-11-22
+Last updated as of: 2022-02-04
 
 | Name | Status/Role in Project |Links to Contact Info / Email | Keybase / GPG |
 | --- | --- | --- | --- |
-| Andrei Jiroh Halili | RHQCR namespace maintainer, @RecapTime Squad member | <https://github.com/ajhalili2006/ajhalili2006#where-to-find-me-elsewhere>, <ajhalili2006+security@gmail.com> (plus address added to forward it into his main but longer address) | <https://keybase.io/ajhalilidev06>
+| Andrei Jiroh Halili | RHQCR namespace maintainer, @RecapTime Squad member | <https://github.com/ajhalili2006/ajhalili2006#where-to-find-me-elsewhere>, <ajhalili2006+security@gmail.com> | <https://keybase.io/ajhalilidev06>

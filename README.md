@@ -2,7 +2,7 @@
 
 [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-908a85?logo=gitpod&style=for-the-badge)](https://gitpod.io/#https://gitlab.com/gitpodify/gitpodified-workspace-images)
 
-The home of `quay.io/gitpod-workspace-images/*` Docker images, maintained by @ajhalili2006 from @RecapTime. Merge requests are very welcome, through please take them all to upstream 
+The home of `quay.io/gitpod-workspace-images/*` Docker images, maintained by @ajhalili2006 from @RecapTime. Merge requests are very welcome, through please take them all to upstream
 `gitpod-io/workspace-images` repository on GitHub so we can rebase-then-merge them into here.
 
 **NOTE TO USERS/CONTRIBUTORS**: CI will be temporarily broken until the Dazzle v2 migration is finshed, so the ETA is maybe between Feb. 16 and March 2, Philippine Standard Time.

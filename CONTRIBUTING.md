@@ -7,7 +7,7 @@ our community code of conduct, which is available at <https://policy.recaptime.t
 
 ## DCO and CLA
 
-Our CLA is form of Linux DCO and some provisions regarding changes in OSS licenses (only applies in 
+Our CLA is form of Linux DCO and some provisions regarding changes in OSS licenses (only applies in
 future contributions when in effect), among other legalese your employer may need for compliance with copyright laws.
 An `git commit --signoff` is fine, but we may implement an system soon.
 
