@@ -25,8 +25,8 @@ curl -sL https://deb.nodesource.com/setup_14.x | bash -
         ca-certificates
 
 echo "===== Installing shfm from GitHub releases ====="
-curl -sSL https://github.com/mvdan/sh/releases/download/v3.4.2/shfmt_v3.4.2_linux_amd64 -o shfmt
-mv shfmt /usr/local/bin/shfmt && sudo chmod +x /usr/local/bin/shfmt
+sudo wget https://github.com/mvdan/sh/releases/download/v3.4.2/shfmt_v3.4.2_linux_amd64 -O /usr/local/bin/shfmt
+sudo chmod +x /usr/local/bin/shfmt
 
 echo "===== Installing Hadolint from GitHub releases ====="
 wget https://github.com/hadolint/hadolint/releases/download/v2.8.0/hadolint-Linux-x86_64 -O /usr/local/bin/hadolint && chmod +x /usr/local/bin/hadolint
@@ -34,11 +34,20 @@ wget https://github.com/hadolint/hadolint/releases/download/v2.8.0/hadolint-Linu
 echo "===== Installing Doppler CLI ====="
 curl -fsSL https://cli.doppler.com/install.sh | sh -
 
-echo "===== Installing Dazzle and Skopeo"
+echo "===== Installing Dazzle and Skopeo ====="
 curl -sSL https://github.com/gitpod-io/dazzle/releases/download/v0.1.6/dazzle_0.1.6_Linux_x86_64.tar.gz | sudo tar -xvz -C /usr/local/bin
 echo "deb [signed-by=/usr/share/keyrings/libcontainers-redhat-archive-keyring.gpg] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_11/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
 curl -L "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_11/Release.key" | sudo gpg --dearmor --output /usr/share/keyrings/libcontainers-redhat-archive-keyring.gpg
 ./base/install-packages skopeo
 
+echo "===== Installing Docker CLI ====="
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg 
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+./base/install-packages docker-ce-cli
+
+echo "===== Installing yq ====="
+pip3 install yq
+
 echo "===== Authenicating Docker CLI against container registries ====="
 ./.gitlab/ci/scripts/run-in-doppler $PWD/.gitlab/ci/scripts/docker-cli-login
+./.gitlab/ci/scripts/run-in-doppler $PWD/devkit/bin/skopeo-auth-ghcr

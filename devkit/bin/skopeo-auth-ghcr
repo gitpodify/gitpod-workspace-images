@@ -4,3 +4,4 @@ set -e
 SUDO=${SUDO:-"sudo"}
 
 $SUDO skopeo login -u "$GHCR_SERVICE_ACCOUNT_USERNAME" --password="$GHCR_SERVICE_ACCOUNT_PASSWORD" https://ghcr.io
+$SUDO skopeo login -u "$RHQCR_SERVICE_ACCOUNT_USERNAME" --password="$RHQCR_SERVICE_ACCOUNT_PASSWORD" https://quay.io

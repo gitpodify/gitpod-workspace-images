@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+REPO=${REPO:-"dazzle-cache.recaptime-dev.internal:5000/recaptime-dev/gp-ws-images-build-artifacts"}
+
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 
 echo "====> Building chunks..."

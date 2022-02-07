@@ -14,5 +14,5 @@ dazzle:build:
         - chunks/**/**
         - tests/*.yml
         - .trigger-build
-  #variables:
-  #  IMAGE_ARTIFACTS_REPO: ghcr.io/gitpodify/gitpodified-workspace-images/dazzle-cache
+  variables:
+    REPO: dazzle-cache.recaptime-dev.internal:5000/recaptime-dev/gp-ws-images-build-artifacts

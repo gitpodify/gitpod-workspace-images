@@ -36,7 +36,7 @@ default:
       - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/moby/buildkit:v0.9.3
         alias: buildkitd.recaptime-dev.internal
   before_script:
-    - bash -c "$PWD/.gitlab/ci/scripts/ci-setup"
+    - bash -c "$PWD/.gitlab/ci/scripts/ci-setup && $PWD/.gitlab/ci/scripts/run-in-doppler $PWD/devkit/bin/skopeo-auth-ghcr"
 
   after_script:
     - set +x # Ensure command debugging is disabled before running any additional scripts below

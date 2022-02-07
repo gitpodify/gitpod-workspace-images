@@ -1,23 +1,21 @@
 # Same as container-repo-sync.yml file, but for GitLab CI
-ghcr.io:
-  gitpodify:
-    gitpodified-workspace-images:
-      dazzle-build-artifacts:
-      - base
-      - c
-      - clojure
-      - full
-      - full-vnc
-      - go
-      - node
-      - node-lts
-      - python
-      - ruby-2
-      - ruby-3
-      - rust
-      - dotnet-vnc
-      - postgresql
-      - mysql
-      - mongodb
-      - java-11
-      - java-17
+ghcr.io/gitpodify/gitpodified-workspace-images:
+  dazzle-build-artifacts:
+  - base
+  - c
+  - clojure
+  - full
+  - full-vnc
+  - go
+  - node
+  - node-lts
+  - python
+  - ruby-2
+  - ruby-3
+  - rust
+  - dotnet-vnc
+  - postgresql
+  - mysql
+  - mongodb
+  - java-11
+  - java-17

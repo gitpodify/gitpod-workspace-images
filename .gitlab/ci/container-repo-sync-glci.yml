@@ -1,0 +1,22 @@
+# Same as the container-repo-sync.yml file, but for GitLab CI, since we're doing an DinD setup here.
+dazzle-cache.recaptime-dev.internal:5000:
+  recaptime-dev:
+    gp-ws-images-build-artifacts:
+    - base
+    - c
+    - clojure
+    - full
+    - full-vnc
+    - go
+    - node
+    - node-lts
+    - python
+    - ruby-2
+    - ruby-3
+    - rust
+    - dotnet-vnc
+    - postgresql
+    - mysql
+    - mongodb
+    - java-11
+    - java-17
