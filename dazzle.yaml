@@ -5,6 +5,7 @@ combiner:
         - dep-cacert-update
         - tool-docker
         - tool-tailscale
+        - tool-bashbox
     - name: c
       ref:
       - base

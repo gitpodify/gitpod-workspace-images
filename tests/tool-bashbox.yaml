@@ -1,0 +1,4 @@
+- desc: "Bashbox should be installed"
+  command: ["bashbox"]
+  assert:
+  - status == 0

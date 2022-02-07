@@ -1,3 +1,6 @@
 #!/usr/bin/env zsh
 # shellcheck shell=bash
-source "$HOME/.cargo/env"
+
+if [[ "$HOME/.cargo" ]]; then
+  source "$HOME/.cargo/env"
+fi

@@ -14,3 +14,6 @@ ENV HOMEBREW_NO_AUTO_UPDATE=1
 
 RUN sudo apt remove -y cmake \
     && brew install cmake
+
+# Install ShellCheck, Hadolint and direnv ahead of time.
+RUN brew install shellcheck hadolint direnv

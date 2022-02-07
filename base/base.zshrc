@@ -33,7 +33,7 @@ if [ -d "$HOME/.zshrc.d" ]; then
 fi
 # The source out user customizations there.
 if [ -d "$HOME/.gitpodify/custom-zshrc.d" ]; then
-  for i in $(ls -A $HOME/.gitpodify/custom-zshrc.d/); do 
+  for i in $(ls -A $HOME/.gitpodify/custom-zshrc.d/); do
     source $HOME/.gitpodify/custom-zshrc.d/$i;
   done
 fi
