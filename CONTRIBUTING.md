@@ -1,6 +1,7 @@
 # Contributing Guidelines/Docs
 
 First, we recommend bringing your improvements and feature requests to [the upstream](https://github.com/gitpod-io/workspace-images/blob/master/CONTRIBUTING.md) as we'll sync upstream changes with ours.
+The rest of this documentation applies to this fork only.
 
 If you love to submit your improvements here, keep reading this contributing guidelines. Your participation to the project is covered by
 our community code of conduct, which is available at <https://policy.recaptime.tk/latest/community/code-of-conduct>.
@@ -31,15 +32,18 @@ final approval (hint: maintainer approves the MR and adds `LGTM` label).
 
 ## Authoring Guidelines
 
-These guidelines are not strict rules, other than the commit messages. Some stuff are an work in progress right now in this section, especially on
-the changelog side.
+These guidelines are not strict rules, other than the commit messages. Some stuff are an work in progress right now in this section, especially on the changelog side. Consider this section as more of
+best pratices than rules here.
 
 ### Commit Messages
 
-It's some form of Conventional Commits, but we don't require to be `type(scope)` form by the way. The commit format should be
+It's some form of Conventional Commits/Changelog, but we don't require to be `type(scope)` form by the way. The commit format should be
 
 ```gitcommit
 <type/scope>: present/active tense short description, without ending marks
+
+# if going to the regular route
+<type(scope)>: present/active tense short description, without ending marks
 ```
 
 Supported types include:
@@ -55,49 +59,143 @@ Supported types include:
 Supported scopes include, also supported if used as commit subject after type/scope:
 
 - `ws-*`: changes related to one of workspace images, there are some exceptions such as:
-  * `ws-base` - The base Debian/Ubuntu images for all things Gitpodified Workspace Images
-  * `ws-full` - The bloddy 2+ GB workspace image (approx. 4 minutes to puil from GCP network as tested in GitLab Cloud Build in GitLab SaaS), including programming tools and stuff.[^3]
-  * `ws-dotnet` - .NET Framework tooling, including LTS versions and VNC ones.
+  - `ws-base` - The base Debian/Ubuntu images for all things Gitpodified Workspace Images
+  - `ws-full` - The bloddy 2+ GB workspace image (approx. 4 minutes to puil from GCP network as tested in GitLab Cloud Build in GitLab SaaS), including programming tools and stuff.[^3]
+  - `ws-dotnet` - .NET Framework tooling, including LTS versions and VNC ones.
+- `gitlab-cicd` - Scripts and CI config for GitLab CI
+- `global` - Changes tht affect everything, shouldn't used on regular basis unles pulling upstream changes and merging contributions
 
-[^3]: All the blame goes to Rust packages compilied from source at install time on image size. Use Alpine instead.
+[^3]: All the blame goes to Rust packages compilied from source at install time on image size.
 
 If you ever include other chores/changes along side the headline change, you may also optionally use this format for these:
 
 ```gitcommit
+# list type
 Also in this commit:
 * Some subject over here as placeholder
 * Another text in here as another placeholder btw
 * Assuming that we reached 100 characters on this line, we should cut this
   into an newline, like this.
+
+# sentence type
+Also in this commit, we explain how the sentence typically work while cutting
+stuff to ensure each line don't reach the 100 character limit by Commitlint in
+the future.
 ```
 
 ### Changelog Entries
 
-Each changelog entry should be itemized one-by-one, even before you commit and push your changes.
+Each changelog entry should be itemized one-by-one, even before you commit and push your changes. If you
+ever commit your stuff, the commit format should be like this:
+
+```gitcommit
+docs(changelog): update changelog entries for unreleased
+
+# YOUR SIGNOFF GOES HERE IN FORM OF THIS FORMAT, GENERATED VIA --signoff flag ON
+# THE git-commit COMMAND
+Signed-off-by: Your Name <user@email.tld>
+```
 
 ### Dockerfiles/Scripts
 
-* Try to keep Hadolint/ShellCheck warnings and errors to an minimum. We ignored some issues, particularly the usage of sudo/doas,
+- Try to keep Hadolint/ShellCheck warnings and errors to an minimum. We ignored some issues, particularly the usage of sudo/doas,
 unpinned dependencies in pip/npm/apk/etc, and bloody `SHELL ["/bin/sh", "-o", "pipefail"]` chaos on pipes.
-* Fix syntax issues as much as possible. You don't want to take more than a day just to debug an EOF syntax issue, right?
-* Its advised to test your images in production, we mean, in an fresh Gitpod workspace, [using this template repo](https://gitlab.com/gitpodify/bookish-potato)
+- Fix syntax issues as much as possible. You don't want to take more than a day just to debug an EOF syntax issue, right?
+- Its advised to test your images in production, we mean, in an fresh Gitpod workspace, [using this template repo](https://gitlab.com/gitpodify/bookish-potato).
 before even submitting an MR.[^4]
+- Since our base image is based on Ubuntu, third-party repository best pratices specific to Debian/Ubuntu also applies here.
+- Make sure non-root users (aka `gitpod` user) on the container can access the installed tool/lang.
+- The last `USER` directive **SHOULD** always be `gitpod` **NOT** the root user.
+- **DO NOT** update the `~/.bashrc` or `~/.zshrc` files unless you are making change in the base layer.
+
+### Dazzle-specifics
+
+- Always add new path as prefix to existing path. e.g. `ENV PATH=/my-tool/path/bin:$PATH`. Not doing so can cause path conflicts and can potentially break other images.
+- When adding an combination to `dazzle.yaml`, use an meaningful name
+
 
 [^4]: Currently, Gitpod doesn't support workspace rebuilds in a existing workspace yet like what Codespaces does.
 
-## Local dev environment setup
+## Required Tools
 
-While you can technically open this in an Remote Container in VS Code or in Gitpod, in case you just want your local development setup ready,
-we document them below for your reference.
+Even through they're included in [an custom Gitpod workspace Dockerfile](.gitpod.Dockerfile) for this repository and start them automagically ([config here for reference](.gitpod.yml))
+when you repo this repo in Gitpod, you may also opt to do this locally or outside Gitpod.
 
-### Packages used
+Other than [the Docker CLI and Docker CE deamon, an local registry, Dazzle and the main Buildkit CLI itself][sauce-1], you also need:
 
-You need the following tools and packages to proceed. Since we're building with Dazzle v2 in second-half of Feburary 2022, the good old `docker-build` is being deprecated, so proceed at your own risk.
-
-* Docker Engine/Desktop, but you're welcome to use Podman or other alternatives (hint: It should supports BuildKit via an env var similar
-to `DOCKER_BUILDKIT=1` when using the `build` command)
-  * You
-* bash and coreutils
 * Optional tools including direnv, ShellCheck and Hadolint.
 * In case you are using Busybox-based distro or script break due to missing dependencies, make sure to install `bash`, GNU `coreutils` and `findutils`, and
 `uuidgen` (sometimes called `uuid-runtime` in Debian/Ubuntu) packages from your distribution's repository or Homebrew.
+
+[sauce-1]: https://github.com/gitpod-io/workspace-images/blob/master/CONTRIBUTING.md#tools
+
+## Building Images
+
+### local.dev
+
+The upstream shipped an script in the root of the repository to simply the process for you, but we modified it to support overriding it.
+
+To get started, run it in an shell session:
+
+```bash
+./dazzle-up.sh
+
+# Use an remote cache, but since Dazzle needs to push builds to the registry we assume you have enough
+# permissions to do so. Also, do not use the example value of IMAGE_ARTIFACTS_REPO below.
+IMAGE_ARTIFACTS_REPO=ghcr.io/gitpodify/gitpodified-workspace-images/dazzle-build-artifacts ./dazzle-up.sh
+```
+
+This script will first build the chunks and run tests followed by creation of container images. It uses dazzle to perform these tasks.
+
+The images will be pushed to the local registry server running on port 5000 by default unless `IMAGE_ARTIFACTS_REPO` is set. You can pull the images using the regular `docker pull` command.
+
+```bash
+# combo - one of the image combinations listed in dazzle.yaml config file at repo root
+docker pull localhost:5000/recaptime-dev/gp-ws-images-build-artifacts:combo
+```
+
+Building images locally consumes a lot of resources and is often slow. Depending on your internet speeds, the amount of RAM and CPU cores you have, it might take 1.25 hours or longer to build the
+images locally. Subsequent builds are faster if the number of modified chunks is less, assuming no significant
+changes were happened.
+
+## CI/CD
+
+We use GitLab CI for our pipelines, running on GitLab SaaS' public runners at GCP. All of our configuration are in the `.gitlab/ci` directory, while scripts for the CI is at the `scripts` subdirectory.
+
+Even through GitLab's public runners are less powerful than GitHub's public runners for GH Actions
+due to cost-saving reasons, these are being built inside an Docker container.
+
+### Build
+
+Currently builds happens on `recaptime-dev-mainline` and no caching due to the 10G default project storage limit
+in GitLab SaaS.
+
+## Contributing an new image
+
+Remember to ALWAYS submit your images to the upstream and follow upstream's contribution workflow instead.
+If you think this image is better to be fit here than in upstream, read on.
+
+A chunk is categorized broadly in two categories:
+
+- **lang** - A language chunk such as java, clojure, python etc.
+- **tool** - A tool chunk such as nginx, vnc, postgresql etc.
+
+A chunk should be named following the naming convention `category-name`. e.g. a java chunk would be named as `lang-java` whereas
+a `postgresql` chunk would be named `tool-postgresql`.
+
+To get started, run `dazzle project init <category-name>` to automagically update the configuration and create
+files for you. If you need to manually do it, here's the checklist:
+
+- [ ] Create your chunk directory under [./chunks](chunks)
+- [ ] Create a `chunk.yaml` file if your chunk has more than one active versions.
+You can look at the existing files in this repo for reference e.g. [lang-java](chunks/lang-java/chunk.yaml).
+- [ ] Create a Dockerfile containing instructions on how to install the tool. Make sure you use the default base image like other chunks, like this one below.
+
+  ```dockerfile
+  # Dazzle needs to ensure that each chunk is built based on the base image, so we explictly import
+  # the base build argument for the FROm directive.
+  ARG base
+  FROM ${base}
+  ```
+
+- [ ]

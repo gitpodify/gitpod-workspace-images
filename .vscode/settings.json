@@ -30,7 +30,8 @@
         "gitpod",
         "vscode",
         "docker",
-        "issue-templates"
+        "issue-templates",
+        "contributing"
     ],
     "conventionalCommits.emojiFormat": "emoji",
     "conventionalCommits.gitmoji": true,
