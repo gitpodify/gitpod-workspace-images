@@ -2,7 +2,7 @@
 
 echo "===== Installing packages ====="
 curl -sL https://deb.nodesource.com/setup_14.x | bash -
-./base/install-packages zip \
+install-packages zip \
         unzip \
         htop \
         jq \
@@ -48,6 +48,8 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docke
 echo "===== Installing yq ====="
 pip3 install yq
 
-echo "===== Authenicating Docker CLI against container registries ====="
-./.gitlab/ci/scripts/run-in-doppler $PWD/.gitlab/ci/scripts/docker-cli-login
-./.gitlab/ci/scripts/run-in-doppler $PWD/devkit/bin/skopeo-auth-ghcr
+if [[ $SKIP_DOCKER_CLI_LOGIN == "" ]]; then
+    echo "===== Authenicating Docker CLI against container registries ====="
+    run-in-doppler $PWD/.gitlab/ci/scripts/docker-cli-login
+    run-in-doppler $PWD/devkit/bin/skopeo-auth-ghcr
+fi

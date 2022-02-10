@@ -1,10 +1,38 @@
+docker-ci:build:
+  stage: build
+  timeout: 1h 30m
+  script:
+    - |
+      docker build -t $CI_REGISTRY_IMAGE/ci:branch-$CI_COMMIT_REF_SLUG \
+          --file devkit/docker/Dockerfile .
+    - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+    - |
+      docker tag $CI_REGISTRY_IMAGE/ci:branch-$CI_COMMIT_REF_SLUG $CI_REGISTRY_IMAGE/ci:commit-$CI_COMMIT_SHORT_SHA
+      ./.gitlab/ci/scripts/publish-image $CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG $CI_REGISTRY_IMAGE/ci:commit-$CI_COMMIT_SHORT_SHA
+
+      if [[ $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH ]]; then
+         docker tag $CI_REGISTRY_IMAGE/ci:branch-$CI_COMMIT_REF_SLUG $CI_REGISTRY_IMAGE/ci:latest
+         docker push $CI_REGISTRY_IMAGE/ci:latest
+      fi
+  rules:
+    # Don't run this on merge requests.
+    - if: '$CI_MERGE_REQUEST_IID'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: on_success
+      changes:
+        - devkit/docker/Dockerfile
+        - .gitlab/ci/scripts/ci-setup
+
 dazzle:build:
   needs:
     - global:lint
   stage: build
   timeout: 3h # just in case things go brr
   script:
+    - ./devkit/bin/skopeo-glci-cache-sync local
     - ./.gitlab/ci/scripts/dazzle-build
+    - ./devkit/bin/skopeo-glci-cache-sync remote
   rules:
     - changes:
         - base/Dockerfile
@@ -15,4 +43,4 @@ dazzle:build:
         - tests/*.yml
         - .trigger-build
   variables:
-    REPO: dazzle-cache.recaptime-dev.internal:5000/recaptime-dev/gp-ws-images-build-artifacts
+    REPO: http://dazzle-cache.recaptime-dev.internal:5000/recaptime-dev/gp-ws-images-build-artifacts

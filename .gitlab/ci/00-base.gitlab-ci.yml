@@ -13,6 +13,8 @@ variables:
   DOCKER_DRIVER: overlay2
   # Disable TLS since we're running inside local network.
   DOCKER_TLS_CERTDIR: ""
+  # Enable BuildKit for regular `docker build` invocations
+  DOCKER_BUILDKIT: "1"
   # variables for our dind script checker
   DIND_HOSTNAME: bulldozer.docker.internal
   DIND_PORT: "2375"
