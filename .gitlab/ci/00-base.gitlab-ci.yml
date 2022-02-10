@@ -27,7 +27,7 @@ default:
   image:
     name: registry.gitlab.com/gitpodify/gitpodified-workspace-images/ci:latest
     entrypoint:
-      - /bin/sh
+      - /usr/bin/bash
   services:
       # https://pythonspeed.com/articles/gitlab-build-docker-image/, through we need to track daemon version changes through some hacking
       # around the NewReleases webhooks stuff.
