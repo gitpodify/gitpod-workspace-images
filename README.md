@@ -36,7 +36,8 @@ your OMZ customizations were not overrided by the defaults after doing the init 
 ## The Motivation and The Why
 
 While Dazzle can help us in handling image caching, we want to ensure everything is fresh as possible and to keep the vulnerability count as low as possible in Quay image scans atleast for system packages,
-so we choose plain `docker build` built-in at Red Hat Quay Container Registry.
+~~so we choose plain `docker build` built-in at Red Hat Quay Container Registry~~.
+
 
 We initially use these images we built as drop-in replacement for the upstream images built through Dazzle, but sometimes outdated cache can cause different pain points for us.
 
@@ -65,17 +66,6 @@ FROM quay.io/gitpodified-workspace-images/base:latest
 
 ## Troubleshooting / FAQs
 
-### Having issues with Let's Encrypt or other TLS certs?
-
-You may have outdated version of `ca-certificated` package installed. Try running the `upgrade-packages` script provided in the images with `sudo`. If you're sadly on the official images, try running this:
-
-```bash
-# Note that upgrades are only valid for duration of your workspace session unless you add it to your .gitpod.Dockerfile.
-curl -fsSL https://github.com/gitpodify/gitpod-workspace-images/raw/master/base/upgrade-packages | sudo bash -
-```
-
-When using one of our images, this should fix the problem at least. If you have an self-signed one, make sure to add them through your `.gitpod.Dockerfile` as needed.
-
 ### Debian/Ubuntu only?
 
 We want to also support RHEL and Alpine in the future, but that would be an additional workload for the maintainers, which is currently one man, so sorry.
@@ -88,4 +78,4 @@ We avoided Docker Hub as much as possible so you don't worry about pull limits o
 
 ### When migrating to Dazzle v2?
 
-We're not sure if we're gonna use Dazzle v2 on build stages and on localdev/Gitpod. We'll let you know soon.
+We're currently slowly migrating to Dazzle v2 right now. Metadata stuff will then be added next very soon.
