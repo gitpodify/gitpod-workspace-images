@@ -24,7 +24,10 @@ variables:
 
 # global variables, services, before and after scripts ar being deprecated and soon to be removed in future.
 default:
-  image: registry.gitlab.com/gitpodify/gitpodified-workspace-images/ci:latest
+  image:
+    name: registry.gitlab.com/gitpodify/gitpodified-workspace-images/ci:latest
+    entrypoint:
+      - /bin/sh
   services:
       # https://pythonspeed.com/articles/gitlab-build-docker-image/, through we need to track daemon version changes through some hacking
       # around the NewReleases webhooks stuff.
