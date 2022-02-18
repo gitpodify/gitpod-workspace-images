@@ -24,7 +24,7 @@ docker-ci:build:
         - devkit/docker/Dockerfile
         - .gitlab/ci/scripts/ci-setup
 
-dazzle:build:
+.dazzle:build:
   needs:
     - global:lint
   stage: build
