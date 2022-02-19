@@ -11,6 +11,24 @@ This section contains different changes we made in the images under the `gitpodi
 happened in this repository. Keep scrolling for the upstream's changelog entries. For fully chronological changelogs, please see the Git commit
 log/history for `recaptime-dev-mainline` branch. Dates written here in this section is in Philippine Standard Time.
 
+## 2021-02-03 to TODO
+
+* **FEAT**: Merge upstream changes since <https://github.com/gitpod-io/workspace-images/pull/593>
+* **CHORE**: Move `zshrc.d` files from old full directory into base image.
+* **CHORE** Another round of upstream changes merging with the addition of utility tools related to Skopeo and Dazzle
+* **CI**: Update GitLab CI config to handle Dazzle builds
+* **CHORE**: More updates sm the devkt scripts and 
+* **STYLE**: Run pre-commit on all files and do some commit linter changes
+* **CHORE**: Add more tools to the workspace Dockerfile
+* **CHORE/FIX/CI**: More chaos management while fixing the broken `pre-commit run --all-files` warmup on Alpine Linux.
+* **FEAT**: Add more packages to Homebrew layer and add Bashbox to the mix.
+* **DOCS**: Expand contributing guidelines and add one scope to the Conventional Commits VSCE settings in workspace settings ofr the repo
+* **CHORE**: Another round of merging changes from upstream.
+* **CI** add an custom Docker image for CI, initially use Alpine Linux as the base and then Debian 11 using the `buildpacks-deps` image of it.
+* **CHORE**: Update envrc file to add more GitLab CI-related environment variables
+* **CHORE**: Update GitLab issue templates btw.
+* **CHORE**: Another round of merging changes from upstream, with some resolving conflicts in root gitignore file.
+
 ### 2021-01-11 to 2021-01-20
 
 * **CHORE**: Add support for custom tags and handle selective builds via wrapper
