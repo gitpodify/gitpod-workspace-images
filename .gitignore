@@ -7,3 +7,6 @@
 # Developer-specific secrets
 .env*
 !.env.example
+
+/dazzle
+/legacy
