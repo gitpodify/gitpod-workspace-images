@@ -8,11 +8,11 @@ REPO_ROOT="$(git rev-parse --show-toplevel)"
 echo "====> Building chunks..."
 ### COPIED FROM THE MAIN dazzle-up.sh FILE - START ###
 # First, build chunks without hashes
-dazzle --addr tcp://buildkitd.recaptime-dev.internal build $REPO -v --chunked-without-hash
+dazzle --addr tcp://buildkitd.recaptime-dev.internal:12340 build $REPO -v --chunked-without-hash
 # Second, build again, but with hashes
-dazzle --addr tcp://buildkitd.recaptime-dev.internal build $REPO -v
+dazzle --addr tcp://buildkitd.recaptime-dev.internal:12340 build $REPO -v
 # Third, create combinations of chunks
-dazzle --addr tcp://buildkitd.recaptime-dev.internal combine $REPO --all -v
+dazzle --addr tcp://buildkitd.recaptime-dev.internal:12340 combine $REPO --all -v
 ### COPIED FROM THE MAIN dazzle-up.sh FILE - END ###
 
 # Authenicate against GHCR via Skopeo and then mirror stuff to there

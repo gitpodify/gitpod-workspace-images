@@ -38,6 +38,9 @@ default:
       # Buildkit daemon for Dazzle to use with. Proceed at your own risk.
       - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/moby/buildkit:v0.9.3
         alias: buildkitd.recaptime-dev.internal
+        command:
+          - --addr
+          - tcp://0.0.0.0:12340
   before_script:
     - bash -c "$PWD/.gitlab/ci/scripts/ci-setup && $PWD/.gitlab/ci/scripts/run-in-doppler $PWD/devkit/bin/skopeo-auth-ghcr"
 
