@@ -3,8 +3,6 @@ FROM buildpack-deps:focal
 COPY install-packages upgrade-packages /usr/local/bin/
 
 ### base ###
-ARG DEBIAN_FRONTEND=noninteractive
-
 RUN yes | unminimize \
     && install-packages \
         zip \

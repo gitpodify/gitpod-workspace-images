@@ -1,21 +1,24 @@
-# Sync all the image tags including latest
-europe-docker.pkg.dev/gitpod-artifacts/docker-dev:
-  images:
-    workspace-base: []
-    workspace-c: []
-    workspace-clojure: []
-    workspace-full: []
-    workspace-full-vnc: []
-    workspace-go: []
-    workspace-node: []
-    workspace-node-lts: []
-    workspace-python: []
-    workspace-ruby-2: []
-    workspace-ruby-3: []
-    workspace-rust: []
-    workspace-dotnet-vnc: []
-    workspace-postgresql: []
-    workspace-mysql: []
-    workspace-mongodb: []
-    workspace-java-11: []
-    workspace-java-17: []
+# Sync all the iamges that are tagged using date time stamp
+# format +%Y-%m-%d-%H-%M-%S e.g. 2022-02-22-10-10-54.
+# Use simple regex for readability. Since we tag all images with year
+# We use a regex rule: Any tag that starts with '20'.
+"ghcr.io/gitpodify/gitpodified-workspace-images":
+  dazzle-build-artifacts:
+    base: "dazzle-build-20.*"
+    c: "dazzle-build-20.*"
+    clojure: "dazzle-build-20.*"
+    full: "dazzle-build-20.*"
+    full-vnc: "dazzle-build-20.*"
+    go: "dazzle-build-20.*"
+    node: "dazzle-build-20.*"
+    node-lts: "dazzle-build-20.*"
+    python: "dazzle-build-20.*"
+    ruby-2: "dazzle-build-20.*"
+    ruby-3: "dazzle-build-20.*"
+    rust: "dazzle-build-20.*"
+    dotnet: "dazzle-build-20.*"
+    postgresql: "dazzle-build-20.*"
+    mysql: "dazzle-build-20.*"
+    mongodb: "dazzle-build-20.*"
+    java-11: "dazzle-build-20.*"
+    java-17: "dazzle-build-20.*"

@@ -113,8 +113,7 @@ before even submitting an MR.[^4]
 - Always add new path as prefix to existing path. e.g. `ENV PATH=/my-tool/path/bin:$PATH`. Not doing so can cause path conflicts and can potentially break other images.
 - When adding an combination to `dazzle.yaml`, use an meaningful name
 
-
-[^4]: Currently, Gitpod doesn't support workspace rebuilds in a existing workspace yet like what Codespaces does.
+[^4]: Currently, Gitpod doesn't support workspace rebuilds in a existing workspace yet like what Codespaces does. In meanwhile, feel free to create a fresh workspace if needed.
 
 ## Required Tools
 
@@ -124,8 +123,7 @@ when you repo this repo in Gitpod, you may also opt to do this locally or outsid
 Other than [the Docker CLI and Docker CE deamon, an local registry, Dazzle and the main Buildkit CLI itself][sauce-1], you also need:
 
 * Optional tools including direnv, ShellCheck and Hadolint.
-* In case you are using Busybox-based distro or script break due to missing dependencies, make sure to install `bash`, GNU `coreutils` and `findutils`, and
-`uuidgen` (sometimes called `uuid-runtime` in Debian/Ubuntu) packages from your distribution's repository or Homebrew.
+* In case you are using Busybox-based distro or script break due to missing dependencies, make sure to install `bash`, GNU `coreutils` and `findutils`
 
 [sauce-1]: https://github.com/gitpod-io/workspace-images/blob/master/CONTRIBUTING.md#tools
 
@@ -160,15 +158,23 @@ changes were happened.
 
 ## CI/CD
 
+We're using upstream's GitHub Actions configuration files with some customizations for our side. We're still using GitLab CI for toher things such as linting stuff through `pre-commit` and other things.
+
+<details>
+
+<summary>Older info for our GitLab CI usage for Dazzle</summary>
+
 We use GitLab CI for our pipelines, running on GitLab SaaS' public runners at GCP. All of our configuration are in the `.gitlab/ci` directory, while scripts for the CI is at the `scripts` subdirectory.
 
 Even through GitLab's public runners are less powerful than GitHub's public runners for GH Actions
 due to cost-saving reasons, these are being built inside an Docker container.
 
+</details>
+
 ### Build
 
-Currently builds happens on `recaptime-dev-mainline` and no caching due to the 10G default project storage limit
-in GitLab SaaS.
+~~Currently builds happens on `recaptime-dev-mainline` and no caching due to the 10G default project storage limit
+in GitLab SaaS.~~ We use GitHub Container Registry for caching Dazzle builds and stuff.
 
 ## Contributing an new image
 
@@ -193,7 +199,7 @@ You can look at the existing files in this repo for reference e.g. [lang-java](c
 
   ```dockerfile
   # Dazzle needs to ensure that each chunk is built based on the base image, so we explictly import
-  # the base build argument for the FROm directive.
+  # the base build argument for the FROM directive.
   ARG base
   FROM ${base}
   ```
