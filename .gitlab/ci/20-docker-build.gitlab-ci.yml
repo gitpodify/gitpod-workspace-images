@@ -30,9 +30,9 @@ dazzle:build:
   stage: build
   timeout: 3h # just in case things go brr
   script:
-    - ./devkit/bin/skopeo-glci-cache-sync local
-    - ./.gitlab/ci/scripts/dazzle-build
-    - ./devkit/bin/skopeo-glci-cache-sync remote
+    - |
+      echo "info: Check https://github.com/gitpodify/gitpodified-workspace-images/actions for latest activity."
+      echo "info: Building images on GitLab is currently on hold due to limited resources in hosted runners on SaaS."
   rules:
     - changes:
         - base/Dockerfile
