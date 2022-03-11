@@ -87,7 +87,13 @@ jobs:
 
       - name: ✍🏽 Authenicate against GHCR and Quay.io
         run: |
+          echo "===> Authenicating against GHCR"
           sudo skopeo login -u RecapTimeBot --password=${{ secrets.GHCR_SERVICE_ACCOUNT_PASSWORD }} https://${{env.GHCR_REGISTRY}}
+          echo
+          sleep 3
+
+          echo "===> Authenicating against RHQCR"
+          sudo skopeo login -u ${{ secrets.RHQCR_SERVICE_ACCOUNT_USERNAME }} --password=${{secrets.RHQCR_SERVICE_ACCOUNT_PASSWORD}} https://${{env.RHQCR_REGISTRY}}
 
       - name: 🐳 Sync combined images to GHCR
         run: |
@@ -96,7 +102,7 @@ jobs:
             --registries-conf=.github/registries.conf \
             --src yaml \
             --dest docker \
-            .gitlab/ci/container-repo-sync.yml ${{env.GHCR_REGISTRY}}/gitpodify/gitpodified-workspace-images/dazzle-build-artifacts
+            .gihub/sync-containers.yml ${{env.GHCR_REGISTRY}}/gitpodify/gitpodified-workspace-images/dazzle-build-artifacts
 
       - name: 🕰️ Create timestamp tag
         id: create-timestamp-tag
@@ -109,7 +115,7 @@ jobs:
 
       - name: 📋 Copy images with tag in the Artifact Registry
         run: |
-          IMAGE_TAGS=$(cat .gitlab/ci/container-repo-sync | yq '.["localhost:5000"]."recaptime-dev"."gp-ws-images-build-artifacts"|join(" ")' -r)
+          IMAGE_TAGS=$(cat .github/sync-container.yml | yq '.["localhost:5000"]."recaptime-dev"."gp-ws-images-build-artifacts"|join(" ")' -r)
           COPY_JOBS_PIDS=""
           for IMAGE_TAG in $IMAGE_TAGS;
           do
@@ -130,10 +136,6 @@ jobs:
           for COPY_JOBS_PID in $COPY_JOBS_PIDS; do
               wait $COPY_JOBS_PID || exit 1
           done
-
-      - name: ✍🏽 Authenicate Skopeo against RHQCR
-        run: |
-          sudo skopeo login -u ${{ secrets.RHQCR_SERVICE_ACCOUNT_USERNAME }} --password=${{secrets.RHQCR_SERVICE_ACCOUNT_PASSWORD}} https://${{env.RHQCR_REGISTRY}}
 
       - name: 🐳 Sync images with specific tags to RHQCR
         run: |
