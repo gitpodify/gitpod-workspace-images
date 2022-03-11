@@ -71,29 +71,14 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master
 COPY --chown=gitpod:gitpod base.zshrc /home/gitpod/.zshrc
 COPY --chown=gitpod:gitpod zshrc.d /home/gitpod/.zshrc.d
 
-ARG imageArtifactTagName=quay.io/gitpodified-workspace-images/build-artifacts:123e4567-e89b-12d3-a456-426652340000
-ARG buildId=123e4567-e89b-12d3-a456-426652340000
+
 ARG maintainer="Recap Time Squad <docker+gp-ws-images@recaptime.tk>"
 ARG gitRepo=https://gitlab.com/gitpodify/gitpodified-workspace-images
-ARG commitId=0000000000000000000000000000
 # First, bake image metadata for 'docker inspect'.
-LABEL dev.gitpodify.baseImage.buildId=${buildId} \
-      dev.gitpodify.baseImage.buildMaintainer=${maintainer} \
+LABEL dev.gitpodify.baseImage.buildMaintainer=${maintainer} \
       org.opencontainers.image.licenses=MIT \
-      org.opencontainers.image.source=${gitRepo} \
-      dev.gitpodify.baseImage.buildSource=${gitRepo} \
-      dev.gitpodify.baseImage.gitCommitSha=${commitId} \
-      dev.gitpodify.image.artifactTag=${imageArtifactTagName}
-# Then, load build ID, maintainer and source metadata as env vars
-ENV GITPODIFY_BASE_BUILD_ID=${buildId} \
-    GITPODIFY_IMAGE_ARTIFACT_TAG=${imageArtifactTagName} \
-    GITPODIFY_BASE_BUILD_MAINTAINER=${maintainer} \
-    GITPODIFY_BASE_BUILD_SOURCE=${gitRepo} \
-    GITPODIFY_BASE_BUILD_COMMIT_SHA=${commitId} \
-    # GITPODIFY_IMAGE_BUILD_ID can be changed when built on other images based on it, so we're also provide
-    # the GITPODIFY_BASE_BUILD_ID just in case.
-    GITPODIFY_IMAGE_BUILD_ID=${buildId} \
-    # For dotfiles support handling on install scripts and stuff
-    GITPODIFIED_WORKSPACE_IMAGE=true
+      org.opencontainers.image.source=${gitRepo}
+
+COPY .build-info /home/gitpod/.ws-image-metadata
 
 CMD [ "/usr/bin/zsh", "-l" ]
