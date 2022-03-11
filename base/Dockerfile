@@ -79,6 +79,6 @@ LABEL dev.gitpodify.baseImage.buildMaintainer=${maintainer} \
       org.opencontainers.image.licenses=MIT \
       org.opencontainers.image.source=${gitRepo}
 
-COPY .build-info /home/gitpod/.ws-image-metadata
+COPY --chown=gitpod:gitpod .build-info /home/gitpod/.gitpodify/ws-image-metadata
 
 CMD [ "/usr/bin/zsh", "-l" ]

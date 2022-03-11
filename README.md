@@ -5,7 +5,7 @@
 The home of `quay.io/gitpod-workspace-images/*` Docker images, maintained by @ajhalili2006 from @RecapTime. Merge requests are very welcome, through please take them all to upstream
 `gitpod-io/workspace-images` repository on GitHub so we can rebase-then-merge them into here.
 
-**NOTE TO USERS/CONTRIBUTORS**: CI will be temporarily broken until the Dazzle v2 migration is finshed, so the ETA is maybe between Feb. 16 and March 2, Philippine Standard Time.
+**NOTE TO USERS/CONTRIBUTORS**: ~~CI will be temporarily broken until the Dazzle v2 migration is finshed, so the ETA is maybe between Feb. 16 and March 2, Philippine Standard Time.~~ There is some progress on our Dazzle migration right now, but we'll still fixing the kinks and the edges on the build systems.
 
 ## Canonical Repo
 
@@ -35,9 +35,8 @@ your OMZ customizations were not overrided by the defaults after doing the init 
 
 ## The Motivation and The Why
 
-While Dazzle can help us in handling image caching, we want to ensure everything is fresh as possible and to keep the vulnerability count as low as possible in Quay image scans atleast for system packages,
+While Dazzle can help us in handling image caching, we want to ensure everything is fresh as possible and to keep the vulnerability count as low as possible in Quay image scans atleast for system packages
 ~~so we choose plain `docker build` built-in at Red Hat Quay Container Registry~~.
-
 
 We initially use these images we built as drop-in replacement for the upstream images built through Dazzle, but sometimes outdated cache can cause different pain points for us.
 
@@ -65,6 +64,10 @@ FROM quay.io/gitpodified-workspace-images/base:latest
 [^1]: The Gitpodify CLI is under prototype status and may be go into beta state within months. If you are curious, see <https://gitlab.com/gitpodify/gitpodify>
 
 ## Troubleshooting / FAQs
+
+### Getting build metadata
+
+Build metadata is stored in `~/.gitpodify/ws-image-metadata`, so you can copy its contents via `cat` so we can help debug issue faster.
 
 ### Debian/Ubuntu only?
 
