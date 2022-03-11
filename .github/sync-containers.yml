@@ -1,7 +1,7 @@
 # https://github.com/containers/skopeo/blob/main/docs/skopeo-sync.1.md#yaml-file-content-used-source-for---src-yaml
 localhost:5000:
-  images:
-    workspace-base-images:
+  recaptime-dev:
+    gp-ws-images-build-artifacts:
     - base
     - c
     - clojure
@@ -20,12 +20,4 @@ localhost:5000:
     - mongodb
     - java-11
     - java-17
-
-# these images are missing and need chunks and/or combinations
-
-# workspace-dotnet-lts-vnc
-# workspace-wasm
-# workspace-flutter
-# workspace-dotnet-lts
-# workspace-dotnet
-# workspace-gecko
+    - yugabytedb

@@ -22,3 +22,4 @@
     mongodb: "dazzle-build-20.*"
     java-11: "dazzle-build-20.*"
     java-17: "dazzle-build-20.*"
+    yugabytedb: "dazzle-build-20.*"
