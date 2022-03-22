@@ -17,7 +17,7 @@ log/history for `recaptime-dev-mainline` branch. Dates written here in this sect
 * **CHORE**: Move `zshrc.d` files from old full directory into base image.
 * **CHORE** Another round of upstream changes merging with the addition of utility tools related to Skopeo and Dazzle
 * **CI**: Update GitLab CI config to handle Dazzle builds
-* **CHORE**: More updates sm the devkt scripts and 
+* **CHORE**: More updates sm the devkt scripts and
 * **STYLE**: Run pre-commit on all files and do some commit linter changes
 * **CHORE**: Add more tools to the workspace Dockerfile
 * **CHORE/FIX/CI**: More chaos management while fixing the broken `pre-commit run --all-files` warmup on Alpine Linux.

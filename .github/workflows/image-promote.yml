@@ -34,7 +34,7 @@ jobs:
 
       - name: ✍🏽 Configuring Skopeo for Google Artifact Registry
         run: |
-          
+
           echo "===> Authenicating against GHCR"
           sudo skopeo login -u RecapTimeBot --password=${{ secrets.GHCR_SERVICE_ACCOUNT_PASSWORD }} https://${{env.SOURCE_IMAGE_REGISTRY}}
           echo
