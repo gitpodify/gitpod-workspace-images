@@ -20,6 +20,13 @@ jobs:
       GHCR_REGISTRY: ghcr.io
 
     steps:
+      - name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v1
+      - name: Load environment variables as masked secrets
+        uses: catchco/doppler-environment-loader@latest
+        with:
+          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
+
       - name: 📥 git clone --depth 1 && git checkout
         uses: actions/checkout@v2
         with:
@@ -80,7 +87,7 @@ jobs:
         run: |
           ./dazzle-up.sh
 
-      - name: ✍🏽 Authenicate against GHCR and Quay.io
+      - name: ✍🏽 Authenicate against GHCR, Quay.io and Cloudsmith
         run: |
           echo "===> Authenicating against GHCR"
           sudo skopeo login -u RecapTimeBot --password=${{ secrets.GHCR_SERVICE_ACCOUNT_PASSWORD }} https://${{env.GHCR_REGISTRY}}
@@ -89,6 +96,9 @@ jobs:
 
           echo "===> Authenicating against RHQCR"
           sudo skopeo login -u ${{ secrets.RHQCR_SERVICE_ACCOUNT_USERNAME }} --password=${{secrets.RHQCR_SERVICE_ACCOUNT_PASSWORD}} https://${{env.RHQCR_REGISTRY}}
+
+          echo "===> Authenticating against Cloudsmith"
+          sudo skopeo login -u recaptimebot --password=${{secrets.CLOUDSMITH_API_KEY}} https://docker.cloudsmith.io
 
       - name: 🐳 Sync combined images to GHCR
         run: |
@@ -106,7 +116,7 @@ jobs:
 
       - name: 📋 copy-to-ghcr.pipelines.recaptime.dev
         run: |
-          IMAGE_TAGS=$(cat .github/sync-container.yml | yq '.["localhost:5000"]."recaptime-dev"."gp-ws-images-build-artifacts"|join(" ")' -r)
+          IMAGE_TAGS=$(cat .github/sync-containers.yml | yq '.["localhost:5000"]."recaptime-dev"."gp-ws-images-build-artifacts"|join(" ")' -r)
           COPY_JOBS_PIDS=""
           for IMAGE_TAG in $IMAGE_TAGS;
           do
@@ -128,9 +138,14 @@ jobs:
               wait $COPY_JOBS_PID || exit 1
           done
 
-      - name: 🐳 Sync images with specific tags to RHQCR
+      - name: 🐳 Sync images with specific tags to RHQCR and Cloudsmith.io
         run: |
             sudo skopeo sync \
             --src yaml \
             --dest docker \
             .github/promote-images.yml ${{ env.RHQCR_REGISTRY }}/gitpodified-workspace-images
+
+            sudo skopeo sync \
+            --src yaml \
+            --dest docker \
+            .github/promote-images.yml docker.cloudsmith.io/gitpodify/gitpodified-workspace-images

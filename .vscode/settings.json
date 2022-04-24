@@ -31,7 +31,8 @@
         "vscode",
         "docker",
         "issue-templates",
-        "contributing"
+        "contributing",
+        "github-actions"
     ],
     "conventionalCommits.emojiFormat": "emoji",
     "conventionalCommits.gitmoji": true,
