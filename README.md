@@ -1,8 +1,8 @@
 # Gitpodified Workspace Images by Recap Time squad
 
-[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-908a85?logo=gitpod&style=for-the-badge)](https://gitpod.io/#https://gitlab.com/gitpodify/gitpodified-workspace-images)
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-908a85?logo=gitpod&style=for-the-badge)](https://gitpod.io/#https://gitlab.com/gitpodify/gitpodified-workspace-images) [![Hosted By: Cloudsmith](https://img.shields.io/badge/OSS%20hosting%20by-cloudsmith-blue?logo=cloudsmith&style=for-the-badge)](https://cloudsmith.io/~gitpodify/repos/gitpodified-workspace-images)
 
-The home of `quay.io/gitpod-workspace-images/*` Docker images, maintained by @ajhalili2006 from @RecapTime. Merge requests are very welcome, through please take them all to upstream
+The home of `quay.io/gitpod-workspace-images/*`/`docker.cloudsmith.io/~gitpodify/gitpodified-workspace-images/*` Docker images, maintained by @ajhalili2006 from @RecapTime. Merge requests are very welcome, through please take them all to upstream
 `gitpod-io/workspace-images` repository on GitHub so we can rebase-then-merge them into here.
 
 **NOTE TO USERS/CONTRIBUTORS**: ~~CI will be temporarily broken until the Dazzle v2 migration is finshed, so the ETA is maybe between Feb. 16 and March 2, Philippine Standard Time.~~ There is some progress on our Dazzle migration right now, but we'll still fixing the kinks and the edges on the build systems.
@@ -15,11 +15,11 @@ The official canonical repo is on GitLab SaaS at <https://gitlab.com/gitpodify/g
 
 Builds are always happens automagically on Red Hat Quay Container Registry from the `recaptime-dev-mainline` branch as we merge changes from the upstream. Click on an image name to get all available tags.
 
-| Image Name | Description | RHQCR/CI Badge |
+| Image Name | Description |
 | --- | --- | --- |
-| [`quay.io/gitpodified-workspace-images/base`](https://quay.io/repository/gitpodified-workspace-images/base?tab=tags) | The base image for everything, with Zsh and OhMyZsh preloaded. | [![Docker Repository on Quay](https://quay.io/repository/gitpodified-workspace-images/base/status "Docker Repository on Quay")](https://quay.io/repository/gitpodified-workspace-images/base) |
-| [`quay.io/gitpodified-workspace-images/full`](https://quay.io/repository/gitpodified-workspace-images/full?tab=tags) | The default Gitpod workspace image, plus additional tools such as Hadolint and ShellCheck. | [![Docker Repository on Quay](https://quay.io/repository/gitpodified-workspace-images/full/status "Docker Repository on Quay")](https://quay.io/repository/gitpodified-workspace-images/full) |
-| [`quay.io/gitpodified-workspace-images/vnc`](https://quay.io/repository/gitpodified-workspace-images/vnc?tab=tags) | An flavor of `quay.io/gitpodified-workspace-images/full`, but with noVNC installed for graphical apps. | TBD |
+| [`quay.io/gitpodified-workspace-images/base`](https://quay.io/repository/gitpodified-workspace-images/base?tab=tags) | The base image for everything, with Zsh and OhMyZsh preloaded. |
+| [`quay.io/gitpodified-workspace-images/full`](https://quay.io/repository/gitpodified-workspace-images/full?tab=tags) | The default Gitpod workspace image, plus additional tools such as Hadolint and ShellCheck. |
+| [`quay.io/gitpodified-workspace-images/vnc`](https://quay.io/repository/gitpodified-workspace-images/vnc?tab=tags) | An flavor of `quay.io/gitpodified-workspace-images/full`, but with noVNC installed for graphical apps. |
 
 More images will be become available in the future, but you can build the images yourself if needed.
 

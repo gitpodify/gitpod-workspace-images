@@ -11,7 +11,6 @@ jobs:
   # for prod.
   sync:
     runs-on: ubuntu-latest
-    environment: "production"
     permissions:
       contents: "read"
       id-token: "write"
@@ -23,7 +22,7 @@ jobs:
       - name: Install Doppler CLI
         uses: dopplerhq/cli-action@v1
       - name: Load environment variables as masked secrets
-        uses: catchco/doppler-environment-loader@latest
+        uses: catchco/doppler-environment-loader@v1.0.2
         with:
           doppler-token: ${{ secrets.DOPPLER_TOKEN }}
 
