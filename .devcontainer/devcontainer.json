@@ -1,0 +1,52 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.233.0/containers/docker-existing-dockerfile
+{
+	"name": "workspace-images.gitpodify.dev",
+
+	// Sets the run context to one level up instead of the .devcontainer folder.
+	"context": "..",
+
+	// Update the 'dockerFile' property if you aren't using the standard 'Dockerfile' filename.
+	"dockerFile": "../.gitpod.Dockerfile",
+
+	"build": {
+		"args": {
+			// Our custom base image to be passed on the build context for Codespaces and
+			// Remote Containers, currently unsupported on Gitpod yet. We'll revert back to ours
+			// once the CI builds go green in the future.
+			//"baseImage": "quay.io/gitpodified-workspace-images/full:latest"
+		}
+	},
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": {},
+	
+	// Add the IDs of extensions you want installed when the container is created.
+	// Note that we'll match it with .gitpod.yml's vscode.extensions array values.
+	"extensions": [],
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	//"forwardPorts": [],
+
+	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
+	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
+
+	// Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
+	"mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
+
+	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
+	"remoteUser": "gitpod",
+
+	"hostRequirements": {
+		// While there's no hard requirement for CPU and RAM requirements, we go a bit
+		// conservative here to avoid too much unneeded strain on GitHub's side.
+		"cpus": 2,
+		"memory": "1gb",
+		// At least 32gb of storage is required for Dazzle builds to work, in my experience
+		// with building images manually over at Gitpod.
+		"storage": "32gb"
+	},
+
+	"postCreateCommand": "git remote add upstream https://github.com/gitpod-io/workspace-images && git fetch --all",
+	"postStartCommand": "direnv allow && ./devkit/local-registry"
+}

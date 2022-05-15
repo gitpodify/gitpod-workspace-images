@@ -1,4 +1,5 @@
-FROM quay.io/gitpodified-workspace-images/full:latest
+ARG baseImage=gitpod/workspace-full
+FROM ${baseImage}
 
 ENV RETRIGGER=1
 
