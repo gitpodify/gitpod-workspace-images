@@ -32,7 +32,8 @@
         "docker",
         "issue-templates",
         "contributing",
-        "github-actions"
+        "github-actions",
+        "devkit"
     ],
     "conventionalCommits.emojiFormat": "emoji",
     "conventionalCommits.gitmoji": true,

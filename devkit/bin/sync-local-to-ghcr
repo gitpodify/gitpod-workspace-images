@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+IMAGE_TAGS=$(cat .github/sync-containers.yml | yq '.["localhost:5000"]."recaptime-dev"."gp-ws-images-build-artifacts"|join(" ")' -r)
+DEFAULT_TIMESTAMP_TAG="dazzle-build-$(date '+%Y-%m-%d-%H-%M-%S')"
+TIMESTAMP_TAG=${TIMESTAMP_TAG:-$DEFAULT_TIMESTAMP_TAG}
+PREFIX="ghcr.io/gitpodify/gitpodified-workspace-images/dazzle-build-artifact"
+
+for IMAGE in $IMAGE_TAGS; do
+  docker pull "localhost:5000/recaptime-dev/gp-ws-images-build-artifacts:$IMAGE"
+  docker tag "localhost:5000/recaptime-dev/gp-ws-images-build-artifacts:$IMAGE" "$PREFIX:$IMAGE"
+  docker tag "localhost:5000/recaptime-dev/gp-ws-images-build-artifacts:$IMAGE" "$PREFIX/$IMAGE:$TIMESTAMP_TAG"
+  docker push "$PREFIX:$IMAGE"
+  docker push "$PREFIX/$IMAGE:$TIMESTAMP_TAG"
+  docker rmi "localhost:5000/recaptime-dev/gp-ws-images-build-artifacts:$IMAGE"
+done
