@@ -14,7 +14,7 @@
 			// Our custom base image to be passed on the build context for Codespaces and
 			// Remote Containers, currently unsupported on Gitpod yet. We'll revert back to ours
 			// once the CI builds go green in the future.
-			//"baseImage": "quay.io/gitpodified-workspace-images/full:latest"
+			"baseImage": "ghcr.io/gitpodify/gitpodified-workspace-images/dazzle-build-artifact/full:dazzle-build-2022-05-16-11-24-32"
 		}
 	},
 
@@ -48,5 +48,5 @@
 	},
 
 	"postCreateCommand": "git remote add upstream https://github.com/gitpod-io/workspace-images && git fetch --all",
-	"postStartCommand": "direnv allow && ./devkit/local-registry"
+	"postStartCommand": "bash .devcontainer/scripts/postStart.sh"
 }
