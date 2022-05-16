@@ -33,7 +33,8 @@
         "issue-templates",
         "contributing",
         "github-actions",
-        "devkit"
+        "devkit",
+        "devcontainer"
     ],
     "conventionalCommits.emojiFormat": "emoji",
     "conventionalCommits.gitmoji": true,

@@ -48,5 +48,12 @@
 	},
 
 	"postCreateCommand": "git remote add upstream https://github.com/gitpod-io/workspace-images && git fetch --all",
-	"postStartCommand": "bash .devcontainer/scripts/postStart.sh"
+	"postStartCommand": "bash .devcontainer/scripts/postStart.sh",
+
+	"features": {
+		"docker-in-docker": "latest",
+		"git": "os-provided",
+		"git-lfs": "latest",
+		"github-cli": "latest"
+	}
 }

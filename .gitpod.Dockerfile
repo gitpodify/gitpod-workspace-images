@@ -13,4 +13,4 @@ RUN . /etc/os-release \
   && echo "deb [signed-by=/usr/share/keyrings/libcontainers-redhat-archive-keyring.gpg] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list \
   && curl -L "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/Release.key" | sudo gpg --dearmor --output /usr/share/keyrings/libcontainers-redhat-archive-keyring.gpg \
   && sudo install-packages skopeo
-RUN curl -fsSL https://cli.doppler.com/install.sh | sh -
+RUN curl -fsSL https://cli.doppler.com/install.sh | sudo sh -
