@@ -17,7 +17,8 @@ tasks:
     before: |
       gp sync-await docker-cli-login
       direnv reload
-      RHQCR_USERBOT_USERNAME=$RHQCR_USERNAME RHQCR_USERBOT_PASSWORD=$RHQCR_PASSWORD ./.gitlab/ci/scripts/docker-cli-login
+      ./devkit/docker-cli-login
+      ./devkit/bin/skopeo-auth-ghcr
     command: ./devkit/gp-buildkit
   - name: Main Hub
     command: |
