@@ -16,10 +16,26 @@ The official canonical repo is on GitLab SaaS at <https://gitlab.com/gitpodify/g
 Builds are always happens automagically on Red Hat Quay Container Registry from the `recaptime-dev-mainline` branch as we merge changes from the upstream. Click on an image name to get all available tags.
 
 | Image Name | Description |
-| --- | --- | --- |
+| --- | --- |
 | [`quay.io/gitpodified-workspace-images/base`](https://quay.io/repository/gitpodified-workspace-images/base?tab=tags) | The base image for everything, with Zsh and OhMyZsh preloaded. |
 | [`quay.io/gitpodified-workspace-images/full`](https://quay.io/repository/gitpodified-workspace-images/full?tab=tags) | The default Gitpod workspace image, plus additional tools such as Hadolint and ShellCheck. |
 | [`quay.io/gitpodified-workspace-images/vnc`](https://quay.io/repository/gitpodified-workspace-images/vnc?tab=tags) | An flavor of `quay.io/gitpodified-workspace-images/full`, but with noVNC installed for graphical apps. |
+| [`quay.io/gitpodified-workspace-images/postgresql`](https://quay.io/repository/gitpodified-workspace-images/postgresql?tab=tags) | |
+| [`quay.io/gitpodified-workspace-images/mysql`](https://quay.io/repository/gitpodified-workspace-images/mysql?tab=tags) | |
+| [`quay.io/gitpodified-workspace-images/mongodb`](https://quay.io/repository/gitpodified-workspace-images/mongodb?tab=tags) | |
+| [`quay.io/gitpodified-workspace-images/yugabytedb`](https://quay.io/repository/gitpodified-workspace-images/yugabytedb?tab=tags) | |
+| [`quay.io/gitpodified-workspace-images/node`](https://quay.io/repository/gitpodified-workspace-images/node?tab=tags) | Latest stable Node.js release with all the latest features before the next LTS. |
+| [`quay.io/gitpodified-workspace-images/node-lts`](https://quay.io/repository/gitpodified-workspace-images/node-lts?tab=tags) | Latest stable Node.js release under LTS status. |
+| [`quay.io/gitpodified-workspace-images/python`](https://quay.io/repository/gitpodified-workspace-images/python?tab=tags) | |
+| [`quay.io/gitpodified-workspace-images/ruby-2`](https://quay.io/repository/gitpodified-workspace-images/ruby-2?tab=tags) | |
+| [`quay.io/gitpodified-workspace-images/ruby-3`](https://quay.io/repository/gitpodified-workspace-images/ruby-3?tab=tags) | |
+| [`quay.io/gitpodified-workspace-images/go`](https://quay.io/repository/gitpodified-workspace-images/go?tab=tags) | |
+| [`quay.io/gitpodified-workspace-images/rust`](https://quay.io/repository/gitpodified-workspace-images/rust?tab=tags) | |
+| [`quay.io/gitpodified-workspace-images/dotnet-vnc`](https://quay.io/repository/gitpodified-workspace-images/dotnet-vnc?tab=tags) | |
+| [`quay.io/gitpodified-workspace-images/java-11`](https://quay.io/repository/gitpodified-workspace-images/java-11?tab=tags) | |
+| [`quay.io/gitpodified-workspace-images/java-17`](https://quay.io/repository/gitpodified-workspace-images/java-17?tab=tags) | |
+| [`quay.io/gitpodified-workspace-images/c`](https://quay.io/repository/gitpodified-workspace-images/c?tab=tags) | |
+| [`quay.io/gitpodified-workspace-images/clojure`](https://quay.io/repository/gitpodified-workspace-images/clojure?tab=tags) | |
 
 More images will be become available in the future, but you can build the images yourself if needed.
 
@@ -28,10 +44,10 @@ More images will be become available in the future, but you can build the images
 * Comes Zsh as default shell with OhMyZsh preloaded.
 * UUID-related packages are included, plus ShellCheck, Hadolint and even Doppler CLI.
     * We don't forget GitHub CLI and GLab CLI if you prefer not to use the VSC extensions.
-* Provided `GITPODIFY_*` variables to help in community support and debugging purposes. (`docker inspect` our built images for `dev.gitpodify.*` labels)
+* ~~Provided `GITPODIFY_*` variables to help in community support and debugging purposes. (`docker inspect` our built images for `dev.gitpodify.*` labels)~~ Currently unsupported by current Dazzle setup, tracked at TBD
 * Drop in user customizations to `~/.gitpodify/custom-zshrc.d` (don't forget to export `SOURCED_VIA_CUSTOM_ZSHRC` to any value to ensure
 your OMZ customizations were not overrided by the defaults after doing the init yourself).
-* **Coming soon:** Weekly rebuilds through GitLab CI cronjobs to keep things fresh as possible.
+* **Coming soon:** Weekly rebuilds through GitHub Actions cronjobs to keep things fresh as possible.
 
 ## The Motivation and The Why
 
@@ -52,7 +68,7 @@ image: quay.io/gitpodified-workspace-images/full
 
 ```dockerfile
 # Tip: Ignore DL3007 if using Hadolint since this is harmless, unless you want to lock version with
-# build-<commit sha> tags
+# dazzle-build-<timestamp> tags
 FROM quay.io/gitpodified-workspace-images/full:latest
 
 # If you use base as the starting point, then change repository to this:
@@ -81,4 +97,4 @@ We avoided Docker Hub as much as possible so you don't worry about pull limits o
 
 ### When migrating to Dazzle v2?
 
-We're currently slowly migrating to Dazzle v2 right now. Metadata stuff will then be added next very soon.
+~~We're currently slowly migrating to Dazzle v2 right now. Metadata stuff will then be added next very soon.~~ We're done migrating to Dazzle v2, so we'll start synchorizing our fork against the upstream to keep things up-to-date as much as possible.
