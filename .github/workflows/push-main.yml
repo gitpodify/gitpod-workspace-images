@@ -19,6 +19,19 @@ jobs:
       GHCR_REGISTRY: ghcr.io
 
     steps:
+      - name: "Workflow Hack - Maximize build space"
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 512
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+      - name: "Workflow Hack - Maximize even more space"
+        run: |
+          sudo apt clean
+          docker system prune --force --all
+          df -h
       - name: Install Doppler CLI
         uses: dopplerhq/cli-action@v1
       - name: Load environment variables as masked secrets
