@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -x
+
+[[ "$GHCR_SERVICE_ACCOUNT_USERNAME" != "" && "$GHCR_SERVICE_ACCOUNT_PASSWORD" != "" ]] && docker login -u "$GHCR_SERVICE_ACCOUNT_USERNAME" --password="$GHCR_SERVICE_ACCOUNT_PASSWORD" https://ghcr.io
+[[ "$RHQCR_SERVICE_ACCOUNT_USERNAME" != "" && "$RHQCR_SERVICE_ACCOUNT_PASSWORD" != "" ]] && docker login -u "$RHQCR_SERVICE_ACCOUNT_USERNAME" --password="$RHQCR_SERVICE_ACCOUNT_PASSWORD" https://quay.io
+[[ "$CLOUDSMITH_API_USERNAME" != "" && "$CLOUDSMITH_API_KEY" != "" ]] && docker login -u "${CLOUDSMITH_API_USERNAME}" --password="${CLOUDSMITH_API_KEY}" https://docker.cloudsmith.io

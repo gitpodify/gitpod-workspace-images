@@ -31,7 +31,7 @@ combiner:
         - tool-brew
         - tool-nginx
         - tool-nix:2.6.0
-    - name: full-vnc
+    - name: vnc
       ref:
       - full
       chunks:

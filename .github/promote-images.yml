@@ -3,12 +3,12 @@
 # Use simple regex for readability. Since we tag all images with year
 # We use a regex rule: Any tag that starts with '20'.
 "ghcr.io/gitpodify/gitpodified-workspace-images":
-  dazzle-build-artifacts:
+  dazzle-build-artifact:
     base: "dazzle-build-20.*"
     c: "dazzle-build-20.*"
     clojure: "dazzle-build-20.*"
     full: "dazzle-build-20.*"
-    full-vnc: "dazzle-build-20.*"
+    vnc: "dazzle-build-20.*"
     go: "dazzle-build-20.*"
     node: "dazzle-build-20.*"
     node-lts: "dazzle-build-20.*"

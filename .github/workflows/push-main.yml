@@ -52,8 +52,8 @@ jobs:
           . /etc/os-release
           # Update ca-certificates to avoid issues with LetEncr SSL certificates
           sudo apt update && sudo apt --only-upgrade install ca-certificates -y
-          echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-          curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/Release.key | sudo apt-key add -
+          echo "deb [signed-by=/usr/share/keyrings/skopeo-archive-keyring.gpg] https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+          curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/Release.key | gpg --dearmor | sudo tee /usr/share/keyrings/skopeo-archive-keyring.gpg
           sudo apt update && sudo apt install -y skopeo
 
           echo "====> Setting up Buildkitd..."
@@ -90,23 +90,17 @@ jobs:
         run: |
           echo "===> Authenicating against GHCR"
           sudo skopeo login -u RecapTimeBot --password=${{ secrets.GHCR_SERVICE_ACCOUNT_PASSWORD }} https://${{env.GHCR_REGISTRY}}
+          docker login -u RecapTimeBot --password=${{ secrets.GHCR_SERVICE_ACCOUNT_PASSWORD }} https://${{env.GHCR_REGISTRY}}
           echo
           sleep 3
 
           echo "===> Authenicating against RHQCR"
           sudo skopeo login -u ${{ secrets.RHQCR_SERVICE_ACCOUNT_USERNAME }} --password=${{secrets.RHQCR_SERVICE_ACCOUNT_PASSWORD}} https://${{env.RHQCR_REGISTRY}}
+          docker login -u ${{ secrets.RHQCR_SERVICE_ACCOUNT_USERNAME }} --password=${{secrets.RHQCR_SERVICE_ACCOUNT_PASSWORD}} https://${{env.RHQCR_REGISTRY}}
 
           echo "===> Authenticating against Cloudsmith"
           sudo skopeo login -u recaptimebot --password=${{secrets.CLOUDSMITH_API_KEY}} https://docker.cloudsmith.io
-
-      - name: 🐳 Sync combined images to GHCR
-        run: |
-          sudo skopeo sync \
-            --src-tls-verify=false \
-            --registries-conf=.github/registries.conf \
-            --src yaml \
-            --dest docker \
-            .github/sync-containers.yml ${{env.GHCR_REGISTRY}}/gitpodify/gitpodified-workspace-images/dazzle-build-artifacts
+          docker login -u recaptimebot --password=${{secrets.CLOUDSMITH_API_KEY}} https://docker.cloudsmith.io
 
       - name: 🕰️ Create timestamp tag
         id: create-timestamp-tag
@@ -115,27 +109,7 @@ jobs:
 
       - name: 📋 copy-to-ghcr.pipelines.recaptime.dev
         run: |
-          IMAGE_TAGS=$(cat .github/sync-containers.yml | yq '.["localhost:5000"]."recaptime-dev"."gp-ws-images-build-artifacts"|join(" ")' -r)
-          COPY_JOBS_PIDS=""
-          for IMAGE_TAG in $IMAGE_TAGS;
-          do
-            sudo skopeo copy \
-            docker://${{ env.GHCR_REGISTRY }}/gitpodify/gitpodified-workspace-images/dazzle-build-artifacts:$IMAGE_TAG \
-            docker://${{ env.GHCR_REGISTRY }}/gitpodify/gitpodified-workspace-images/dazzle-build-artifacts/$IMAGE_TAG:${{ env.TIMESTAMP_TAG }} &
-
-            COPY_JOBS_PIDS="$COPY_JOBS_PIDS $!"
-
-            sudo skopeo copy \
-            docker://${{ env.GHCR_REGISTRY }}/gitpodify/gitpodified-workspace-images/dazzle-build-artifact:$IMAGE_TAG \
-            docker://${{ env.GHCR_REGISTRY }}/gitpodify/gitpodified-workspace-images/dazzle-build-artifacts/$IMAGE_TAG:latest &
-
-            COPY_JOBS_PIDS="$COPY_JOBS_PIDS $!"
-
-          done
-
-          for COPY_JOBS_PID in $COPY_JOBS_PIDS; do
-              wait $COPY_JOBS_PID || exit 1
-          done
+          ./devkit/bin/sync-local-to-ghcr
 
       - name: 🐳 Sync images with specific tags to RHQCR and Cloudsmith.io
         run: |
