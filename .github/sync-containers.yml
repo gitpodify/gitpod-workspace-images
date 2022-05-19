@@ -6,7 +6,7 @@ localhost:5000:
     - c
     - clojure
     - full
-    - full-vnc
+    - vnc
     - go
     - node
     - node-lts

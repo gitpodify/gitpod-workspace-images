@@ -111,14 +111,6 @@ jobs:
         run: |
           ./devkit/bin/sync-local-to-ghcr
 
-      - name: 🐳 Sync images with specific tags to RHQCR and Cloudsmith.io
+      - name: 🐳 sync-to-other-registries-docker.pipelines.recaptime.dev
         run: |
-            sudo skopeo sync \
-            --src yaml \
-            --dest docker \
-            .github/promote-images.yml ${{ env.RHQCR_REGISTRY }}/gitpodified-workspace-images
-
-            sudo skopeo sync \
-            --src yaml \
-            --dest docker \
-            .github/promote-images.yml docker.cloudsmith.io/gitpodify/gitpodified-workspace-images
+            ./devkit/bin/sync-to-other-registries-docker $TIMESTAMP_TAG

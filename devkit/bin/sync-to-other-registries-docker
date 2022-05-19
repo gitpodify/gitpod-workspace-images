@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+if [[ $1 == "" ]]; then
+  echo "Usage: $0 <target-tag>"
+  echo
+  echo "For promoting an tag into latest, please use the promote-build-to-stable script instead."
+  exit 1
+fi
+
+set -ex
+
+IMAGE_TAGS=$(cat .github/sync-containers.yml | yq '.["localhost:5000"]."recaptime-dev"."gp-ws-images-build-artifacts"|join(" ")' -r)
+TIMESTAMP_TAG="dazzle-build-$(date '+%Y-%m-%d-%H-%M-%S')"
+TARGET_TAG=${1:-$TIMESTAMP_TAG}
+PREFIX="ghcr.io/gitpodify/gitpodified-workspace-images/dazzle-build-artifact"
+RHQCR_PREFIX=quay.io/gitpodified-workspace-images
+CLOUDSMITH_PREFIX=docker.cloudsmith.io/gitpodify/gitpodified-workspace-images
+
+for IMAGE in $IMAGE_TAGS; do
+  docker pull "$PREFIX/$IMAGE:$TARGET_TAG"
+  docker tag "$PREFIX/$IMAGE:$TARGET_TAG" "$RHQCR_PREFIX/$IMAGE:$TARGET_TAG"
+  docker tag "$PREFIX/$IMAGE:$TARGET_TAG" "$CLOUDSMITH_PREFIX/$IMAGE:$TARGET_TAG"
+  docker push "$RHQCR_PREFIX/$IMAGE:$TARGET_TAG"
+  docker push "$CLOUDSMITH_PREFIX/$IMAGE:$TARGET_TAG"
+  docker rmi "$RHQCR_PREFIX/$IMAGE:$TARGET_TAG" "$CLOUDSMITH_PREFIX/$IMAGE:$TARGET_TAG" "$PREFIX/$IMAGE:$TARGET_TAG" || true
+done

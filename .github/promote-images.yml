@@ -2,8 +2,7 @@
 # format +%Y-%m-%d-%H-%M-%S e.g. 2022-02-22-10-10-54.
 # Use simple regex for readability. Since we tag all images with year
 # We use a regex rule: Any tag that starts with '20'.
-"ghcr.io/gitpodify/gitpodified-workspace-images":
-  dazzle-build-artifact:
+"ghcr.io/gitpodify/gitpodified-workspace-images/dazzle-build-artifact":
     base: "dazzle-build-20.*"
     c: "dazzle-build-20.*"
     clojure: "dazzle-build-20.*"
