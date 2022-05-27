@@ -6,6 +6,7 @@ combiner:
         - tool-docker
         - tool-tailscale
         - tool-bashbox
+        - tool-github-cli
     - name: c
       ref:
       - base
