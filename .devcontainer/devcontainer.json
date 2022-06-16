@@ -55,5 +55,8 @@
 		"git": "os-provided",
 		"git-lfs": "latest",
 		"github-cli": "latest"
-	}
+	},
+
+	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace/gitpodified-workspace-images,type=bind,consistency=cached",
+	"workspaceFolder": "/workspace/gitpodified-workspace-images"
 }
