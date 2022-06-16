@@ -17,16 +17,21 @@ combiner:
       - base
       chunks:
         - lang-clojure
+    - name: elixir
+      ref:
+      - base
+      chunks:
+        - lang-elixir
     - name: full
       ref:
       - base
       chunks:
         - lang-c
         - lang-clojure
-        - lang-go:1.17.5
+        - lang-go:1.18.2
         - lang-java:11
-        - lang-node:16.13.2
-        - lang-python
+        - lang-node:16
+        - lang-python:3.8
         - lang-ruby:2.7
         - lang-rust
         - tool-brew
@@ -41,24 +46,54 @@ combiner:
       ref:
       - base
       chunks:
-        - lang-go:1.17.5
+        - lang-go:1.18.2
+    - name: nix
+      ref:
+      - base
+      chunks:
+        - tool-nix:2.6.0
     - name: node
       ref:
       - base
       chunks:
-        - lang-node:17.4.0
+        - lang-node:18
         - tool-chrome
     - name: node-lts
       ref:
       - base
       chunks:
-        - lang-node:16.13.2
+        - lang-node:16
         - tool-chrome
     - name: python
       ref:
       - base
       chunks:
-        - lang-python
+        - lang-python:3.8
+    - name: python-3.6
+      ref:
+      - base
+      chunks:
+        - lang-python:3.6
+    - name: python-3.7
+      ref:
+      - base
+      chunks:
+        - lang-python:3.7
+    - name: python-3.8
+      ref:
+      - base
+      chunks:
+        - lang-python:3.8
+    - name: python-3.9
+      ref:
+      - base
+      chunks:
+        - lang-python:3.9
+    - name: python-3.10
+      ref:
+      - base
+      chunks:
+        - lang-python:3.10
     - name: ruby-2
       ref:
       - base

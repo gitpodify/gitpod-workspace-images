@@ -5,12 +5,19 @@ localhost:5000:
     - base
     - c
     - clojure
+    - elixir
     - full
     - vnc
     - go
+    - nix
     - node
     - node-lts
     - python
+    - python-3.6
+    - python-3.7
+    - python-3.8
+    - python-3.9
+    - python-3.10
     - ruby-2
     - ruby-3
     - rust

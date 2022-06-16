@@ -106,7 +106,7 @@ before even submitting an MR.[^4]
 - Since our base image is based on Ubuntu, third-party repository best pratices specific to Debian/Ubuntu also applies here.
 - Make sure non-root users (aka `gitpod` user) on the container can access the installed tool/lang.
 - The last `USER` directive **SHOULD** always be `gitpod` **NOT** the root user.
-- **DO NOT** update the `~/.bashrc` or `~/.zshrc` files unless you are making change in the base layer.
+- **DO NOT** update the `~/.bashrc` or `~/.zshrc` files unless you are making change in the base layer or on tool-specific Dockerfile layer.
 
 ### Dazzle-specifics
 
@@ -127,6 +127,8 @@ Other than [the Docker CLI and Docker CE deamon, an local registry, Dazzle and t
 
 [sauce-1]: https://github.com/gitpod-io/workspace-images/blob/master/CONTRIBUTING.md#tools
 
+Note that an local registry setup is omitted in CI process and just straight to our artifact repositories in GHCR, since we do `docker login` process.
+
 ## Building Images
 
 ### local.dev
@@ -136,11 +138,11 @@ The upstream shipped an script in the root of the repository to simply the proce
 To get started, run it in an shell session:
 
 ```bash
-./dazzle-up.sh
+./build-all.sh
 
 # Use an remote cache, but since Dazzle needs to push builds to the registry we assume you have enough
 # permissions to do so. Also, do not use the example value of IMAGE_ARTIFACTS_REPO below.
-IMAGE_ARTIFACTS_REPO=ghcr.io/gitpodify/gitpodified-workspace-images/dazzle-build-artifacts ./dazzle-up.sh
+REPO=ghcr.io/gitpodify/gitpodified-workspace-images/dazzle-build-artifact ./dazzle-up.sh
 ```
 
 This script will first build the chunks and run tests followed by creation of container images. It uses dazzle to perform these tasks.
@@ -149,12 +151,37 @@ The images will be pushed to the local registry server running on port 5000 by d
 
 ```bash
 # combo - one of the image combinations listed in dazzle.yaml config file at repo root
+# Note that if you authenticate with your registry of choice and override the REPO var in the script
+# make sure to change localhost:5000/recaptime-dev/gp-ws-images-build-artifacts too.
 docker pull localhost:5000/recaptime-dev/gp-ws-images-build-artifacts:combo
 ```
 
 Building images locally consumes a lot of resources and is often slow. Depending on your internet speeds, the amount of RAM and CPU cores you have, it might take 1.25 hours or longer to build the
 images locally. Subsequent builds are faster if the number of modified chunks is less, assuming no significant
 changes were happened.
+
+### Build Specific Chunks
+
+Often, you would want to test only the chunks that you modify. You can do that with build-chunk.sh using the `-c` flag.
+
+```console
+./build-chunk.sh -c lang-c -c dep-cacert-update -c lang-go:1.17.5
+```
+
+Above command will build only chunks `lang-c` and `dep-cacert-update`.
+
+The next step, is to test your changes with [./build-combo](#build-specific-combination).
+
+### Build Specific Combination
+
+Sometimes you only want to build one specific combination e.g. the `postgresql` or the `go` image. You can do that with
+
+```console
+./build-combo.sh <comboName> e.g. ./build-combo.sh postgresql
+```
+
+This will build all chunks that are referenced by the `go` combination and then combine them to create the `go` image.
+
 
 ## CI/CD
 

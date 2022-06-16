@@ -44,7 +44,10 @@ RUN add-apt-repository -y ppa:git-core/ppa \
 # '-l': see https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
 RUN useradd -l -u 33333 -G sudo -md /home/gitpod -s /bin/bash -p gitpod gitpod \
     # passwordless sudo for users in the 'sudo' group
-    && sed -i.bkp -e 's/%sudo\s\+ALL=(ALL\(:ALL\)\?)\s\+ALL/%sudo ALL=NOPASSWD:ALL/g' /etc/sudoers
+    && sed -i.bkp -e 's/%sudo\s\+ALL=(ALL\(:ALL\)\?)\s\+ALL/%sudo ALL=NOPASSWD:ALL/g' /etc/sudoers \
+    # To emulate the workspace-session behavior within dazzle build env
+    && mkdir /workspace && chown -hR gitpod:gitpod /workspace
+
 ENV HOME=/home/gitpod
 WORKDIR $HOME
 # custom Bash prompt
@@ -56,7 +59,9 @@ USER gitpod
 RUN sudo echo "Running 'sudo' for Gitpod: success" && \
     # create .bashrc.d folder and source it in the bashrc
     mkdir -p /home/gitpod/.bashrc.d && \
-    (echo; echo "for i in \$(ls -A \$HOME/.bashrc.d/); do source \$HOME/.bashrc.d/\$i; done"; echo) >> /home/gitpod/.bashrc
+    (echo; echo "for i in \$(ls -A \$HOME/.bashrc.d/); do source \$HOME/.bashrc.d/\$i; done"; echo) >> /home/gitpod/.bashrc && \
+    # create a completions dir for gitpod user
+    mkdir -p /home/gitpod/.local/share/bash-completion/completions
 
 # configure git-lfs
 RUN sudo git lfs install --system
@@ -71,6 +76,8 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master
 COPY --chown=gitpod:gitpod base.zshrc /home/gitpod/.zshrc
 COPY --chown=gitpod:gitpod zshrc.d /home/gitpod/.zshrc.d
 
+# Custom PATH additions
+ENV PATH=/usr/games:$PATH
 
 ARG maintainer="Recap Time Squad <docker+gp-ws-images@recaptime.tk>"
 ARG gitRepo=https://gitlab.com/gitpodify/gitpodified-workspace-images

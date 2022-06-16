@@ -5,6 +5,12 @@ on:
     branches:
       - recaptime-dev-mainline
 
+env:
+  RHQCR_REGISTRY: quay.io
+  RHQCR_NAMESPACE: gitpodified-workspace-images
+  GHCR_REGISTRY: ghcr.io
+  GHCR_NAMESPACE: gitpodify/gitpodified-workspace-image/dazzle-build-artifact
+
 jobs:
   # Sync container images between the local registry and GHCR as our intermerdate registry.
   # Since we use Doppler for secrets management, we don't be bothered setting up environment secrets
@@ -14,9 +20,6 @@ jobs:
     permissions:
       contents: "read"
       id-token: "write"
-    env:
-      RHQCR_REGISTRY: quay.io
-      GHCR_REGISTRY: ghcr.io
 
     steps:
       - name: "Workflow Hack - Maximize build space"
@@ -57,7 +60,7 @@ jobs:
 
       - name: 🔆 Install dazzle
         run: |
-          curl -sSL https://github.com/gitpod-io/dazzle/releases/download/v0.1.6/dazzle_0.1.6_Linux_x86_64.tar.gz | sudo tar -xvz -C /usr/local/bin
+          curl -sSL https://github.com/gitpod-io/dazzle/releases/download/v0.1.11/dazzle_0.1.11_Linux_x86_64.tar.gz | sudo tar -xvz -C /usr/local/bin
 
       - name: 🔆 Setup CI Systems
         run: |
@@ -69,35 +72,13 @@ jobs:
           curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/Release.key | gpg --dearmor | sudo tee /usr/share/keyrings/skopeo-archive-keyring.gpg
           sudo apt update && sudo apt install -y skopeo
 
-          echo "====> Setting up Buildkitd..."
-          curl -sSL https://github.com/moby/buildkit/releases/download/v0.9.3/buildkit-v0.9.3.linux-amd64.tar.gz | sudo tar xvz -C /usr
+      - name: 🏗️ Setup buildkit
+        run: |
+          curl -sSL https://github.com/moby/buildkit/releases/download/v0.10.2/buildkit-v0.10.2.linux-amd64.tar.gz | sudo tar xvz -C /usr
           sudo buildkitd --oci-worker=true --oci-worker-net=host --debug --group docker &
           sudo su -c "while ! test -S /run/buildkit/buildkitd.sock; do sleep 0.1; done"
           sudo chmod +777 /run/buildkit/buildkitd.sock
 
-      # A hack as GH action does not allow you to force override cache storing if there was a cache hit
-      # https://github.com/actions/cache/issues/628#issuecomment-986118455
-      - name: 🗄️ Force override GitHub Actions cache
-        uses: actions/cache@v2
-        with:
-          path: ~/registry
-          key: ${{ runner.os }}-main-cache-${{ github.sha }}
-
-      - name: 🗄️ Restore Registry Cache
-        uses: actions/cache@v2
-        with:
-          path: ~/registry
-          key: ${{ runner.os }}-main-cache-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-main-cache-
-
-      - name: 📦 Setup local registry
-        run: |
-          docker run -it --detach --publish 5000:5000 --volume ~/registry:/var/lib/registry registry:2
-
-      - name: 🔨 dazzle-buildkit.pipelines.recaptime.dev
-        run: |
-          ./dazzle-up.sh
 
       - name: ✍🏽 Authenicate against GHCR, Quay.io and Cloudsmith
         run: |
@@ -115,15 +96,50 @@ jobs:
           sudo skopeo login -u recaptimebot --password=${{secrets.CLOUDSMITH_API_KEY}} https://docker.cloudsmith.io
           docker login -u recaptimebot --password=${{secrets.CLOUDSMITH_API_KEY}} https://docker.cloudsmith.io
 
+      - name: 🔨 dazzle-buildkit.pipelines.recaptime.dev
+        run: |
+          IMAGE_ARTIFACTS_REPO=${{ env.GHCR_REGISTRY }}/${{ env.GHCR_NAMESPACE }} ./build-all.sh
+
       - name: 🕰️ Create timestamp tag
         id: create-timestamp-tag
         run: |
-          echo "TIMESTAMP_TAG=dazzle-build-$(date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
+          echo "TIMESTAMP_TAG=$(date '+%Y-%m-%d-%H-%M-%S')" >> $GITHUB_ENV
 
-      - name: 📋 copy-to-ghcr.pipelines.recaptime.dev
-        run: |
-          ./devkit/bin/sync-local-to-ghcr
+#      - name: 📋 copy-to-ghcr.pipelines.recaptime.dev
+#        run: |
+#          ./devkit/bin/sync-local-to-ghcr
 
       - name: 🐳 sync-to-other-registries-docker.pipelines.recaptime.dev
         run: |
-            ./devkit/bin/sync-to-other-registries-docker $TIMESTAMP_TAG
+          IMAGE_TAGS=$(cat .github/sync-containers.yml | yq '.sync.images."workspace-base-images"|join(" ")' -r)
+          COPY_JOBS_PIDS=""
+          for IMAGE_TAG in $IMAGE_TAGS;
+          do
+            sudo skopeo copy \
+            docker://${{ env.GHCR_REGISTRY }}/${{ env.GHCR_NAMESPACE }}:$IMAGE_TAG \
+            docker://${{ env.GHCR_REGISTRY }}/${{ env.GHCR_NAMESPACE }}/$IMAGE_TAG:${{ env.TIMESTAMP_TAG }} &
+
+            COPY_JOBS_PIDS="$COPY_JOBS_PIDS $!"
+
+            sudo skopeo copy \
+            docker://${{ env.GHCR_REGISTRY }}/${{ env.GHCR_NAMESPACE }}:$IMAGE_TAG \
+            docker://${{ env.GHCR_REGISTRY }}/${{ env.GHCR_NAMESPACE }}/$IMAGE_TAG:latest &
+
+            COPY_JOBS_PIDS="$COPY_JOBS_PIDS $!"
+
+          done
+
+          for COPY_JOBS_PID in $COPY_JOBS_PIDS; do
+              wait $COPY_JOBS_PID || exit 1
+          done
+
+      - name: ✍🏽 Login to GAR using skopeo again
+        run: |
+          sudo skopeo login -u oauth2accesstoken --password=${{ steps.auth_again.outputs.access_token }} ${{env.GAR_IMAGE_REGISTRY}}
+
+      - name: 🐳 Sync images with specific tags to Docker Hub
+        run: |
+            sudo skopeo sync \
+            --src yaml \
+            --dest docker \
+            .github/promote-images.yml ${{ env.RHQCR_REGISTRY }}/${{ env.RHQCR_NAMESPACE}}

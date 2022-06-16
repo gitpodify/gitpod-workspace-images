@@ -11,3 +11,5 @@
 /dazzle
 /legacy
 base/.build-info
+/.dazzle.yaml.orig
+/.dazzle.yaml.temp
