@@ -13,7 +13,6 @@ localhost:5000:
     - node
     - node-lts
     - python
-    - python-3.6
     - python-3.7
     - python-3.8
     - python-3.9
@@ -21,8 +20,8 @@ localhost:5000:
     - ruby-2
     - ruby-3
     - rust
-    - dotnet-vnc
-    - postgresql
+    - dotnet
+    - postgres
     - mysql
     - mongodb
     - java-11

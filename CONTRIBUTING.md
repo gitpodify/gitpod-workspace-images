@@ -201,7 +201,7 @@ due to cost-saving reasons, these are being built inside an Docker container.
 ### Build
 
 ~~Currently builds happens on `recaptime-dev-mainline` and no caching due to the 10G default project storage limit
-in GitLab SaaS.~~ We use GitHub Container Registry for caching Dazzle builds and stuff.
+in GitLab SaaS.~~ We use GitHub Container Registry for caching Dazzle builds and stuff, and then sync them manually to Quay.io.
 
 ## Contributing an new image
 
@@ -231,4 +231,4 @@ You can look at the existing files in this repo for reference e.g. [lang-java](c
   FROM ${base}
   ```
 
-- [ ]
+- [ ] Lint your Dockerfile against Hadolint and fix as much as possible. If there's no available good rewrite/fixes, ignore it using `#hadolint ignore=` directive on the top.

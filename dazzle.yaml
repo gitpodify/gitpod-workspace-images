@@ -28,7 +28,7 @@ combiner:
       chunks:
         - lang-c
         - lang-clojure
-        - lang-go:1.18.2
+        - lang-go:1.18.3
         - lang-java:11
         - lang-node:16
         - lang-python:3.8
@@ -46,7 +46,7 @@ combiner:
       ref:
       - base
       chunks:
-        - lang-go:1.18.2
+        - lang-go:1.18.3
     - name: nix
       ref:
       - base
@@ -69,11 +69,6 @@ combiner:
       - base
       chunks:
         - lang-python:3.8
-    - name: python-3.6
-      ref:
-      - base
-      chunks:
-        - lang-python:3.6
     - name: python-3.7
       ref:
       - base
@@ -115,7 +110,7 @@ combiner:
       chunks:
         - tool-vnc
         - tool-dotnet
-    - name: postgresql
+    - name: postgres
       ref:
       - full
       chunks:

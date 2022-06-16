@@ -12,14 +12,15 @@ RUN curl -sSL https://download.opensuse.org/repositories/home:/ungoogled_chromiu
   && install-packages xfce4 xfce4-terminal \
   tigervnc-standalone-server tigervnc-xorg-extension \
   dbus dbus-x11 gnome-keyring \
-  ungoogled-chromium xdg-utils x11-xserver-utils \
+  ungoogled-chromium xdg-utils x11-xserver-utils pip \
   && ln -srf /usr/bin/chromium /usr/bin/google-chrome
 # To make ungoogled_chromium discoverable by tools like flutter
 
-# Install novnc
+# Install novnc and numpy module for it
 RUN git clone --depth 1 https://github.com/novnc/noVNC.git /opt/novnc \
     && git clone --depth 1 https://github.com/novnc/websockify /opt/novnc/utils/websockify \
-    && find /opt/novnc -type d -name '.git' -exec rm -rf '{}' +;
+    && find /opt/novnc -type d -name '.git' -exec rm -rf '{}' + \
+    && sudo -H pip3 install numpy
 COPY novnc-index.html /opt/novnc/index.html
 
 # Add VNC startup script
