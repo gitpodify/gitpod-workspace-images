@@ -6,7 +6,7 @@ trap ctrl_c EXIT
 source build-common.sh
 
 readonly TEMP_FILE=".dazzle.yaml.temp"
-readonly REPO="localhost:5000/recaptime-dev/gp-ws-images-build-artifacts"
+REPO=${IMAGE_ARTIFACTS_REPO:-"localhost:5000/recaptime-dev/gp-ws-images-build-artifacts"}
 
 function usage() {
 	cat <<EOF
@@ -23,17 +23,13 @@ function build_chunks() {
 	BUGTRACKER=${BUGTRACKER:-"$SRC_REPO/issues"}
 	MAINTAINER=${MAINTAINER:-"Recap Time Squad <yourfriends@recaptime.tk>, Andrei Jiroh Halili <ajhalili2006@gmail.com"}
 	COMMIT=$(git rev-parse HEAD)
-
-	buildId=$(uuidgen)
-	metadataContents="Build-ID: $buildId\nMaintainer: $MAINTAINER\nHomepage: $SRC_REPO\nCommit-Id: $COMMIT\nBug-Tracker: $BUGTRACKER"
+	metadataContents="Maintainer: $MAINTAINER\nHomepage: $SRC_REPO\nCommit-Id: $COMMIT\nBug-Tracker: $BUGTRACKER"
 
 	echo "====================== BUILD METADATA ======================"
 	echo -e $metadataContents
 	echo "============================================================"
 	echo -e $metadataContents > base/.build-info
 	echo
-	echo "info: Build logs will log below and will start in 10 seconds..."
-	sleep 10
 
 	dazzle build ${REPO} -v --chunked-without-hash && dazzle build ${REPO} -v
 }
