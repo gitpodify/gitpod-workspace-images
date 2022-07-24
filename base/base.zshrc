@@ -16,7 +16,16 @@ compinit
 # End of lines added by compinstall
 
 # TODO: Only use these when inside an Gitpod workspace and the gp binary exists.
-export EDITOR="command gp open -w" VISUAL="command gp open -w"
+if [[ $SSH_CLIENT != "" ]] && [[ $SSH_CONNECTION != "" ]]; then
+  export EDITOR=nano VISUAL=nano
+elif [[ $GITPOD_WORKSPACE_ID != "" ]] && [[ -f "/usr/local/bin/gp" ]];
+then
+  export EDITOR="command gp open -w" VISUAL="command gp open -w"
+elif [[ $CODESPACE == "true" ]]; then
+  export EDITOR="command code -w" VISUAL="command code -w"
+else
+  export EDITOR=nano VISUAL=nano
+fi
 
 # Path to your oh-my-zsh installation, to be referenced later.
 export ZSH="$HOME/.oh-my-zsh"

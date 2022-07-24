@@ -64,7 +64,8 @@ RUN sudo echo "Running 'sudo' for Gitpod: success" && \
     mkdir -p /home/gitpod/.local/share/bash-completion/completions
 
 # configure git-lfs
-RUN sudo git lfs install --system
+RUN sudo git lfs install --system \
+    && sudo chown gitpod ~/.gitconfig || true
 
 # setup omz stuff
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
