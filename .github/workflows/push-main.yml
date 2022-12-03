@@ -9,9 +9,9 @@ env:
   RHQCR_REGISTRY: quay.io
   RHQCR_NAMESPACE: gitpodified-workspace-images
   GHCR_REGISTRY: ghcr.io
-  GHCR_NAMESPACE: gitpodify/gitpodified-workspace-image/dazzle-build-artifact
-  CLOUDSMITH_REGISTRY: docker.cloudsmith.io
-  CLOUDSMITH_NAMESPACE: gitpodify/gitpodified-workspace-image
+  GHCR_NAMESPACE: gitpodify/gitpodified-workspace-images/dazzle-build-artifact
+  #CLOUDSMITH_REGISTRY: docker.cloudsmith.io
+  #CLOUDSMITH_NAMESPACE: gitpodify/gitpodified-workspace-images
 
 jobs:
   # Sync container images between the local registry and GHCR as our intermerdate registry.
@@ -94,9 +94,9 @@ jobs:
           sudo skopeo login -u ${{ secrets.RHQCR_SERVICE_ACCOUNT_USERNAME }} --password=${{secrets.RHQCR_SERVICE_ACCOUNT_PASSWORD}} ${{env.RHQCR_REGISTRY}}
           docker login -u ${{ secrets.RHQCR_SERVICE_ACCOUNT_USERNAME }} --password=${{secrets.RHQCR_SERVICE_ACCOUNT_PASSWORD}} ${{env.RHQCR_REGISTRY}}
 
-          echo "===> Authenticating against Cloudsmith"
-          sudo skopeo login -u recaptimebot --password=${{secrets.CLOUDSMITH_API_KEY}} docker.cloudsmith.io
-          docker login -u recaptimebot --password=${{secrets.CLOUDSMITH_API_KEY}} docker.cloudsmith.io
+          #echo "===> Authenticating against Cloudsmith"
+          #sudo skopeo login -u recaptimebot --password=${{secrets.CLOUDSMITH_API_KEY}} docker.cloudsmith.io
+          #docker login -u recaptimebot --password=${{secrets.CLOUDSMITH_API_KEY}} docker.cloudsmith.io
 
       - name: 🔨 dazzle-buildkit.pipelines.recaptime.dev
         run: |
@@ -134,14 +134,9 @@ jobs:
           for COPY_JOBS_PID in $COPY_JOBS_PIDS; do
               wait $COPY_JOBS_PID || exit 1
 
-      - name: 🐳 Sync images with specific tags to Docker Hub
+      - name: 🐳 Sync images with specific tags to Quay.io
         run: |
             sudo skopeo sync \
             --src yaml \
             --dest docker \
             .github/promote-images.yml ${{ env.RHQCR_REGISTRY }}/${{ env.RHQCR_NAMESPACE}}
-
-            sudo skopeo sync \
-            --src yaml \
-            --dest docker \
-            .github/promote-images.yml ${{ env.CLOUDSMITH_REGISTRY }}/${{ env.CLOUDSMITH_NAMESPACE }}
